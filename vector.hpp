@@ -3,6 +3,7 @@
 
 # include <memory>
 # include <limits>
+# include <stddef.h>
 
 namespace ft {
 	/**
@@ -22,9 +23,9 @@ namespace ft {
 			T						*m_items;
 		public:
 			vector() :
-				m_capacity( GROWTH_FACTOR ), 
+				m_capacity( 0 ), 
 				m_size( 0 ),
-				m_items( m_alloc.allocate( m_capacity ) ) {}
+				m_items( 0 ) {}
 
 			/**
 			 * Return size
@@ -84,6 +85,35 @@ namespace ft {
 			 */
 			bool empty() const {
 				return m_size == 0;
+			}
+
+			/**
+			 * Request a change in capacity
+			 * 
+			 * Requests that the vector capacity be at least enough to contain n elements.
+			 * 
+			 * If n is greater than the current vector capacity, 
+			 * the function causes the container to reallocate its storage increasing its capacity to n (or greater).
+			 * 
+			 * In all other cases, the function call does not cause a reallocation and the vector capacity is not affected.
+			 * 
+			 * This function has no effect on the vector size and cannot alter its elements.
+			 * 
+			 */
+			void reserve( size_type n ) {
+				/* Must throw error if capacity greater than max_size */
+				if ( n > m_capacity ){
+					T *tmp = m_alloc.allocate( n );
+
+					if ( m_items != NULL ){
+						for ( size_type index = 0 ; index < m_size ; index++ ){
+							m_alloc.construct( &tmp[index], m_items[index] );
+						}
+						m_alloc.deallocate( m_items, m_capacity );
+					}
+					m_items = tmp;
+					m_capacity = n;
+				}
 			}
 	};
 }
