@@ -10,17 +10,21 @@ namespace ft {
 	 * https://www.cplusplus.com/reference/vector/vector/?kw=vector
 	 * 
 	 */
-	template<class T, class Allocator = std::allocator<T>>
+	template<class T, class Allocator = std::allocator<T> >
 	class vector {
 		public:
-			using size_type = size_t;
+			typedef std::size_t size_type;
 		private:
-
-			size_type	m_capacity;
-			size_type	m_size;
-			T			*items;
+			const static size_type	GROWTH_FACTOR = 2;
+			Allocator				m_alloc;
+			size_type				m_capacity;
+			size_type				m_size;
+			T						*m_items;
 		public:
-			vector();
+			vector() :
+				m_capacity( GROWTH_FACTOR ), 
+				m_size( 0 ),
+				m_items( m_alloc.allocate( m_capacity ) ) {}
 
 			/**
 			 * Return size
