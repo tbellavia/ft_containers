@@ -14,7 +14,13 @@ namespace ft {
 	template<class T, class Allocator = std::allocator<T> >
 	class vector {
 		public:
-			typedef std::size_t size_type;
+			typedef std::size_t									size_type;
+			typedef T											value_type;
+			typedef Allocator									allocator_type;
+			typedef typename allocator_type::reference			reference;
+			typedef typename allocator_type::const_reference	const_reference;
+			typedef typename allocator_type::pointer			pointer;
+			typedef typename allocator_type::const_pointer		const_pointer;
 		private:
 			const static size_type	GROWTH_FACTOR = 2;
 			Allocator				m_alloc;
@@ -116,6 +122,28 @@ namespace ft {
 					m_items = tmp;
 					m_capacity = n;
 				}
+			}
+
+			/**
+			 * Change size
+			 * 
+			 * Resizes the container so that it contains n elements.
+			 * 
+			 * If n is smaller than the current container size, the content is reduced to its first n elements, 
+			 * removing those beyond (and destroying them).
+			 * 
+			 * If n is greater than the current container size, 
+			 * the content is expanded by inserting at the end as many elements as needed to reach a size of n. 
+			 * If val is specified, the new elements are initialized as copies of val, otherwise, they are value-initialized.
+			 * 
+			 * If n is also greater than the current container capacity, an automatic reallocation of the allocated storage space takes place.
+			 * 
+			 * Notice that this function changes the actual content of the container by inserting or erasing elements from it.
+			 * 
+			 */
+			void resize( size_type n, value_type val = value_type() ){
+				(void)n;
+				(void)val;
 			}
 	};
 }

@@ -34,7 +34,28 @@ void test_vector_capacity() {
 	_assert_equal( f_vec.capacity(), s_vec.capacity(), "test_vector_reserve_capacity" );
 }
 
+void test_vector_resize(){
+	std::vector<int>::iterator it;
+	std::vector<int>	s_vec;
+	ft::vector<int>		f_vec;
+
+	s_vec.push_back(1);
+	s_vec.push_back(2);
+	std::cout << "Capacity : " << s_vec.capacity() << std::endl;
+	for ( it = s_vec.begin() ; it != s_vec.end() ; it++ ){
+		std::cout << "Item : " << *it << std::endl;
+	}
+
+
+	s_vec.resize(1, 3);
+	std::cout << "Capacity : " << s_vec.capacity() << std::endl;
+	for ( it = s_vec.begin() ; it != s_vec.end() ; it++ ){
+		std::cout << "Item : " << *it << std::endl;
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
+	test_vector_resize();
 }
