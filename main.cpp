@@ -41,21 +41,31 @@ void test_vector_resize(){
 
 	s_vec.push_back(1);
 	s_vec.push_back(2);
+	s_vec.push_back(1);
+	s_vec.push_back(2);
+	s_vec.push_back(2);
+
 	std::cout << "Capacity : " << s_vec.capacity() << std::endl;
+	std::cout << "Size : " << s_vec.size() << std::endl;
+
+	s_vec.resize(10, 10);
+	std::cout << "Capacity : " << s_vec.capacity() << std::endl;
+	std::cout << "Size : " << s_vec.size() << std::endl;
+
 	for ( it = s_vec.begin() ; it != s_vec.end() ; it++ ){
 		std::cout << "Item : " << *it << std::endl;
 	}
 
 
-	s_vec.resize(1, 3);
-	std::cout << "Capacity : " << s_vec.capacity() << std::endl;
-	for ( it = s_vec.begin() ; it != s_vec.end() ; it++ ){
-		std::cout << "Item : " << *it << std::endl;
-	}
+	// s_vec.resize(1, 3);
+	// std::cout << "Capacity : " << s_vec.capacity() << std::endl;
+	// for ( it = s_vec.begin() ; it != s_vec.end() ; it++ ){
+	// 	std::cout << "Item : " << *it << std::endl;
+	// }
 }
 
 int	main(void){
-	test_vector_max_size();
-	test_vector_capacity();
+	// test_vector_max_size();
+	// test_vector_capacity();
 	test_vector_resize();
 }

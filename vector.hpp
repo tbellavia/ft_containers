@@ -3,6 +3,7 @@
 
 # include <memory>
 # include <limits>
+# include <stdexcept>
 # include <stddef.h>
 
 namespace ft {
@@ -15,6 +16,7 @@ namespace ft {
 	class vector {
 		public:
 			typedef std::size_t									size_type;
+			typedef std::ptrdiff_t								difference_type;
 			typedef T											value_type;
 			typedef Allocator									allocator_type;
 			typedef typename allocator_type::reference			reference;
@@ -142,6 +144,11 @@ namespace ft {
 			 * 
 			 */
 			void resize( size_type n, value_type val = value_type() ){
+				if ( n < m_size ){
+					size_type delta = m_size - n;
+
+					// Need reverse iterator to achieve resize
+				}
 				(void)n;
 				(void)val;
 			}
