@@ -72,7 +72,7 @@ namespace ft {
 			 * 
 			 */
 			size_type max_size() const {
-				return ( std::numeric_limits<size_type>::max() );
+				return ( m_alloc.max_size() );
 			}
 
 			/**
@@ -101,7 +101,9 @@ namespace ft {
 			 * 
 			 */
 			void reserve( size_type n ) {
-				/* Must throw error if capacity greater than max_size */
+				if ( n > this->max_size() ){
+					throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
+				}
 				if ( n > m_capacity ){
 					T *tmp = m_alloc.allocate( n );
 
