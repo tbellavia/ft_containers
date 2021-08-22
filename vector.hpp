@@ -2,6 +2,7 @@
 #define VECTOR_HPP
 
 # include <memory>
+# include <iterator>
 # include <limits>
 # include <stdexcept>
 # include <stddef.h>
@@ -23,6 +24,57 @@ namespace ft {
 			typedef typename allocator_type::const_reference	const_reference;
 			typedef typename allocator_type::pointer			pointer;
 			typedef typename allocator_type::const_pointer		const_pointer;
+
+			class iterator {
+				private:
+					pointer									m_ptr;
+				public:
+					typedef std::random_access_iterator_tag iterator_category;
+					typedef std::size_t						size_type;
+					typedef std::ptrdiff_t					difference_type;
+					typedef T								value_type;
+					typedef T*								pointer;
+					typedef T&								reference;
+
+					/* Constructors */
+					iterator() : m_ptr( NULL ) { }
+					iterator(const iterator &it) : m_ptr( it.m_ptr ) { }
+					iterator &operator=(iterator const &it) { 
+						if (it == this)
+							return *this;
+						m_ptr = it.m_ptr;
+						return *this;
+					 }
+					~iterator() {}
+
+					/* Accesses operators */
+					reference operator*() const { return *m_ptr; }
+					pointer operator->() { return m_ptr; }
+					reference operator[](difference_type offset) const { return m_ptr[offset]; }
+
+					/* Increment / Decrement */
+					iterator &operator++() { m_ptr++; return *this; };
+					iterator &operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
+					iterator &operator--() { m_ptr--; return *this; }
+					iterator &operator--(int) { iterator tmp = *this; --(*this); return tmp; }
+
+					/* Arithmetic */
+					iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
+					iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
+					iterator operator+(difference_type offset) { return iterator( m_ptr + offset ); }
+					friend iterator operator+(difference_type offset, const iterator &it) { return iterator( it.m_ptr + offset ); }
+					iterator operator-(difference_type offset) { return iterator( m_ptr - offset ); }
+					friend iterator operator-(difference_type offset, const iterator &it) { return iterator( it.m_ptr - offset ); }
+
+
+					/* Comparison operators */
+					bool operator<(iterator const &it) const { return m_ptr < it.m_ptr; }
+					bool operator>(iterator const &it) const { return m_ptr > it.m_ptr; }
+					bool operator>=(iterator const &it) const { return m_ptr >= it.m_ptr; }
+					bool operator<=(iterator const &it) const { return m_ptr <= it.m_ptr; }
+					bool operator!=(iterator const &it) const { return m_ptr != it.m_ptr }
+					bool operator==(iterator const &it) const { return m_ptr == it.m_ptr }
+			};
 		private:
 			const static size_type	GROWTH_FACTOR = 2;
 			Allocator				m_alloc;
@@ -156,4 +208,4 @@ namespace ft {
 }
 
 
-#endif
+#endif /* VECTOR_HPP */
