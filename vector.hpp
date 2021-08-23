@@ -6,6 +6,7 @@
 # include <limits>
 # include <stdexcept>
 # include <stddef.h>
+# include <iostream>
 
 namespace ft {
 	/**
@@ -210,12 +211,19 @@ namespace ft {
 			 */
 			void resize( size_type n, value_type val = value_type() ){
 				if ( n < m_size ){
-					// size_type delta = m_size - n;
-
-					// Need reverse iterator to achieve resize
+					for ( size_type index = n ; index < m_size ; index++ ){
+						m_alloc.destroy( &m_items[index] );
+					}
+					m_size = n;
+				} else {
+					if ( n > m_capacity ){
+						reserve(n);
+					}
+					for ( size_type index = m_size ; index < n ; index++ ){
+						m_alloc.construct( &m_items[index], val );
+					}
+					m_size = n;
 				}
-				(void)n;
-				(void)val;
 			}
 
 			/**
