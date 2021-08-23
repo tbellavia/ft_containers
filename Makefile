@@ -1,5 +1,5 @@
 CLANG = clang++
-CFLAGS = -Wall -Werror -Wextra -std=c++98
+CFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address
 
 SRCS = main.cpp
 HEADERS = vector.hpp
@@ -10,6 +10,8 @@ all: $(NAME)
 
 $(NAME): $(SRCS) $(HEADERS)
 	$(CLANG) $(CFLAGS) -o $(NAME) $(SRCS)
+
+re: fclean all
 
 clean: fclean
 

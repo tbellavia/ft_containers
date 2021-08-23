@@ -16,6 +16,59 @@ namespace ft {
 	template<class T, class Allocator = std::allocator<T> >
 	class vector {
 		public:
+			template<class TIt>
+			class _iterator {
+				public:
+					typedef std::random_access_iterator_tag iterator_category;
+					typedef std::size_t						size_type;
+					typedef std::ptrdiff_t					difference_type;
+					typedef TIt								value_type;
+					typedef TIt*								pointer;
+					typedef TIt&								reference;
+
+					/* Constructors */
+					_iterator() : m_ptr( NULL ) { }
+					_iterator(pointer p) : m_ptr( p ) { }
+					_iterator(_iterator const &it) : m_ptr( it.m_ptr ) { }
+					_iterator &operator=(_iterator const &it) {
+						if ( &it == this )
+							return *this;
+						m_ptr = it.m_ptr;
+						return *this;
+					 }
+					~_iterator() {}
+
+					/* Accesses operators */
+					reference operator*() const { return *m_ptr; }
+					pointer operator->() { return m_ptr; }
+					reference operator[](difference_type offset) const { return m_ptr[offset]; }
+
+					/* Increment / Decrement */
+					_iterator &operator++() { m_ptr++; return *this; };
+					_iterator operator++(int) { _iterator tmp = *this; ++(*this); return tmp; }
+					_iterator &operator--() { m_ptr--; return *this; }
+					_iterator operator--(int) { _iterator tmp = *this; --(*this); return tmp; }
+
+					/* Arithmetic */
+					_iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
+					_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
+					_iterator operator+(difference_type offset) { return _iterator( m_ptr + offset ); }
+					friend _iterator operator+(difference_type offset, const _iterator &it) { return _iterator( it.m_ptr + offset ); }
+					_iterator operator-(difference_type offset) { return _iterator( m_ptr - offset ); }
+					friend _iterator operator-(difference_type offset, const _iterator &it) { return _iterator( it.m_ptr - offset ); }
+
+
+					/* Comparison operators */
+					bool operator<(_iterator const &it) const { return m_ptr < it.m_ptr; }
+					bool operator>(_iterator const &it) const { return m_ptr > it.m_ptr; }
+					bool operator>=(_iterator const &it) const { return m_ptr >= it.m_ptr; }
+					bool operator<=(_iterator const &it) const { return m_ptr <= it.m_ptr; }
+					bool operator!=(_iterator const &it) const { return m_ptr != it.m_ptr; }
+					bool operator==(_iterator const &it) const { return m_ptr == it.m_ptr; }
+				private:
+					pointer									m_ptr;
+			};
+
 			typedef std::size_t									size_type;
 			typedef std::ptrdiff_t								difference_type;
 			typedef T											value_type;
@@ -24,57 +77,8 @@ namespace ft {
 			typedef typename allocator_type::const_reference	const_reference;
 			typedef typename allocator_type::pointer			pointer;
 			typedef typename allocator_type::const_pointer		const_pointer;
-
-			class iterator {
-				private:
-					pointer									m_ptr;
-				public:
-					typedef std::random_access_iterator_tag iterator_category;
-					typedef std::size_t						size_type;
-					typedef std::ptrdiff_t					difference_type;
-					typedef T								value_type;
-					typedef T*								pointer;
-					typedef T&								reference;
-
-					/* Constructors */
-					iterator() : m_ptr( NULL ) { }
-					iterator(const iterator &it) : m_ptr( it.m_ptr ) { }
-					iterator &operator=(iterator const &it) { 
-						if (it == this)
-							return *this;
-						m_ptr = it.m_ptr;
-						return *this;
-					 }
-					~iterator() {}
-
-					/* Accesses operators */
-					reference operator*() const { return *m_ptr; }
-					pointer operator->() { return m_ptr; }
-					reference operator[](difference_type offset) const { return m_ptr[offset]; }
-
-					/* Increment / Decrement */
-					iterator &operator++() { m_ptr++; return *this; };
-					iterator &operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
-					iterator &operator--() { m_ptr--; return *this; }
-					iterator &operator--(int) { iterator tmp = *this; --(*this); return tmp; }
-
-					/* Arithmetic */
-					iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
-					iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
-					iterator operator+(difference_type offset) { return iterator( m_ptr + offset ); }
-					friend iterator operator+(difference_type offset, const iterator &it) { return iterator( it.m_ptr + offset ); }
-					iterator operator-(difference_type offset) { return iterator( m_ptr - offset ); }
-					friend iterator operator-(difference_type offset, const iterator &it) { return iterator( it.m_ptr - offset ); }
-
-
-					/* Comparison operators */
-					bool operator<(iterator const &it) const { return m_ptr < it.m_ptr; }
-					bool operator>(iterator const &it) const { return m_ptr > it.m_ptr; }
-					bool operator>=(iterator const &it) const { return m_ptr >= it.m_ptr; }
-					bool operator<=(iterator const &it) const { return m_ptr <= it.m_ptr; }
-					bool operator!=(iterator const &it) const { return m_ptr != it.m_ptr }
-					bool operator==(iterator const &it) const { return m_ptr == it.m_ptr }
-			};
+			typedef _iterator<T>								iterator;
+			typedef _iterator<const T>							const_iterator;
 		private:
 			const static size_type	GROWTH_FACTOR = 2;
 			Allocator				m_alloc;
@@ -86,6 +90,15 @@ namespace ft {
 				m_capacity( 0 ), 
 				m_size( 0 ),
 				m_items( 0 ) {}
+
+			~vector() {
+				if ( m_items != NULL ){
+					for ( size_type index = 0 ; index < m_size ; index++ ){
+						m_alloc.destroy( &m_items[index] );
+					}
+					m_alloc.deallocate( m_items, m_capacity );
+				}
+			}
 
 			/**
 			 * Return size
@@ -197,12 +210,83 @@ namespace ft {
 			 */
 			void resize( size_type n, value_type val = value_type() ){
 				if ( n < m_size ){
-					size_type delta = m_size - n;
+					// size_type delta = m_size - n;
 
 					// Need reverse iterator to achieve resize
 				}
 				(void)n;
 				(void)val;
+			}
+
+			/**
+			 * Add element at the end
+			 * 
+			 * Adds a new element at the end of the vector, after its current last element. 
+			 * The content of val is copied (or moved) to the new element.
+			 * 
+			 * This effectively increases the container size by one, which causes an automatic
+			 * reallocation of the allocated storage space if -and only if- the new vector size 
+			 * surpasses the current vector capacity.
+			 * 
+			 */
+			void push_back( const value_type &val ){
+				if ( m_size == m_capacity ){
+					value_type alloc_size;
+
+					if ( m_size == 0 )
+						alloc_size = 1;
+					else
+						alloc_size = m_capacity * GROWTH_FACTOR;
+					value_type *tmp = m_alloc.allocate( alloc_size );
+
+					for ( size_type index = 0 ; index < m_size ; index++ ){
+						m_alloc.construct( &tmp[index], m_items[index] );
+					}
+					m_alloc.deallocate( m_items, m_capacity );
+					m_items = tmp;
+					m_capacity = alloc_size;
+				}
+				m_items[m_size++] = val;
+			}
+
+			
+			/**
+			 * Return iterator to beginning
+			 * 
+			 * Returns an iterator pointing to the first element in the vector.
+			 * Notice that, unlike member vector::front, which returns a reference
+			 * to the first element, this function returns a random access iterator pointing to it.	
+			 * If the container is empty, the returned iterator value shall not be dereferenced.
+			 * 
+			 */
+			iterator begin() {
+				return iterator( &m_items[0] );
+			}
+
+			const_iterator begin() const {
+				return const_iterator( &m_items[0] );
+			}
+
+			/**
+			 * Return iterator to end
+			 * 
+			 * Returns an iterator referring to the past-the-end element in the vector container.
+			 * 
+			 * The past-the-end element is the theoretical element that would follow 
+			 * the last element in the vector. It does not point to any element, and thus shall not be dereferenced.
+			 * Because the ranges used by functions of the standard library do not include 
+			 * the element pointed by their closing iterator, this function is often used in 
+			 * combination with vector::begin to specify a range including all the elements in the container.
+			 * 
+			 * If the container is empty, this function returns the same as vector::begin.
+			 * 
+			 */
+			iterator end() {
+				return iterator( &m_items[m_size] );
+			}
+
+			const_iterator end() const {
+				return const_iterator( &m_items[m_size] );
 			}
 	};
 }
