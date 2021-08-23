@@ -257,6 +257,19 @@ namespace ft {
 				m_items[m_size++] = val;
 			}
 
+			/**
+			 * Delete last element
+			 * 
+			 * Removes the last element in the vector, effectively reducing the container size by one.
+			 * This destroys the removed element.
+			 * 
+			 */
+			void pop_back() {
+				if ( m_size != 0 ){
+					m_alloc.destroy( &m_items[--m_size] );
+				}
+			}
+
 			
 			/**
 			 * Return iterator to beginning

@@ -84,9 +84,41 @@ void test_vector_iterator(){
 	}
 }
 
+void test_vector_pop_back(){
+	std::vector<int>::iterator std_it;
+	ft::vector<int>::iterator ft_it;
+	std::vector<int>	s_vec;
+	ft::vector<int>		f_vec;
+
+	s_vec.push_back(10);
+	f_vec.push_back(10);
+
+	s_vec.pop_back();
+	f_vec.pop_back();
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector pop back size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector pop back capacity");
+
+	for ( int i = 0 ; i < 10 ; i++){
+		s_vec.push_back(i);
+		f_vec.push_back(i);
+	}
+
+	s_vec.pop_back();
+	f_vec.pop_back();
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector pop back size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector pop back capacity");
+	
+	for ( 
+		ft_it = f_vec.begin(), std_it = s_vec.begin() ; ft_it != f_vec.end() || std_it != s_vec.end() ; 
+		ft_it++, std_it++ ){
+		_assert_equal(*ft_it, *std_it, "test vector pop back items");
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
 	test_vector_resize();
 	test_vector_iterator();
+	test_vector_pop_back();
 }
