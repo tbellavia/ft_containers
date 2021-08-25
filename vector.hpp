@@ -270,6 +270,34 @@ namespace ft {
 				}
 			}
 
+			/**
+			 * Assign vector content
+			 * 
+			 * Assigns new contents to the vector, replacing its current contents, 
+			 * and modifying its size accordingly. 
+			 * 
+			 */
+			void assign( size_type n, value_type const &val ){
+				clear();
+				resize(n, val);
+			}
+
+			/**
+			 * Clear content
+			 * 
+			 * Removes all elements from the vector (which are destroyed), 
+			 * leaving the container with a size of 0.
+			 * 
+			 * A reallocation is not guaranteed to happen, and the vector 
+			 * capacity is not guaranteed to change due to calling this function.
+			 * 
+			 */
+			void clear() {
+				for ( size_type index = 0 ; index < m_size ; index++ ){
+					m_alloc.destroy( &m_items[index] );
+				}
+				m_size = 0;
+			}
 			
 			/**
 			 * Return iterator to beginning
