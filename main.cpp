@@ -8,12 +8,12 @@
 # define COLOR_RESET "\033[1;0m"
 
 template<typename T>
-void _report_error( T const &actual, T const &expected, std::string const &test_name ){
+void _report_failure( T const &actual, T const &expected, std::string const &test_name ){
 	std::cout << test_name << ": " << COLOR_FAIL << "[FAILED]" << COLOR_RESET << std::endl;
 	std::cout << "\t" << "Expected : `" << expected << "` but got `" << actual << "`" << std::endl;
 }
 
-void _report_error( std::string const &message, std::string const &test_name ){
+void _report_failure( std::string const &message, std::string const &test_name ){
 	std::cout << test_name << ": " << COLOR_FAIL << "[FAILED]" << COLOR_RESET << std::endl;
 	std::cout << "\t" << message << std::endl;
 }
@@ -27,7 +27,7 @@ void _assert_equal( const T & actual, const T & expected, const std::string &tes
 	if ( actual == expected ){
 		_report_success( test_name );
 	} else {
-		_report_error( actual, expected, test_name );
+		_report_failure( actual, expected, test_name );
 	}
 }
 
@@ -36,14 +36,14 @@ void _assert_each_equal( InputIt actual_first, InputIt actual_last,
 							OutputIt expected_first, OutputIt expected_last, std::string const &test_name ){
 	for ( ; actual_first != actual_last && expected_first != expected_last ; actual_first++, expected_first++ ){
 		if ( *actual_first != *expected_first ){
-			_report_error( *actual_first, *actual_last, test_name );
+			_report_failure( *actual_first, *actual_last, test_name );
 		}
 	}
 	if ( actual_first != actual_last || expected_first != expected_last ){
-		_report_error("The size differ", test_name);
-		return ;
+		_report_failure("The size differ", test_name);
+	} else {
+		_report_success( test_name );
 	}
-	_report_success( test_name );
 }
 
 void test_vector_max_size() {
@@ -150,7 +150,19 @@ void test_vector_assign(){
 	s_vec.assign(10, 1);
 	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
 	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector items");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
+
+	f_vec.assign(20, 5);
+	s_vec.assign(20, 5);
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
+
+	f_vec.assign(5, 42);
+	s_vec.assign(5, 42);
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
 }
 
 int	main(void){
