@@ -282,6 +282,13 @@ namespace ft {
 				resize(n, val);
 			}
 
+			// template<class InputIterator>
+			// void assign( InputIterator first, InputIterator last ){
+			// 	for ( InputIterator it = first ; it != last ; it++ ){
+			// 		push_back( *it );
+			// 	}
+			// }
+
 			/**
 			 * Clear content
 			 * 
@@ -293,10 +300,9 @@ namespace ft {
 			 * 
 			 */
 			void clear() {
-				for ( size_type index = 0 ; index < m_size ; index++ ){
-					m_alloc.destroy( &m_items[index] );
+				while ( !this->empty() ) {
+					this->pop_back();
 				}
-				m_size = 0;
 			}
 			
 			/**
