@@ -63,6 +63,9 @@ namespace ft {
 	 */
 	template<typename T>
 	struct ft::iterator_traits<random_access_iterator<T> > : ft::true_type {};
+
+	template<typename T>
+	struct ft::iterator_traits<T*> : ft::true_type {};
 }
 
 #endif /* ITERATOR_HPP */

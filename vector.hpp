@@ -28,8 +28,8 @@ namespace ft {
 			typedef typename allocator_type::const_reference	const_reference;
 			typedef typename allocator_type::pointer			pointer;
 			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef random_access_iterator<T>					iterator;
-			typedef random_access_iterator<const T>				const_iterator;
+			typedef ft::random_access_iterator<T>				iterator;
+			typedef ft::random_access_iterator<const T>			const_iterator;
 		private:
 			const static size_type	GROWTH_FACTOR = 2;
 			Allocator				m_alloc;
@@ -221,7 +221,7 @@ namespace ft {
 			}
 
 			/**
-			 * Assign vector content
+			 * Assign vector content ( fill )
 			 * 
 			 * Assigns new contents to the vector, replacing its current contents, 
 			 * and modifying its size accordingly. 
@@ -232,6 +232,13 @@ namespace ft {
 				resize(n, val);
 			}
 
+			/**
+			 * Assign vector content ( range )
+			 * 
+			 * Assigns new contents to the vector, replacing its current contents, 
+			 * and modifying its size accordingly. 
+			 * 
+			 */
 			template<class InpuIterator>
 			void assign( InpuIterator first, InpuIterator last, typename ft::enable_if<iterator_traits<InpuIterator>::value, InpuIterator>::type = NULL){
 				clear();

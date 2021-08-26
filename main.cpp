@@ -145,6 +145,7 @@ void test_vector_assign(){
 	ft::vector<int>::iterator ft_it;
 	std::vector<int>	s_fill;
 	ft::vector<int>		f_fill;
+	int fill[] = {1, 2, 3, 4, 5, 6};
 	std::vector<int>	s_vec;
 	ft::vector<int>		f_vec;
 	
@@ -155,27 +156,33 @@ void test_vector_assign(){
 
 	f_vec.assign(10, 1);
 	s_vec.assign(10, 1);
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign (fill) size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign (fill) capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign (fill) items");
 
 	f_vec.assign(20, 5);
 	s_vec.assign(20, 5);
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign (fill) size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign (fill) capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign (fill) items");
 
 	f_vec.assign(5, 42);
 	s_vec.assign(5, 42);
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign (fill) size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign (fill) capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign (fill) items");
+
+	f_vec.assign( fill, fill + 6 );
+	s_vec.assign( fill, fill + 6 );
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign (range) pointer size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign (range) pointer capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign (range) pointer items");
 
 	f_vec.assign( f_fill.begin(), f_fill.end() );
 	s_vec.assign( s_fill.begin(), s_fill.end() );
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign (range) iterator size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign (range) iterator capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign (range) iterator items");
 }
 
 int	main(void){
