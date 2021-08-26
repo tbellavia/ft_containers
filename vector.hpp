@@ -7,8 +7,72 @@
 # include <stdexcept>
 # include <stddef.h>
 # include <iostream>
+# include "traits/traits.hpp"
 
 namespace ft {
+	template<class T>
+	class _iterator {
+		public:
+			typedef std::random_access_iterator_tag iterator_category;
+			typedef std::size_t						size_type;
+			typedef std::ptrdiff_t					difference_type;
+			typedef T								value_type;
+			typedef T*								pointer;
+			typedef T&								reference;
+
+			/* Constructors */
+			_iterator() : m_ptr( NULL ) { }
+			_iterator(pointer p) : m_ptr( p ) { }
+			_iterator(_iterator const &it) : m_ptr( it.m_ptr ) { }
+			_iterator &operator=(_iterator const &it) {
+				if ( &it == this )
+					return *this;
+				m_ptr = it.m_ptr;
+				return *this;
+				}
+			~_iterator() {}
+
+			/* Accesses operators */
+			reference operator*() const { return *m_ptr; }
+			pointer operator->() { return m_ptr; }
+			reference operator[](difference_type offset) const { return m_ptr[offset]; }
+
+			/* Increment / Decrement */
+			_iterator &operator++() { m_ptr++; return *this; };
+			_iterator operator++(int) { _iterator tmp = *this; ++(*this); return tmp; }
+			_iterator &operator--() { m_ptr--; return *this; }
+			_iterator operator--(int) { _iterator tmp = *this; --(*this); return tmp; }
+
+			/* Arithmetic */
+			_iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
+			_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
+			_iterator operator+(difference_type offset) { return _iterator( m_ptr + offset ); }
+			friend _iterator operator+(difference_type offset, const _iterator &it) { return _iterator( it.m_ptr + offset ); }
+			_iterator operator-(difference_type offset) { return _iterator( m_ptr - offset ); }
+			friend _iterator operator-(difference_type offset, const _iterator &it) { return _iterator( it.m_ptr - offset ); }
+
+
+			/* Comparison operators */
+			bool operator<(_iterator const &it) const { return m_ptr < it.m_ptr; }
+			bool operator>(_iterator const &it) const { return m_ptr > it.m_ptr; }
+			bool operator>=(_iterator const &it) const { return m_ptr >= it.m_ptr; }
+			bool operator<=(_iterator const &it) const { return m_ptr <= it.m_ptr; }
+			bool operator!=(_iterator const &it) const { return m_ptr != it.m_ptr; }
+			bool operator==(_iterator const &it) const { return m_ptr == it.m_ptr; }
+		private:
+			pointer									m_ptr;
+	};
+	
+	/**
+	 * Iterator traits
+	 * 
+	 * Iterator traits specialisation for _iterator
+	 * 
+	 */
+	template<typename T>
+	struct ft::iterator_traits<_iterator<T> > : ft::true_type {};
+
+
 	/**
 	 * The documentation of this vector implementation comes from
 	 * https://www.cplusplus.com/reference/vector/vector/?kw=vector
@@ -17,58 +81,6 @@ namespace ft {
 	template<class T, class Allocator = std::allocator<T> >
 	class vector {
 		public:
-			template<class TIt>
-			class _iterator {
-				public:
-					typedef std::random_access_iterator_tag iterator_category;
-					typedef std::size_t						size_type;
-					typedef std::ptrdiff_t					difference_type;
-					typedef TIt								value_type;
-					typedef TIt*								pointer;
-					typedef TIt&								reference;
-
-					/* Constructors */
-					_iterator() : m_ptr( NULL ) { }
-					_iterator(pointer p) : m_ptr( p ) { }
-					_iterator(_iterator const &it) : m_ptr( it.m_ptr ) { }
-					_iterator &operator=(_iterator const &it) {
-						if ( &it == this )
-							return *this;
-						m_ptr = it.m_ptr;
-						return *this;
-					 }
-					~_iterator() {}
-
-					/* Accesses operators */
-					reference operator*() const { return *m_ptr; }
-					pointer operator->() { return m_ptr; }
-					reference operator[](difference_type offset) const { return m_ptr[offset]; }
-
-					/* Increment / Decrement */
-					_iterator &operator++() { m_ptr++; return *this; };
-					_iterator operator++(int) { _iterator tmp = *this; ++(*this); return tmp; }
-					_iterator &operator--() { m_ptr--; return *this; }
-					_iterator operator--(int) { _iterator tmp = *this; --(*this); return tmp; }
-
-					/* Arithmetic */
-					_iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
-					_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
-					_iterator operator+(difference_type offset) { return _iterator( m_ptr + offset ); }
-					friend _iterator operator+(difference_type offset, const _iterator &it) { return _iterator( it.m_ptr + offset ); }
-					_iterator operator-(difference_type offset) { return _iterator( m_ptr - offset ); }
-					friend _iterator operator-(difference_type offset, const _iterator &it) { return _iterator( it.m_ptr - offset ); }
-
-
-					/* Comparison operators */
-					bool operator<(_iterator const &it) const { return m_ptr < it.m_ptr; }
-					bool operator>(_iterator const &it) const { return m_ptr > it.m_ptr; }
-					bool operator>=(_iterator const &it) const { return m_ptr >= it.m_ptr; }
-					bool operator<=(_iterator const &it) const { return m_ptr <= it.m_ptr; }
-					bool operator!=(_iterator const &it) const { return m_ptr != it.m_ptr; }
-					bool operator==(_iterator const &it) const { return m_ptr == it.m_ptr; }
-				private:
-					pointer									m_ptr;
-			};
 
 			typedef std::size_t									size_type;
 			typedef std::ptrdiff_t								difference_type;
@@ -282,12 +294,13 @@ namespace ft {
 				resize(n, val);
 			}
 
-			// template<class InputIterator>
-			// void assign( InputIterator first, InputIterator last ){
-			// 	for ( InputIterator it = first ; it != last ; it++ ){
-			// 		push_back( *it );
-			// 	}
-			// }
+			template<class InpuIterator>
+			void assign( InpuIterator first, InpuIterator last, typename ft::enable_if<iterator_traits<InpuIterator>::value, InpuIterator>::type = NULL){
+				clear();
+				for ( InpuIterator it = first ; it != last ; it++ ){
+					push_back( *it );
+				}
+			}
 
 			/**
 			 * Clear content
@@ -300,6 +313,7 @@ namespace ft {
 			 * 
 			 */
 			void clear() {
+				// Refactor with pop_back
 				while ( !this->empty() ) {
 					this->pop_back();
 				}

@@ -171,11 +171,11 @@ void test_vector_assign(){
 	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
 	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
 
-	// f_vec.assign( f_fill.begin(), f_fill.end() );
-	// s_vec.assign( s_fill.begin(), s_fill.end() );
-	// _assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
-	// _assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
-	// _assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
+	f_vec.assign( f_fill.begin(), f_fill.end() );
+	s_vec.assign( s_fill.begin(), s_fill.end() );
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector assign size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector assign capacity");
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign items");
 }
 
 int	main(void){
