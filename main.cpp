@@ -9,17 +9,17 @@
 
 template<typename T>
 void _report_failure( T const &actual, T const &expected, std::string const &test_name ){
-	std::cout << test_name << ": " << COLOR_FAIL << "[FAILED]" << COLOR_RESET << std::endl;
+	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
 	std::cout << "\t" << "Expected : `" << expected << "` but got `" << actual << "`" << std::endl;
 }
 
 void _report_failure( std::string const &message, std::string const &test_name ){
-	std::cout << test_name << ": " << COLOR_FAIL << "[FAILED]" << COLOR_RESET << std::endl;
+	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
 	std::cout << "\t" << message << std::endl;
 }
 
 void _report_success( std::string const &test_name ){
-	std::cout << test_name << ": " << COLOR_OK << "[OK]" << COLOR_RESET << std::endl;
+	std::cout << COLOR_OK << "[OK] " << COLOR_RESET << ": " << test_name << std::endl;
 }
 
 template<typename T>
@@ -185,6 +185,58 @@ void test_vector_assign(){
 	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign (range) iterator items");
 }
 
+void test_vector_erase(){
+	std::vector<int>	s_vec;
+	ft::vector<int>		f_vec;
+
+	s_vec.erase(s_vec.begin());
+}
+
+void test_vector_insert(){
+	ft::vector<int>::iterator it;
+	std::vector<int>	s_vec;
+	ft::vector<int>		f_vec;
+
+
+	// Reallocation
+	it = f_vec.insert(f_vec.begin(), 42);
+	s_vec.insert(s_vec.begin(), 42);
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vectir insert items");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+	_assert_equal(*it, 42, "test vector insert iterator");
+
+	s_vec.assign(20, 5);
+	f_vec.assign(20, 5);
+
+	it = f_vec.insert(f_vec.begin(), 10);
+	s_vec.insert(s_vec.begin(), 10);
+
+	// Begin
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+	_assert_equal(*it, 10, "test vector insert iterator");
+
+	// End
+	it = f_vec.insert(f_vec.end(), 100);
+	s_vec.insert(s_vec.end(), 100);
+
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vectir insert items");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+	_assert_equal(*it, 100, "test vector insert iterator");
+
+	// Middle
+	it = f_vec.insert(f_vec.begin() + (f_vec.size() / 2), 1000);
+	s_vec.insert(s_vec.begin() + (s_vec.size() / 2), 1000);
+
+	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vectir insert items");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+	_assert_equal(*it, 1000, "test vector insert iterator");
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
@@ -193,4 +245,5 @@ int	main(void){
 	test_vector_pop_back();
 	test_vector_clear();
 	test_vector_assign();
+	test_vector_insert();
 }

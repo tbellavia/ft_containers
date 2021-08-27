@@ -189,7 +189,7 @@ namespace ft {
 			 */
 			void push_back( const value_type &val ){
 				if ( m_size == m_capacity ){
-					value_type alloc_size;
+					size_type alloc_size;
 
 					if ( m_size == 0 )
 						alloc_size = 1;
@@ -260,13 +260,63 @@ namespace ft {
 			 * the same operation by other kinds of sequence containers (such as list or forward_list).
 			 * 
 			 */
-			iterator erase(iterator position){
+			// iterator erase(iterator position){
 				
+			// }
+
+			// iterator erase(iterator first, iterator last){
+
+			// }
+
+			/**
+			 * Insert elements ( single element )
+			 * 
+			 * The vector is extended by inserting new elements before the element 
+			 * at the specified position, effectively increasing the container size 
+			 * by the number of elements inserted.
+			 * 
+			 * This causes an automatic reallocation of the allocated storage space 
+			 * if -and only if- the new vector size surpasses the current vector capacity.
+			 * 
+			 * 
+			 * Because vectors use an array as their underlying storage, inserting elements
+			 * in positions other than the vector end causes the container to relocate all 
+			 * the elements that were after position to their new positions. This is generally
+			 * an inefficient operation compared to the one performed for the same operation 
+			 * by other kinds of sequence containers (such as list or forward_list).
+			 * 
+			 */
+			iterator insert(iterator position, value_type const &val){
+				size_type pos_index = position - begin();
+
+				if ( m_size == m_capacity ){
+					size_type capacity = m_capacity;
+
+					if ( capacity == 0 )
+						capacity = 1;
+					else
+						capacity *= GROWTH_FACTOR;
+					reserve( capacity );
+				}
+
+				for ( size_type index = m_size ; index != pos_index ; index-- ){
+					m_items[index] = m_items[index - 1];
+				}
+				m_alloc.construct( &m_items[pos_index], val );
+				m_size++;
+				return iterator( &m_items[pos_index] );
 			}
 
-			iterator erase(iterator first, iterator last){
-
+			/**
+			 * Insert elements ( fill )
+			 * 
+			 */
+			void insert(iterator position, size_type n, value_type const &val ){
+				for ( size_type index = 0 ; index < n ; index++ ){
+					this->insert( position + index, val );
+				}
 			}
+
 
 			/**
 			 * Clear content
