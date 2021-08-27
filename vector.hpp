@@ -248,6 +248,27 @@ namespace ft {
 			}
 
 			/**
+			 * Erase elements
+			 * 
+			 * Removes from the vector either a single element (position) or a range of elements ([first,last)).
+			 * 
+			 * This effectively reduces the container size by the number of elements removed, which are destroyed.
+			 * 
+			 * Because vectors use an array as their underlying storage, erasing elements in positions other 
+			 * than the vector end causes the container to relocate all the elements after the segment erased to 
+			 * their new positions. This is generally an inefficient operation compared to the one performed for 
+			 * the same operation by other kinds of sequence containers (such as list or forward_list).
+			 * 
+			 */
+			iterator erase(iterator position){
+				
+			}
+
+			iterator erase(iterator first, iterator last){
+
+			}
+
+			/**
 			 * Clear content
 			 * 
 			 * Removes all elements from the vector (which are destroyed), 
@@ -301,6 +322,16 @@ namespace ft {
 
 			const_iterator end() const {
 				return const_iterator( &m_items[m_size] );
+			}
+
+			/**
+			 * Get allocator
+			 * 
+			 * Returns a copy of the allocator object associated with the vector.
+			 * 
+			 */
+			allocator_type get_allocator() const {
+				return m_alloc;
 			}
 	};
 }
