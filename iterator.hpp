@@ -41,7 +41,6 @@ namespace ft {
 			
 			random_access_iterator operator+(difference_type offset) { return random_access_iterator( m_ptr + offset ); }
 			friend random_access_iterator operator+(difference_type offset, const random_access_iterator &it) { return random_access_iterator( it.m_ptr + offset ); }
-			difference_type operator+(random_access_iterator other) { return m_ptr + other.m_ptr; }
 
 			random_access_iterator operator-(difference_type offset) { return random_access_iterator( m_ptr - offset ); }
 			friend random_access_iterator operator-(difference_type offset, const random_access_iterator &it) { return random_access_iterator( it.m_ptr - offset ); }

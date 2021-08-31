@@ -312,8 +312,44 @@ namespace ft {
 			 * 
 			 */
 			void insert(iterator position, size_type n, value_type const &val ){
-				for ( size_type index = 0 ; index < n ; index++ ){
-					this->insert( position + index, val );
+				/**
+				 * FIXME: If vector has no previous allocation, position will point to a
+				 * non-existent pointer, that will cause a segmentation fault.
+				 * 
+				 * The position pointer will be invalidated.
+				 * 
+				 * FIXED: If vector has no prevous allocation, it means that pointer
+				 * pointed by begin() and end() will point to a pointer that will
+				 * be invalidated by call to reserve().
+				 * 
+				 * We must calculated the distance, instead of using iterator directly.
+				 * In all cases, position pointer will be invalidated by further allocation.
+				 * 
+				 */
+				iterator it = position;
+				ptrdiff_t distance;
+				size_type alloc_size;
+
+				if ( m_capacity == 0 ){
+					distance = 0;
+				} else {
+					distance = position - begin();
+				}
+
+				if ( (m_size + n) <= m_capacity ){
+					alloc_size = m_capacity;
+				} else if ( (m_capacity + n) > (m_capacity * GROWTH_FACTOR) ){
+					alloc_size = m_capacity + n;
+				} else {
+					alloc_size = m_capacity * GROWTH_FACTOR;
+				}
+
+				reserve( alloc_size );
+				
+				it = begin() + distance;
+ 
+				for ( ; n != 0 ; n-- ){
+					it = this->insert( it, val );
 				}
 			}
 

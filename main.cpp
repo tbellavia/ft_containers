@@ -193,48 +193,86 @@ void test_vector_erase(){
 }
 
 void test_vector_insert(){
-	ft::vector<int>::iterator it;
-	std::vector<int>	s_vec;
-	ft::vector<int>		f_vec;
+	{
+		ft::vector<int>::iterator it;
+		std::vector<int>	s_vec;
+		ft::vector<int>		f_vec;
 
+		// Reallocation
+		it = f_vec.insert(f_vec.begin(), 42);
+		s_vec.insert(s_vec.begin(), 42);
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vectir insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+		_assert_equal(*it, 42, "test vector insert iterator");
 
-	// Reallocation
-	it = f_vec.insert(f_vec.begin(), 42);
-	s_vec.insert(s_vec.begin(), 42);
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vectir insert items");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
-	_assert_equal(*it, 42, "test vector insert iterator");
+		s_vec.assign(20, 5);
+		f_vec.assign(20, 5);
 
-	s_vec.assign(20, 5);
-	f_vec.assign(20, 5);
+		it = f_vec.insert(f_vec.begin(), 10);
+		s_vec.insert(s_vec.begin(), 10);
 
-	it = f_vec.insert(f_vec.begin(), 10);
-	s_vec.insert(s_vec.begin(), 10);
+		// Begin
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+		_assert_equal(*it, 10, "test vector insert iterator");
 
-	// Begin
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
-	_assert_equal(*it, 10, "test vector insert iterator");
+		// End
+		it = f_vec.insert(f_vec.end(), 100);
+		s_vec.insert(s_vec.end(), 100);
 
-	// End
-	it = f_vec.insert(f_vec.end(), 100);
-	s_vec.insert(s_vec.end(), 100);
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+		_assert_equal(*it, 100, "test vector insert iterator");
 
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vectir insert items");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
-	_assert_equal(*it, 100, "test vector insert iterator");
+		// Middle
+		it = f_vec.insert(f_vec.begin() + (f_vec.size() / 2), 1000);
+		s_vec.insert(s_vec.begin() + (s_vec.size() / 2), 1000);
 
-	// Middle
-	it = f_vec.insert(f_vec.begin() + (f_vec.size() / 2), 1000);
-	s_vec.insert(s_vec.begin() + (s_vec.size() / 2), 1000);
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+		_assert_equal(*it, 1000, "test vector insert iterator");
+	}
+	{
+		std::vector<int>	s_vec;
+		ft::vector<int>		f_vec;
 
-	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vectir insert items");
-	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
-	_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
-	_assert_equal(*it, 1000, "test vector insert iterator");
+		// Reallocation
+
+		/**
+		 * FIXME: Invalid pointer for iterator when ft::vec is default constructed.
+		 * 
+		 */
+		f_vec.insert(f_vec.begin(), 10, 42);
+		s_vec.insert(s_vec.begin(), 10, 42);
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+
+		// Begin
+		f_vec.insert(f_vec.begin(), 10, 142);
+		s_vec.insert(s_vec.begin(), 10, 142);
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+		
+		// End
+		f_vec.insert(f_vec.begin() + (f_vec.size() / 2), 10, 142);
+		s_vec.insert(s_vec.begin() + (s_vec.size() / 2), 10, 142);
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+
+		// Middle
+		f_vec.insert(f_vec.begin() + (f_vec.size() / 2), 10, 142);
+		s_vec.insert(s_vec.begin() + (s_vec.size() / 2), 10, 142);
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+	}
 }
 
 int	main(void){
