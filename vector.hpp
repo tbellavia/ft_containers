@@ -353,6 +353,35 @@ namespace ft {
 				}
 			}
 
+			template<class InputIterator>
+			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::iterator_traits<InputIterator>::value, InputIterator>::type = NULL ){
+				ptrdiff_t distance;
+				ptrdiff_t n = last - first;
+				iterator it;
+				size_type alloc_size;
+
+				if ( m_capacity == 0 ){
+					distance = 0;
+				} else {
+					distance = position - begin();
+				}
+
+				if ( (m_size + n) <= m_capacity ){
+					alloc_size = m_capacity;
+				} else if ( (m_capacity + n) > (m_capacity * GROWTH_FACTOR) ){
+					alloc_size = m_capacity + n;
+				} else {
+					alloc_size = m_capacity * GROWTH_FACTOR;
+				}
+
+				reserve( alloc_size );
+
+				it = begin() + distance;
+				for ( ; first != last ; first++, it++ ){
+					it = this->insert( it, *first );
+				}
+			}
+
 
 			/**
 			 * Clear content

@@ -34,15 +34,21 @@ void _assert_equal( const T & actual, const T & expected, const std::string &tes
 template<typename InputIt, typename OutputIt>
 void _assert_each_equal( InputIt actual_first, InputIt actual_last, 
 							OutputIt expected_first, OutputIt expected_last, std::string const &test_name ){
+	
+	bool error = false;
+
 	for ( ; actual_first != actual_last && expected_first != expected_last ; actual_first++, expected_first++ ){
 		if ( *actual_first != *expected_first ){
-			_report_failure( *actual_first, *actual_last, test_name );
+			_report_failure( *actual_first, *expected_first, test_name );
+			error = true;
 		}
 	}
-	if ( actual_first != actual_last || expected_first != expected_last ){
-		_report_failure("The size differ", test_name);
-	} else {
-		_report_success( test_name );
+	if ( !error ){
+		if ( actual_first != actual_last || expected_first != expected_last ){
+			_report_failure("The size differ", test_name);
+		} else {
+			_report_success( test_name );
+		}
 	}
 }
 
@@ -272,6 +278,55 @@ void test_vector_insert(){
 		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
 		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
 		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+	}
+	{
+		int fill[]			= {1, 2, 3, 4, 5, 6};
+		int fill2[]			= {6, 5, 4, 3, 2, 1};
+
+		std::vector<int>	s_vec;
+		std::vector<int>	vec;
+		ft::vector<int>		f_vec;
+
+		// Reallocation
+		f_vec.insert(f_vec.begin(), fill, fill + 6);
+		s_vec.insert(s_vec.begin(), fill, fill + 6);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+
+		// Begin
+		f_vec.insert(f_vec.begin(), fill2, fill2 + 6);
+		s_vec.insert(s_vec.begin(), fill2, fill2 + 6);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+
+		// End
+		f_vec.insert(f_vec.end(), fill, fill + 6);
+		s_vec.insert(s_vec.end(), fill, fill + 6);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+
+		// Middle
+		f_vec.insert(f_vec.begin() + (f_vec.size() / 2), fill2, fill2 + 6);
+		s_vec.insert(s_vec.begin() + (s_vec.size() / 2), fill2, fill2 + 6);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+
+		// Fill empty
+		f_vec.insert(f_vec.begin(), fill, fill);
+		s_vec.insert(s_vec.begin(), fill, fill);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
+		
 	}
 }
 
