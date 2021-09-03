@@ -135,6 +135,48 @@ namespace ft {
 			}
 
 			/**
+			 * Access first element
+			 * 
+			 * Returns a reference to the first element in the vector.
+			 * 
+			 * Unlike member vector::begin, which returns an iterator to this same element, 
+			 * this function returns a direct reference.
+			 * 
+			 * Calling this function on an empty container causes undefined behavior. 
+			 * 
+			 */
+			reference front(){
+				return m_items[0];
+			}
+
+			const_reference front() const {
+				return m_items[0];
+			}
+
+			/**
+			 * Access last element
+			 * 
+			 * Returns a reference to the last element in the vector.
+			 * 
+			 * Unlike member vector::end, which returns an iterator just past this element,
+			 * this function returns a direct reference.
+			 * 
+			 * Calling this function on an empty container causes undefined behavior.
+			 * 
+			 */
+			reference back(){
+				size_type index = (m_size == 0) ? 0 : m_size - 1;
+
+				return m_items[index];
+			}
+
+			const_reference back() const {
+				size_type index = (m_size == 0) ? 0 : m_size - 1;
+
+				return m_items[index];
+			}
+
+			/**
 			 * Access element
 			 * 
 			 * Returns a reference to the element at position n in the vector.

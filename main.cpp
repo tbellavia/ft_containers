@@ -427,6 +427,15 @@ void test_vector_access(){
 	for ( int i = 0 ; i < 5 ; i++ ){
 		_assert_equal(f_vec[i], s_vec[i], "test vector operator[]");
 	}
+
+	// Front
+
+	_assert_equal(f_vec.front(), s_vec.front(), "test vector front - value");
+	_assert_equal(&f_vec.front(), &f_vec[0], "test vector front - pointer");
+
+	// Back
+	_assert_equal(f_vec.back(), s_vec.back(), "test vector back - value");
+	_assert_equal(&f_vec.back(), &f_vec[f_vec.size() - 1], "test vector back - pointer");
 }
 
 void test_vector_at(){
