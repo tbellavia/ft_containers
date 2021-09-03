@@ -7,6 +7,7 @@
 # define COLOR_FAIL "\033[1;31m"
 # define COLOR_RESET "\033[1;0m"
 
+
 template<typename T>
 void _report_failure( T const &actual, T const &expected, std::string const &test_name ){
 	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
@@ -51,6 +52,8 @@ void _assert_each_equal( InputIt actual_first, InputIt actual_last,
 		}
 	}
 }
+
+# define TEST_EACH_EQUAL(actual, expected, name) _assert_each_equal(actual.begin(), actual.end(), expected.begin(), expected.end(), name)
 
 void test_vector_max_size() {
 	std::vector<int> s_vec;
@@ -191,13 +194,6 @@ void test_vector_assign(){
 	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector assign (range) iterator items");
 }
 
-void test_vector_erase(){
-	std::vector<int>	s_vec;
-	ft::vector<int>		f_vec;
-
-	s_vec.erase(s_vec.begin());
-}
-
 void test_vector_insert(){
 	{
 		ft::vector<int>::iterator it;
@@ -330,6 +326,111 @@ void test_vector_insert(){
 	}
 }
 
+/**
+ * COMMIT:
+ * 		Vector :
+ * 			- refactor insert overloads member functions
+ * 				- get_distance()
+ * 				- get_alloc_size()
+ * 			- Add get_distance private member function to compute the distance
+ * 			with iterator.
+ * 			- Add unit test for erase member function 
+ * 			- erase(iterator position) member function
+ * 		
+ * 		Unit Test :
+ * 			- Macro for _assert_each_equal
+ * 
+ */
+
+void test_vector_erase(){
+	typedef std::vector<int>::iterator std_iterator;
+	typedef ft::vector<int>::iterator ft_iterator;
+	std_iterator		s_it;
+	ft_iterator			f_it;
+
+	{
+		ft::vector<int>		f_vec;
+		std::vector<int>	s_vec;
+
+		for ( int i = 0 ; i < 100 ; i++ ){
+			f_vec.push_back(i);
+			s_vec.push_back(i);
+		}
+
+		// Begin
+		f_it = f_vec.erase(f_vec.begin());
+		s_it = s_vec.erase(s_vec.begin());
+
+		TEST_EACH_EQUAL(f_vec, s_vec, "test vector erase - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector erase - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector erase - capacity");
+		_assert_equal(*f_it, *s_it, "test vector erase - iterator");
+
+		// End
+		f_it = f_vec.erase(f_vec.end() - 1);
+		s_it = s_vec.erase(s_vec.end() - 1);
+
+		TEST_EACH_EQUAL(f_vec, s_vec, "test vector erase - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector erase - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector erase - capacity");
+		_assert_equal(*f_it, *s_it, "test vector erase - iterator");
+		
+		// Middle
+		f_it = f_vec.erase(f_vec.begin() + (f_vec.size() / 2));
+		s_it = s_vec.erase(s_vec.begin() + (s_vec.size() / 2));
+
+		TEST_EACH_EQUAL(f_vec, s_vec, "test vector erase - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector erase - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector erase - capacity");
+		_assert_equal(*f_it, *s_it, "test vector erase - iterator");
+	}
+	{
+		ft::vector<int>		f_vec;
+		std::vector<int>	s_vec;
+
+		for ( int i = 0 ; i < 100 ; i++ ){
+			f_vec.push_back(i);
+			s_vec.push_back(i);
+		}
+
+		// Begin
+		f_it = f_vec.erase(f_vec.begin(), f_vec.begin() + 10);
+		s_it = s_vec.erase(s_vec.begin(), s_vec.begin() + 10);
+
+		TEST_EACH_EQUAL(f_vec, s_vec, "test vector erase - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector erase - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector erase - capacity");
+		_assert_equal(*f_it, *s_it, "test vector erase - iterator");
+
+		// End
+		f_it = f_vec.erase(f_vec.end() - 10, f_vec.end());
+		s_it = s_vec.erase(s_vec.end() - 10, s_vec.end());
+
+		TEST_EACH_EQUAL(f_vec, s_vec, "test vector erase - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector erase - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector erase - capacity");
+		_assert_equal(*f_it, *s_it, "test vector erase - iterator");
+		
+		// Middle
+		f_it = f_vec.erase(f_vec.begin() + (f_vec.size() / 2), f_vec.begin() + (f_vec.size() / 2) + 10);
+		s_it = s_vec.erase(s_vec.begin() + (s_vec.size() / 2), s_vec.begin() + (s_vec.size() / 2) + 10);
+
+		TEST_EACH_EQUAL(f_vec, s_vec, "test vector erase - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector erase - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector erase - capacity");
+		_assert_equal(*f_it, *s_it, "test vector erase - iterator");
+
+		// Zero erase
+		f_it = f_vec.erase(f_vec.begin(), f_vec.begin());
+		s_it = s_vec.erase(s_vec.begin(), s_vec.begin());
+
+		TEST_EACH_EQUAL(f_vec, s_vec, "test vector erase - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector erase - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector erase - capacity");
+		_assert_equal(*f_it, *s_it, "test vector erase - iterator");
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
@@ -339,4 +440,5 @@ int	main(void){
 	test_vector_clear();
 	test_vector_assign();
 	test_vector_insert();
+	test_vector_erase();
 }

@@ -248,7 +248,7 @@ namespace ft {
 			}
 
 			/**
-			 * Erase elements
+			 * Erase elements (position)
 			 * 
 			 * Removes from the vector either a single element (position) or a range of elements ([first,last)).
 			 * 
@@ -260,13 +260,44 @@ namespace ft {
 			 * the same operation by other kinds of sequence containers (such as list or forward_list).
 			 * 
 			 */
-			// iterator erase(iterator position){
+			iterator erase(iterator position){
+				ptrdiff_t distance = get_distance(position);
 				
-			// }
+				if ( m_size != 0 ){
+					size_type index = distance;
+					for ( ; index < m_size - 1 ; index++ ){
+						m_items[index] = m_items[index + 1];
+					}
+					m_alloc.destroy( &m_items[index] );
+					m_size--;
+				}
+				return ( &m_items[distance] );
+			}
 
-			// iterator erase(iterator first, iterator last){
+			/**
+			 * Erase elements (range)
+			 * 
+			 */
+			iterator erase(iterator first, iterator last){
+				/**
+				 * REFACTOR: Refactor this function, because it is unreadable.
+				 * 
+				 */
+				size_type begin_index = get_distance(first);
+				size_type end_index = get_distance(last);
+				size_type offset = (m_size < end_index) ? 0 : m_size - end_index;
+				size_type index;
 
-			// }
+				m_size = m_size - (end_index - begin_index);
+				for ( index = 0 ; index < offset ; index++ ){
+					m_alloc.destroy( &m_items[begin_index + index] );
+					m_items[begin_index + index] = m_items[end_index + index];
+				}
+				for ( ; index < m_size ; index++ ){
+					m_alloc.destroy( &m_items[begin_index + index] );
+				}
+				return ( iterator( &m_items[begin_index] ) );
+			}
 
 			/**
 			 * Insert elements ( single element )
@@ -327,22 +358,8 @@ namespace ft {
 				 * 
 				 */
 				iterator it = position;
-				ptrdiff_t distance;
-				size_type alloc_size;
-
-				if ( m_capacity == 0 ){
-					distance = 0;
-				} else {
-					distance = position - begin();
-				}
-
-				if ( (m_size + n) <= m_capacity ){
-					alloc_size = m_capacity;
-				} else if ( (m_capacity + n) > (m_capacity * GROWTH_FACTOR) ){
-					alloc_size = m_capacity + n;
-				} else {
-					alloc_size = m_capacity * GROWTH_FACTOR;
-				}
+				ptrdiff_t distance = get_distance(position);
+				size_type alloc_size = get_alloc_size(n);
 
 				reserve( alloc_size );
 				
@@ -355,24 +372,10 @@ namespace ft {
 
 			template<class InputIterator>
 			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::iterator_traits<InputIterator>::value, InputIterator>::type = NULL ){
-				ptrdiff_t distance;
+				ptrdiff_t distance = get_distance(position);
 				ptrdiff_t n = last - first;
 				iterator it;
-				size_type alloc_size;
-
-				if ( m_capacity == 0 ){
-					distance = 0;
-				} else {
-					distance = position - begin();
-				}
-
-				if ( (m_size + n) <= m_capacity ){
-					alloc_size = m_capacity;
-				} else if ( (m_capacity + n) > (m_capacity * GROWTH_FACTOR) ){
-					alloc_size = m_capacity + n;
-				} else {
-					alloc_size = m_capacity * GROWTH_FACTOR;
-				}
+				size_type alloc_size = get_alloc_size(n);
 
 				reserve( alloc_size );
 
@@ -447,6 +450,42 @@ namespace ft {
 			 */
 			allocator_type get_allocator() const {
 				return m_alloc;
+			}
+
+		private:
+			/**
+			 * Get distance
+			 * 
+			 * Get the distance begin() and position iterator.
+			 * 
+			 */
+			ptrdiff_t get_distance(iterator position){
+				return (m_capacity == 0) ? 0 : position - begin();
+			}
+
+			/**
+			 * Get allocation size
+			 * 
+			 * Get the allocation size, if `n` plus the current size is
+			 * less than the current capacity, get_alloc_size returns
+			 * capacity.
+			 * 
+			 * If the current capacity + `n` is greater than the capacity
+			 * multiplied by the growth factor, then current capacity + `n`
+			 * is returned.
+			 * 
+			 * Otherwise, get_alloc_size returns the current capacity multiplied
+			 * by the growth factor.
+			 * 
+			 */
+			size_type get_alloc_size(size_type n){
+				if ( (m_size + n) <= m_capacity ){
+					return m_capacity;
+				} else if ( (m_capacity + n) > (m_capacity * GROWTH_FACTOR) ){
+					return m_capacity + n;
+				} else {
+					return m_capacity * GROWTH_FACTOR;
+				}	
 			}
 	};
 }
