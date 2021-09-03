@@ -326,22 +326,6 @@ void test_vector_insert(){
 	}
 }
 
-/**
- * COMMIT:
- * 		Vector :
- * 			- refactor insert overloads member functions
- * 				- get_distance()
- * 				- get_alloc_size()
- * 			- Add get_distance private member function to compute the distance
- * 			with iterator.
- * 			- Add unit test for erase member function 
- * 			- erase(iterator position) member function
- * 		
- * 		Unit Test :
- * 			- Macro for _assert_each_equal
- * 
- */
-
 void test_vector_erase(){
 	typedef std::vector<int>::iterator std_iterator;
 	typedef ft::vector<int>::iterator ft_iterator;
@@ -431,6 +415,20 @@ void test_vector_erase(){
 	}
 }
 
+void test_vector_access(){
+	ft::vector<int>		f_vec;
+	std::vector<int>	s_vec;
+
+	for ( int i = 0 ; i < 5 ; i++ ){
+		f_vec.push_back(i);
+		s_vec.push_back(i);
+	}
+
+	for ( int i = 0 ; i < 5 ; i++ ){
+		_assert_equal(f_vec[i], s_vec[i], "test vector operator[]");
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
@@ -441,4 +439,5 @@ int	main(void){
 	test_vector_assign();
 	test_vector_insert();
 	test_vector_erase();
+	test_vector_access();
 }

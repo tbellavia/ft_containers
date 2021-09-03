@@ -112,6 +112,28 @@ namespace ft {
 			}
 
 			/**
+			 * Access element
+			 * 
+			 * Returns a reference to the element at position n in the vector container.
+			 * 
+			 * A similar member function, vector::at, has the same behavior as this 
+			 * operator function, except that vector::at is bound-checked and signals 
+			 * if the requested position is out of range by throwing an out_of_range exception.
+			 * 
+			 * Portable programs should never call this function with an argument n 
+			 * that is out of range, since this causes undefined behavior.
+			 * 
+			 */
+			reference operator[](size_type n) {
+				return ( m_items[n] );
+			}
+
+			const_reference operator[](size_type n) const {
+				return ( m_items[n] );
+			}
+
+
+			/**
 			 * Request a change in capacity
 			 * 
 			 * Requests that the vector capacity be at least enough to contain n elements.
