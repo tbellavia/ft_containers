@@ -7,6 +7,8 @@
 # include <stdexcept>
 # include <stddef.h>
 # include <iostream>
+# include <string>
+# include <sstream>
 # include "traits/traits.hpp"
 # include "iterator.hpp"
 
@@ -130,6 +132,31 @@ namespace ft {
 
 			const_reference operator[](size_type n) const {
 				return ( m_items[n] );
+			}
+
+			/**
+			 * Access element
+			 * 
+			 * Returns a reference to the element at position n in the vector.
+			 * 
+			 * The function automatically checks whether n is within the bounds
+			 * of valid elements in the vector, throwing an out_of_range exception
+			 * if it is not (i.e., if n is greater than, or equal to, its size).
+			 * This is in contrast with member operator[], that does not check against bounds.
+			 * 
+			 */
+			reference at(size_type n){
+				if ( n >= m_size ){
+					throw_range_exception(n);
+				}
+				return ( m_items[ n ] );
+			}
+
+			const_reference at(size_type n) const {
+				if ( n >= m_size ){
+					throw_range_exception(n);
+				}
+				return ( m_items[ n ] );
 			}
 
 
@@ -475,6 +502,13 @@ namespace ft {
 			}
 
 		private:
+			void throw_range_exception(size_type n) {
+				std::stringstream s;
+				
+				s << "n (which is " << n << ") >= this->size() (which is " << m_size << ")";
+				throw std::out_of_range(s.str());
+			}
+
 			/**
 			 * Get distance
 			 * 

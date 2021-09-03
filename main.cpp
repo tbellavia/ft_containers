@@ -429,6 +429,26 @@ void test_vector_access(){
 	}
 }
 
+void test_vector_at(){
+	ft::vector<int>		f_vec;
+	std::vector<int>	s_vec;
+
+	for ( int i = 0 ; i < 5 ; i++ ){
+		f_vec.push_back(i);
+		s_vec.push_back(i);
+	}
+
+	for ( int i = 0 ; i < 5 ; i++ ){
+		_assert_equal(f_vec.at(i), s_vec.at(i), "test vector at - items");
+	}
+	try {
+		f_vec.at(f_vec.size());
+		_report_failure("at() does not throw any exception", "test vector at");
+	} catch ( std::out_of_range &e ){
+		_report_success("test vector at - exception");
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
@@ -440,4 +460,5 @@ int	main(void){
 	test_vector_insert();
 	test_vector_erase();
 	test_vector_access();
+	test_vector_at();
 }
