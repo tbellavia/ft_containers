@@ -21,7 +21,6 @@ namespace ft {
 	template<class T, class Allocator = std::allocator<T> >
 	class vector {
 		public:
-
 			typedef std::size_t									size_type;
 			typedef std::ptrdiff_t								difference_type;
 			typedef T											value_type;
@@ -32,6 +31,8 @@ namespace ft {
 			typedef typename allocator_type::const_pointer		const_pointer;
 			typedef ft::random_access_iterator<T>				iterator;
 			typedef ft::random_access_iterator<const T>			const_iterator;
+			typedef ft::reverse_iterator<T>						reverse_iterator;
+			typedef ft::reverse_iterator<const T>				const_reverse_iterator;
 		private:
 			const static size_type	GROWTH_FACTOR = 2;
 			Allocator				m_alloc;
@@ -512,6 +513,22 @@ namespace ft {
 			}
 
 			/**
+			 * Return reverse iterator to reverse beginning
+			 * Returns a reverse iterator pointing to the last element in the vector (i.e., its reverse beginning).
+			 * Reverse iterators iterate backwards: increasing them moves them towards the beginning of the container.
+			 * rbegin points to the element right before the one that would be pointed to by member end.
+			 * Notice that unlike member vector::back, which returns a reference to this same element, this function returns a reverse random access iterator.
+			 */
+			reverse_iterator rbegin() {
+				return reverse_iterator( this->end() - 1 );
+			}
+
+			const_reverse_iterator rbegin() const {
+				return const_reverse_iterator( this->end() - 1 );
+			}
+
+
+			/**
 			 * Return iterator to end
 			 * 
 			 * Returns an iterator referring to the past-the-end element in the vector container.
@@ -531,6 +548,14 @@ namespace ft {
 
 			const_iterator end() const {
 				return const_iterator( &m_items[m_size] );
+			}
+
+			reverse_iterator rend() {
+				return reverse_iterator( this->begin() - 1 );
+			}
+
+			const_reverse_iterator rend() const {
+				return const_reverse_iterator( this->begin() - 1 );
 			}
 
 			/**
@@ -589,4 +614,4 @@ namespace ft {
 }
 
 
-#endif /* VECTOR_HPP */
+#endif

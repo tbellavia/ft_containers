@@ -458,6 +458,25 @@ void test_vector_at(){
 	}
 }
 
+void test_vector_reverse_iterator() {
+	ft::vector<int>::reverse_iterator ft_cit;
+	std::vector<int>::reverse_iterator std_cit;
+	ft::vector<int> ft_vec;
+
+	ft::vector<int>		f_vec;
+	std::vector<int>	s_vec;
+
+	for ( int i = 0 ; i < 50 ; i++ ){
+		f_vec.push_back(i);
+		s_vec.push_back(i);
+	}
+
+	// _assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse iterator");
+	for ( ft_cit = f_vec.rbegin() ; ft_cit != f_vec.rend() ; ft_cit++ ){
+		std::cout << *ft_cit << std::endl;
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
@@ -470,4 +489,5 @@ int	main(void){
 	test_vector_erase();
 	test_vector_access();
 	test_vector_at();
+	test_vector_reverse_iterator();
 }
