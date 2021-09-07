@@ -464,24 +464,31 @@ void test_vector_at(){
 	}
 }
 
-// void test_vector_reverse_iterator() {
-// 	ft::vector<int>::reverse_iterator ft_cit;
-// 	std::vector<int>::reverse_iterator std_cit;
-// 	ft::vector<int> ft_vec;
+void test_vector_reverse_iterator() {
+	{
+		ft::vector<int>		f_vec;
+		std::vector<int>	s_vec;
 
-// 	ft::vector<int>		f_vec;
-// 	std::vector<int>	s_vec;
+		for ( int i = 0 ; i < 50 ; i++ ){
+			f_vec.push_back(i);
+			s_vec.push_back(i);
+		}
+		_assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse iterator - items");
 
-// 	for ( int i = 0 ; i < 50 ; i++ ){
-// 		f_vec.push_back(i);
-// 		s_vec.push_back(i);
-// 	}
+		ft::vector<int>::const_reverse_iterator f_crit_begin = f_vec.rbegin();
+		ft::vector<int>::const_reverse_iterator f_crit_end = f_vec.rend();
+		std::vector<int>::const_reverse_iterator s_crit_begin = s_vec.rbegin();
+		std::vector<int>::const_reverse_iterator s_crit_end = s_vec.rend();
 
-// 	// _assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse iterator");
-// 	for ( ft_cit = f_vec.rbegin() ; ft_cit != f_vec.rend() ; ft_cit++ ){
-// 		std::cout << *ft_cit << std::endl;
-// 	}
-// }
+		_assert_each_equal(f_crit_begin, f_crit_end, s_crit_begin, s_crit_end, "test const reverse iterator - items");
+	}
+	{
+		ft::vector<int>		f_vec;
+		std::vector<int>	s_vec;
+
+		_assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse vector - empty vector");
+	}
+}
 
 int	main(void){
 	test_vector_max_size();
@@ -495,5 +502,5 @@ int	main(void){
 	test_vector_erase();
 	test_vector_access();
 	test_vector_at();
-	// test_vector_reverse_iterator();
+	test_vector_reverse_iterator();
 }

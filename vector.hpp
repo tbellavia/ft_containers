@@ -10,11 +10,11 @@
 # include <string>
 # include <sstream>
 # include "traits/traits.hpp"
-# include "iterator.hpp"
+# include "traits/iterator.hpp"
 
 namespace ft {
 	/**
-	 * The documentation of this vector implementation comes from
+	 * The documentation of this vector implementation comes fromE
 	 * https://www.cplusplus.com/reference/vector/vector/?kw=vector
 	 * 
 	 */
@@ -32,7 +32,7 @@ namespace ft {
 			typedef ft::random_access_iterator<T>				iterator;
 			typedef ft::const_random_access_iterator<T>			const_iterator;
 			typedef ft::reverse_iterator<T>						reverse_iterator;
-			typedef ft::reverse_iterator<const T>				const_reverse_iterator;
+			typedef ft::const_reverse_iterator<T>				const_reverse_iterator;
 		private:
 			const static size_type	GROWTH_FACTOR = 2;
 			Allocator				m_alloc;
@@ -519,13 +519,13 @@ namespace ft {
 			 * rbegin points to the element right before the one that would be pointed to by member end.
 			 * Notice that unlike member vector::back, which returns a reference to this same element, this function returns a reverse random access iterator.
 			 */
-			// reverse_iterator rbegin() {
-			// 	return reverse_iterator( this->end() - 1 );
-			// }
+			reverse_iterator rbegin() {
+				return reverse_iterator( this->end() - 1 );
+			}
 
-			// const_reverse_iterator rbegin() const {
-			// 	return const_reverse_iterator( this->end() - 1 );
-			// }
+			const_reverse_iterator rbegin() const {
+				return const_reverse_iterator( this->end() - 1 );
+			}
 
 
 			/**
@@ -550,13 +550,13 @@ namespace ft {
 				return const_iterator( &m_items[m_size] );
 			}
 
-			// reverse_iterator rend() {
-			// 	return reverse_iterator( this->begin() - 1 );
-			// }
+			reverse_iterator rend() {
+				return reverse_iterator( this->begin() - 1 );
+			}
 
-			// const_reverse_iterator rend() const {
-			// 	return const_reverse_iterator( this->begin() - 1 );
-			// }
+			const_reverse_iterator rend() const {
+				return const_reverse_iterator( this->begin() - 1 );
+			}
 
 			/**
 			 * Get allocator
