@@ -3,6 +3,68 @@
 
 namespace ft {
 	template<class T>
+	class random_access_iterator;
+
+	template<class T>
+	class const_random_access_iterator {
+		public:
+			typedef std::random_access_iterator_tag iterator_category;
+			typedef std::size_t						size_type;
+			typedef std::ptrdiff_t					difference_type;
+			typedef T								value_type;
+			typedef T*								pointer;
+			typedef T&								reference;
+			typedef const T&						const_reference;
+
+			/* Constructors */
+			const_random_access_iterator() : m_ptr( NULL ) { }
+			const_random_access_iterator(pointer p) : m_ptr( p ) { }
+			const_random_access_iterator(const_random_access_iterator const &it) : m_ptr( it.m_ptr ) { }
+			const_random_access_iterator(random_access_iterator<T> const &it) : m_ptr( it.operator->() ) { }
+			const_random_access_iterator &operator=(const_random_access_iterator const &it) {
+				if ( &it == this )
+					return *this;
+				m_ptr = it.m_ptr;
+				return *this;
+			}
+			~const_random_access_iterator() {}
+
+			/* Accesses operators */
+			const_reference operator*() const { return *m_ptr; }
+			pointer operator->() { return m_ptr; }
+			pointer operator->() const { return m_ptr; }
+			const_reference operator[](difference_type offset) const { return m_ptr[offset]; }
+
+			/* Increment / Decrement */
+			const_random_access_iterator &operator++() { m_ptr++; return *this; };
+			const_random_access_iterator operator++(int) { const_random_access_iterator tmp = *this; ++(*this); return tmp; }
+			const_random_access_iterator &operator--() { m_ptr--; return *this; }
+			const_random_access_iterator operator--(int) { const_random_access_iterator tmp = *this; --(*this); return tmp; }
+
+			/* Arithmetic */
+			const_random_access_iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
+			const_random_access_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
+			
+			const_random_access_iterator operator+(difference_type offset) { return const_random_access_iterator( m_ptr + offset ); }
+			friend const_random_access_iterator operator+(difference_type offset, const const_random_access_iterator &it) { return const_random_access_iterator( it.m_ptr + offset ); }
+
+			const_random_access_iterator operator-(difference_type offset) { return const_random_access_iterator( m_ptr - offset ); }
+			friend const_random_access_iterator operator-(difference_type offset, const const_random_access_iterator &it) { return const_random_access_iterator( it.m_ptr - offset ); }
+			difference_type operator-(const_random_access_iterator other) { return m_ptr - other.m_ptr; }
+
+
+			/* Comparison operators */
+			bool operator<(const_random_access_iterator const &it) const { return m_ptr < it.m_ptr; }
+			bool operator>(const_random_access_iterator const &it) const { return m_ptr > it.m_ptr; }
+			bool operator>=(const_random_access_iterator const &it) const { return m_ptr >= it.m_ptr; }
+			bool operator<=(const_random_access_iterator const &it) const { return m_ptr <= it.m_ptr; }
+			bool operator!=(const_random_access_iterator const &it) const { return m_ptr != it.m_ptr; }
+			bool operator==(const_random_access_iterator const &it) const { return m_ptr == it.m_ptr; }
+		private:
+			pointer m_ptr;
+	};
+
+	template<class T>
 	class random_access_iterator {
 		public:
 			typedef std::random_access_iterator_tag iterator_category;
@@ -27,6 +89,7 @@ namespace ft {
 			/* Accesses operators */
 			reference operator*() const { return *m_ptr; }
 			pointer operator->() { return m_ptr; }
+			pointer operator->() const { return m_ptr; }
 			reference operator[](difference_type offset) const { return m_ptr[offset]; }
 
 			/* Increment / Decrement */
@@ -122,6 +185,9 @@ namespace ft {
 	 * Iterator traits specialisation for random_access_iterator
 	 * 
 	 */
+	template<typename T>
+	struct ft::iterator_traits<const_random_access_iterator<T> > : ft::true_type {};
+
 	template<typename T>
 	struct ft::iterator_traits<random_access_iterator<T> > : ft::true_type {};
 

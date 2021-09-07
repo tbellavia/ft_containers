@@ -98,8 +98,6 @@ void test_vector_resize(){
 }
 
 void test_vector_iterator(){
-	std::vector<int>::iterator std_it;
-	ft::vector<int>::iterator ft_it;
 	std::vector<int>	s_vec;
 	ft::vector<int>		f_vec;
 
@@ -110,6 +108,14 @@ void test_vector_iterator(){
 	}
 
 	_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector iterator");
+	{
+		std::vector<int>::const_iterator s_cit_begin = s_vec.begin();
+		std::vector<int>::const_iterator s_cit_end = s_vec.end();
+		ft::vector<int>::const_iterator f_cit_begin = f_vec.begin();
+		ft::vector<int>::const_iterator f_cit_end = f_vec.end();
+
+		_assert_each_equal(f_cit_begin, f_cit_end, s_cit_begin, s_cit_end, "test vector const iterator");
+	}
 }
 
 void test_vector_pop_back(){
@@ -458,24 +464,24 @@ void test_vector_at(){
 	}
 }
 
-void test_vector_reverse_iterator() {
-	ft::vector<int>::reverse_iterator ft_cit;
-	std::vector<int>::reverse_iterator std_cit;
-	ft::vector<int> ft_vec;
+// void test_vector_reverse_iterator() {
+// 	ft::vector<int>::reverse_iterator ft_cit;
+// 	std::vector<int>::reverse_iterator std_cit;
+// 	ft::vector<int> ft_vec;
 
-	ft::vector<int>		f_vec;
-	std::vector<int>	s_vec;
+// 	ft::vector<int>		f_vec;
+// 	std::vector<int>	s_vec;
 
-	for ( int i = 0 ; i < 50 ; i++ ){
-		f_vec.push_back(i);
-		s_vec.push_back(i);
-	}
+// 	for ( int i = 0 ; i < 50 ; i++ ){
+// 		f_vec.push_back(i);
+// 		s_vec.push_back(i);
+// 	}
 
-	// _assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse iterator");
-	for ( ft_cit = f_vec.rbegin() ; ft_cit != f_vec.rend() ; ft_cit++ ){
-		std::cout << *ft_cit << std::endl;
-	}
-}
+// 	// _assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse iterator");
+// 	for ( ft_cit = f_vec.rbegin() ; ft_cit != f_vec.rend() ; ft_cit++ ){
+// 		std::cout << *ft_cit << std::endl;
+// 	}
+// }
 
 int	main(void){
 	test_vector_max_size();
@@ -489,5 +495,5 @@ int	main(void){
 	test_vector_erase();
 	test_vector_access();
 	test_vector_at();
-	test_vector_reverse_iterator();
+	// test_vector_reverse_iterator();
 }
