@@ -490,6 +490,79 @@ void test_vector_reverse_iterator() {
 	}
 }
 
+void test_vector_fill_constructor() {
+	{
+		ft::vector<int> f_vec(10, 42);
+		std::vector<int> s_vec(10, 42);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector fill constructor - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector fill constructor - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector fill constructor - capacity");
+	}
+}
+
+void test_vector_range_constructor(){
+	int array[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	{
+		ft::vector<int> f_vec(array, array + 10);
+		std::vector<int> s_vec(array, array + 10);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector range constructor - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector range constructor - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector range constructor - capacity");
+	}
+	{
+		ft::vector<int> f_vec(array, array + 5);
+		std::vector<int> s_vec(array, array + 5);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector range constructor - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector range constructor - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector range constructor - capacity");
+	}
+	{
+		ft::vector<int> f_vec(array, array);
+		std::vector<int> s_vec(array, array);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector range constructor - items");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector range constructor - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector range constructor - capacity");
+	}
+}
+
+void test_vector_copy_constructor(){
+
+	{
+		ft::vector<int>		f_copy;
+		ft::vector<int>		f_vec(f_copy);
+		std::vector<int>	s_copy;
+		std::vector<int>	s_vec(s_copy);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector copy constructor - items");;
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector copy constructor - capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector copy constructor - size");
+	}
+	{
+		ft::vector<int>		f_copy(10, 42);
+		ft::vector<int>		f_vec(f_copy);
+		std::vector<int>	s_copy(10, 42);
+		std::vector<int>	s_vec(s_copy);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector copy constructor - items");;
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector copy constructor - capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector copy constructor - size");
+	}
+	{
+		ft::vector<int>		f_copy(100, 42);
+		ft::vector<int>		f_vec(f_copy);
+		std::vector<int>	s_copy(100, 42);
+		std::vector<int>	s_vec(s_copy);
+
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector copy constructor - items");;
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector copy constructor - capacity");
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector copy constructor - size");
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
@@ -503,4 +576,7 @@ int	main(void){
 	test_vector_access();
 	test_vector_at();
 	test_vector_reverse_iterator();
+	test_vector_fill_constructor();
+	test_vector_range_constructor();
+	test_vector_copy_constructor();
 }

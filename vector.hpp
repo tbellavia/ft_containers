@@ -40,11 +40,91 @@ namespace ft {
 			size_type				m_size;
 			T						*m_items;
 		public:
-			vector() :
+			/**
+			 * (1) empty container constructor (default constructor)
+			 * 
+			 * Constructs an empty container, with no elements.
+			 * 
+			 */
+			vector( const allocator_type &alloc = allocator_type() ) :
+				m_alloc( alloc ),
 				m_capacity( 0 ), 
 				m_size( 0 ),
 				m_items( 0 ) {}
+			
+			/**
+			 * (2) fill constructor
+			 * 
+			 * Constructs a container with n elements. 
+			 * Each element is a copy of val.
+			 * 
+			 */
+			vector( size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type() ) {
+				m_alloc = alloc;
+				m_items = m_alloc.allocate( n );
+				m_size = n;
+				m_capacity = n;
 
+				for ( size_type index = 0 ; index < n ; index++ ){
+					m_alloc.construct( &m_items[index], val );
+				}
+			}
+
+			/**
+			 * (3) range constructor
+			 * 
+			 * Constructs a container with as many elements as the range [first,last), 
+			 * with each element constructed from its corresponding element in that range, in the same order.
+			 * 
+			 */
+			template<class InputIterator>
+			vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<iterator_traits<InputIterator>::value, InputIterator>::type = NULL ) : 
+				m_alloc( alloc ),
+				m_items( NULL )
+			{
+				difference_type size = last - first;
+
+				if ( size != 0 ){
+					m_items = m_alloc.allocate( size );
+
+					for ( size_type index = 0 ; first != last ; first++, index++ ){
+						m_alloc.construct( &m_items[index], *first );
+					}
+				}
+				m_size = size;
+				m_capacity = size;
+			}
+
+			/**
+			 * (4) copy constructor
+			 * 
+			 * Constructs a container with a copy of each of the elements in x, in the same order.
+			 * 
+			 */
+			vector( const vector &other ) :
+				m_alloc( other.get_allocator() ),
+				m_capacity( other.capacity() ),
+				m_size( other.size() ),
+				m_items( NULL )
+			{
+				if ( m_capacity != 0 ){
+					m_items = m_alloc.allocate( m_capacity );
+
+					for ( size_type index = 0 ; index < m_size ; index++ ){
+						m_alloc.construct( &m_items[index], other.m_items[index] );
+					}
+				}
+			}
+
+			/**
+			 * Vector destructor
+			 * 
+			 * Destroys the container object.
+			 * 
+			 * This destroys all container elements, and deallocates all 
+			 * the storage capacity allocated by the vector using its allocator.
+			 * 
+			 */
 			~vector() {
 				if ( m_items != NULL ){
 					for ( size_type index = 0 ; index < m_size ; index++ ){
@@ -331,10 +411,10 @@ namespace ft {
 			 * and modifying its size accordingly. 
 			 * 
 			 */
-			template<class InpuIterator>
-			void assign( InpuIterator first, InpuIterator last, typename ft::enable_if<iterator_traits<InpuIterator>::value, InpuIterator>::type = NULL){
+			template<class InputIterator>
+			void assign( InputIterator first, InputIterator last, typename ft::enable_if<iterator_traits<InputIterator>::value, InputIterator>::type = NULL){
 				clear();
-				for ( InpuIterator it = first ; it != last ; it++ ){
+				for ( InputIterator it = first ; it != last ; it++ ){
 					push_back( *it );
 				}
 			}
