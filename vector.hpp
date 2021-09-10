@@ -46,7 +46,7 @@ namespace ft {
 			 * Constructs an empty container, with no elements.
 			 * 
 			 */
-			vector( const allocator_type &alloc = allocator_type() ) :
+			explicit vector( const allocator_type &alloc = allocator_type() ) :
 				m_alloc( alloc ),
 				m_capacity( 0 ), 
 				m_size( 0 ),
@@ -59,7 +59,7 @@ namespace ft {
 			 * Each element is a copy of val.
 			 * 
 			 */
-			vector( size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type() ) {
+			explicit vector( size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type() ) {
 				m_alloc = alloc;
 				m_items = m_alloc.allocate( n );
 				m_size = n;
@@ -555,6 +555,40 @@ namespace ft {
 				for ( ; first != last ; first++, it++ ){
 					it = this->insert( it, *first );
 				}
+			}
+
+			/**
+			 * 
+			 * Swap content
+			 * 
+			 * Exchanges the content of the container by the content of x, 
+			 * which is another vector object of the same type. Sizes may differ.
+			 * 
+			 * After the call to this member function, the elements in this container 
+			 * are those which were in x before the call, and the elements of x are those 
+			 * which were in this. All iterators, references and pointers remain valid for the swapped objects.
+			 * 
+			 * Notice that a non-member function exists with the same name, 
+			 * swap, overloading that algorithm with an optimization that behaves like this member function.
+			 * 
+			 */
+			void swap(vector &x){
+				Allocator	&tmp_alloc = x.m_alloc;
+				size_type	tmp_size = x.m_size;
+				size_type	tmp_capacity = x.m_capacity;
+				value_type	*tmp_items = x.m_items;
+
+
+				x.m_alloc = this->m_alloc;
+				x.m_size = this->m_size;
+				x.m_capacity = this->m_capacity;
+				x.m_items = this->m_items;
+
+
+				this->m_alloc = tmp_alloc;
+				this->m_size = tmp_size;
+				this->m_capacity = tmp_capacity;
+				this->m_items = tmp_items;
 			}
 
 

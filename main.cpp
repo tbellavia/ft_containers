@@ -530,7 +530,6 @@ void test_vector_range_constructor(){
 }
 
 void test_vector_copy_constructor(){
-
 	{
 		ft::vector<int>		f_copy;
 		ft::vector<int>		f_vec(f_copy);
@@ -547,7 +546,7 @@ void test_vector_copy_constructor(){
 		std::vector<int>	s_copy(10, 42);
 		std::vector<int>	s_vec(s_copy);
 
-		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector copy constructor - items");;
+		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector copy constructor - items");
 		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector copy constructor - capacity");
 		_assert_equal(f_vec.size(), s_vec.size(), "test vector copy constructor - size");
 	}
@@ -560,6 +559,85 @@ void test_vector_copy_constructor(){
 		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector copy constructor - items");;
 		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector copy constructor - capacity");
 		_assert_equal(f_vec.size(), s_vec.size(), "test vector copy constructor - size");
+	}
+}
+
+void test_vector_swap(){
+	{
+		// One empty, Two full
+		std::vector<int> s_one;
+		std::vector<int> s_two(10, 42);
+		ft::vector<int> f_one;
+		ft::vector<int> f_two(10, 42);
+
+		s_one.swap(s_two);
+		f_one.swap(f_two);
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector swap - size");
+		_assert_equal(f_two.size(), s_two.size(), "test vector swap - size");
+
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector swap - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector swap - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector swap - items");
+		TEST_EACH_EQUAL(f_two, s_two, "test vector swap - items");
+	}
+	{
+		// One full, Two empty
+		std::vector<int> s_one(10, 42);
+		std::vector<int> s_two;
+		ft::vector<int> f_one(10, 42);
+		ft::vector<int> f_two;
+
+		s_one.swap(s_two);
+		f_one.swap(f_two);
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector swap - size");
+		_assert_equal(f_two.size(), s_two.size(), "test vector swap - size");
+
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector swap - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector swap - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector swap - items");
+		TEST_EACH_EQUAL(f_two, s_two, "test vector swap - items");
+	}
+	{
+		// One full, Two full
+		std::vector<int> s_one(10, 42);
+		std::vector<int> s_two(42, 10);
+		ft::vector<int> f_one(10, 42);
+		ft::vector<int> f_two(42, 10);
+
+		s_one.swap(s_two);
+		f_one.swap(f_two);
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector swap - size");
+		_assert_equal(f_two.size(), s_two.size(), "test vector swap - size");
+
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector swap - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector swap - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector swap - items");
+		TEST_EACH_EQUAL(f_two, s_two, "test vector swap - items");
+	}
+	{
+		// One empty, Two empty
+		std::vector<int> s_one;
+		std::vector<int> s_two;
+		ft::vector<int> f_one;
+		ft::vector<int> f_two;
+
+		s_one.swap(s_two);
+		f_one.swap(f_two);
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector swap - size");
+		_assert_equal(f_two.size(), s_two.size(), "test vector swap - size");
+
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector swap - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector swap - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector swap - items");
+		TEST_EACH_EQUAL(f_two, s_two, "test vector swap - items");
 	}
 }
 
@@ -579,4 +657,5 @@ int	main(void){
 	test_vector_fill_constructor();
 	test_vector_range_constructor();
 	test_vector_copy_constructor();
+	test_vector_swap();
 }
