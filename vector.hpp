@@ -71,6 +71,27 @@ namespace ft {
 			}
 
 			/**
+			 * 
+			 * Assign content
+			 * 
+			 * Assigns new contents to the container, replacing its current contents,
+			 * and modifying its size accordingly.
+			 * 
+			 */
+			vector &operator=(const vector &x){
+				if ( &x == this ){
+					return *this;
+				}
+				this->clear();
+				this->reserve(x.capacity());
+				for ( size_type index = 0 ; index < x.size() ; index++ ){
+					m_alloc.construct( &m_items[index], x[index] );
+				}
+				m_size = x.size();
+				return *this;
+			}
+
+			/**
 			 * (3) range constructor
 			 * 
 			 * Constructs a container with as many elements as the range [first,last), 

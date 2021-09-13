@@ -641,6 +641,90 @@ void test_vector_swap(){
 	}
 }
 
+void test_vector_assignation_operator(){
+
+	// Empty, Full
+	{
+		std::vector<int> s_one;
+		std::vector<int> s_two(10, 42);
+
+		ft::vector<int> f_one;
+		ft::vector<int> f_two(10, 42);
+
+		f_one = f_two;
+		s_one = s_two;
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector assignment operator - capacity");
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.size(), s_two.size(), "test vector assignment operator - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector assignment operator - items");
+		TEST_EACH_EQUAL(f_one, f_two, "test vector assignment operator - items");
+	}
+
+	// Full, Empty
+	{
+		std::vector<int> s_one(10, 42);
+		std::vector<int> s_two;
+
+		ft::vector<int> f_one(10, 42);
+		ft::vector<int> f_two;
+
+		f_one = f_two;
+		s_one = s_two;
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector assignment operator - capacity");
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.size(), s_two.size(), "test vector assignment operator - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector assignment operator - items");
+		TEST_EACH_EQUAL(f_one, f_two, "test vector assignment operator - items");
+	}
+
+
+	// Full, Full
+	{
+		std::vector<int> s_one(10, 42);
+		std::vector<int> s_two(42, 10);
+
+		ft::vector<int> f_one(10, 42);
+		ft::vector<int> f_two(42, 10);
+
+		f_one = f_two;
+		s_one = s_two;
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector assignment operator - capacity");
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.size(), s_two.size(), "test vector assignment operator - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector assignment operator - items");
+		TEST_EACH_EQUAL(f_one, f_two, "test vector assignment operator - items");
+	}
+
+	// Empty, Empty
+	{
+		std::vector<int> s_one;
+		std::vector<int> s_two;
+
+		ft::vector<int> f_one;
+		ft::vector<int> f_two;
+
+		f_one = f_two;
+		s_one = s_two;
+		_assert_equal(f_one.capacity(), s_one.capacity(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.capacity(), s_two.capacity(), "test vector assignment operator - capacity");
+
+		_assert_equal(f_one.size(), s_one.size(), "test vector assignment operator - capacity");
+		_assert_equal(f_two.size(), s_two.size(), "test vector assignment operator - capacity");
+
+		TEST_EACH_EQUAL(f_one, s_one, "test vector assignment operator - items");
+		TEST_EACH_EQUAL(f_one, f_two, "test vector assignment operator - items");
+	}
+}
+
 int	main(void){
 	test_vector_max_size();
 	test_vector_capacity();
@@ -658,4 +742,5 @@ int	main(void){
 	test_vector_range_constructor();
 	test_vector_copy_constructor();
 	test_vector_swap();
+	test_vector_assignation_operator();
 }
