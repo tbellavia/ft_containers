@@ -1,7 +1,9 @@
-#include "vector.hpp"
-#include <vector>
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
+#include <stack>
+#include "vector.hpp"
+#include "stack.hpp"
 
 # define COLOR_OK "\033[1;32m"
 # define COLOR_FAIL "\033[1;31m"
@@ -725,13 +727,7 @@ void test_vector_assignation_operator(){
 	}
 }
 
-#include <stack>
-
-int	main(void){
-	std::stack<int> s;
-
-	s.top();
-	
+void test_vector() {
 	test_vector_max_size();
 	test_vector_capacity();
 	test_vector_resize();
@@ -749,4 +745,90 @@ int	main(void){
 	test_vector_copy_constructor();
 	test_vector_swap();
 	test_vector_assignation_operator();
+}
+
+/* Test stack */
+
+void test_stack_push() {
+	ft::stack<int> f_stack;
+	std::stack<int> s_stack;
+
+	for ( int i = 0 ; i < 5 ; i++ ){
+		f_stack.push(i);
+		s_stack.push(i);
+	}
+
+	_assert_equal(f_stack.size(), s_stack.size(), "test stack push - size");
+	_assert_equal(f_stack.top(), s_stack.top(), "test stack push - last item");
+
+	for ( int i = 0 ; i < 5 ; i++ ){
+		_assert_equal(f_stack.top(), s_stack.top(), "test stack push - items");
+		f_stack.pop();
+		s_stack.pop();
+	}
+}
+
+void test_stack_empty() {
+	ft::stack<int> f_stack;
+	std::stack<int> s_stack;
+
+	_assert_equal(f_stack.empty(), s_stack.empty(), "test vector empty");
+	_assert_equal(f_stack.size(), (std::size_t)0, "test vector empty - size");
+}
+
+void test_stack_size() {
+	ft::stack<int> f_stack;
+	std::stack<int> s_stack;
+
+	for ( int i = 0 ; i < 5 ; i++ ){
+		f_stack.push(i);
+		s_stack.push(i);
+		_assert_equal(f_stack.size(), s_stack.size(), "test stack size - size");
+	}
+	_assert_equal(f_stack.size(), s_stack.size(), "test stack size - size");
+	for ( int i = 0 ; i < 5 ; i++ ){
+		s_stack.pop();
+		f_stack.pop();
+		_assert_equal(f_stack.size(), s_stack.size(), "test stack size - size");
+	}
+}
+
+void test_stack_top() {
+	ft::stack<int> f_stack;
+	std::stack<int> s_stack;
+
+	for ( int i = 0 ; i < 10 ; i++ ){
+		s_stack.push(i);
+		f_stack.push(i);
+		_assert_equal(f_stack.top(), s_stack.top(), "test stack top");
+	}
+}
+
+void test_stack_pop() {
+	ft::stack<int> f_stack;
+	std::stack<int> s_stack;
+
+	for ( int i = 0 ; i < 10 ; i++ ){
+		s_stack.push(i);
+		f_stack.push(i);
+	}
+
+	while ( !f_stack.empty() ){
+		f_stack.pop();
+		s_stack.pop();
+	}
+	_assert_equal(f_stack.size(), s_stack.size(), "test stack pop");
+}
+
+void test_stack() {
+	test_stack_push();
+	test_stack_empty();
+	test_stack_size();
+	test_stack_top();
+	test_stack_pop();
+}
+
+int	main(void){
+	test_vector();
+	test_stack();
 }

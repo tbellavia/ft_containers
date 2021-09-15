@@ -7,7 +7,7 @@ namespace ft {
 	/**
 	 * Iterator traits
 	 * 
-	 * Iterator traits specialisation for random_access_iterator
+	 * Iterator traits specialization
 	 * 
 	 */
 	template<typename T>
