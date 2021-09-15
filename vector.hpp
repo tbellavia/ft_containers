@@ -14,7 +14,7 @@
 
 namespace ft {
 	/**
-	 * The documentation of this vector implementation comes fromE
+	 * The documentation of this vector implementation comes frome
 	 * https://www.cplusplus.com/reference/vector/vector/?kw=vector
 	 * 
 	 */

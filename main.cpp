@@ -725,7 +725,13 @@ void test_vector_assignation_operator(){
 	}
 }
 
+#include <stack>
+
 int	main(void){
+	std::stack<int> s;
+
+	s.top();
+	
 	test_vector_max_size();
 	test_vector_capacity();
 	test_vector_resize();
