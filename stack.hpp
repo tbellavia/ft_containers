@@ -116,6 +116,36 @@ namespace ft {
 				m_items.pop_back();
 			}
 	};
+
+	template<class T, class Container>
+	bool operator==(const stack<T, Container> &lhs, const stack<T, Container> &rhs){
+		return lhs.m_items == rhs.m_items;
+	}
+
+	template<class T, class Container>
+	bool operator!=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){
+		return lhs.m_items != rhs.m_items;
+	}
+
+	template<class T, class Container>
+	bool operator>(const stack<T, Container> &lhs, const stack<T, Container> &rhs){
+		return lhs.m_items > rhs.m_items;
+	}
+
+	template<class T, class Container>
+	bool operator>=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){
+		return lhs.m_items >= rhs.m_items;
+	}
+
+	template<class T, class Container>
+	bool operator<(const stack<T, Container> &lhs, const stack<T, Container> &rhs){
+		return lhs.m_items < rhs.m_items;
+	}
+
+	template<class T, class Container>
+	bool operator<=(const stack<T, Container> &lhs, const stack<T, Container> &rhs){
+		return lhs.m_items <= rhs.m_items;
+	}
 }
 
 #endif

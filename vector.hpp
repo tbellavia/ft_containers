@@ -746,6 +746,59 @@ namespace ft {
 				}	
 			}
 	};
+
+	template<class T, class Alloc>
+	void swap(vector<T, Alloc> &x, vector<T, Alloc> &y){
+		x.swap(y);
+	}
+
+	template<class T, class Alloc>
+	bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
+		// TODO: Implement it
+		(void)lhs;
+		(void)rhs;
+		return true;
+	}
+
+	template<class T, class Alloc>
+	bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
+		// TODO: Implement it
+		(void)lhs;
+		(void)rhs;
+		return true;
+	}
+
+	template<class T, class Alloc>
+	bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
+		// TODO: Implement it
+		(void)lhs;
+		(void)rhs;
+		return true;
+	}
+
+	template<class T, class Alloc>
+	bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
+		// TODO: Implement it
+		(void)lhs;
+		(void)rhs;
+		return true;
+	}
+
+	template<class T, class Alloc>
+	bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
+		// TODO: Implement it
+		(void)lhs;
+		(void)rhs;
+		return true;
+	}
+
+	template<class T, class Alloc>
+	bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
+		// TODO: Implement it
+		(void)lhs;
+		(void)rhs;
+		return true;
+	}
 }
 
 
