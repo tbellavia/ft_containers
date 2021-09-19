@@ -9,6 +9,7 @@
 # include <iostream>
 # include <string>
 # include <sstream>
+# include "algorithm/algorithm.hpp"
 # include "traits/traits.hpp"
 # include "traits/iterator.hpp"
 
@@ -753,51 +754,33 @@ namespace ft {
 	}
 
 	template<class T, class Alloc>
-	bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
-		// TODO: Implement it
-		(void)lhs;
-		(void)rhs;
-		return true;
+	bool operator==(const vector<T, Alloc> &x, const vector<T, Alloc> &y){
+		return x.size() == y.size() && ft::equal(x.begin(), x.end(),y.begin(), y.end());
 	}
 
 	template<class T, class Alloc>
-	bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
-		// TODO: Implement it
-		(void)lhs;
-		(void)rhs;
-		return true;
+	bool operator!=(const vector<T, Alloc> &x, const vector<T, Alloc> &y){
+		return !(x == y);
 	}
 
 	template<class T, class Alloc>
-	bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
-		// TODO: Implement it
-		(void)lhs;
-		(void)rhs;
-		return true;
+	bool operator<(const vector<T, Alloc> &x, const vector<T, Alloc> &y){
+		return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
 	}
 
 	template<class T, class Alloc>
-	bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
-		// TODO: Implement it
-		(void)lhs;
-		(void)rhs;
-		return true;
+	bool operator<=(const vector<T, Alloc> &x, const vector<T, Alloc> &y){
+		return !( y < x );
 	}
 
 	template<class T, class Alloc>
-	bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
-		// TODO: Implement it
-		(void)lhs;
-		(void)rhs;
-		return true;
+	bool operator>(const vector<T, Alloc> &x, const vector<T, Alloc> &y){
+		return y < x;
 	}
 
 	template<class T, class Alloc>
-	bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs){
-		// TODO: Implement it
-		(void)lhs;
-		(void)rhs;
-		return true;
+	bool operator>=(const vector<T, Alloc> &x, const vector<T, Alloc> &y){
+		return !( x < y );
 	}
 }
 
