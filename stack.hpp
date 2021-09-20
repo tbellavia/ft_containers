@@ -43,6 +43,8 @@ namespace ft {
 				m_items = s.m_items;
 				return *this;
 			}
+
+			virtual ~stack() { }
 			
 			/**
 			 * Return size
