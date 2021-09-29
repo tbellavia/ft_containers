@@ -4,6 +4,7 @@
 # include <functional>
 # include <memory>
 # include "utility/pair.hpp"
+# include "traits/iterator/map_iterator.hpp"
 
 namespace ft
 {
@@ -21,54 +22,162 @@ namespace ft
 			 */
 			struct rb_node;
 		public:
-			typedef Key										key_type;
-			typedef T										mapped_type;
-			typedef ft::pair<const key_type, mapped_type>	value_type;
-			typedef Compare									key_compare;
+			typedef Key											key_type;
+			typedef T											mapped_type;
+			typedef ft::pair<const key_type, mapped_type>		value_type;
+			typedef Compare										key_compare;
 			// TODO: Add value_comp
 			// typedef value_compare							
-			typedef Alloc									allocator_type;
-			typedef allocator_type::reference				reference;
-			typedef allocator_type::const_reference			const_reference;
-			typedef allocator_type::pointer					pointer;
-			typedef allocator_type::const_pointer			const_pointer;
-			typedef std::ptrdiff_t							difference_type;
-			typedef std::size_t								size_type;
-
-
+			typedef Alloc										allocator_type;
+			typedef typename allocator_type::reference			reference;
+			typedef typename allocator_type::const_reference	const_reference;
+			typedef typename allocator_type::pointer			pointer;
+			typedef typename allocator_type::const_pointer		const_pointer;
+			typedef std::ptrdiff_t								difference_type;
+			typedef std::size_t									size_type;
+			typedef ft::map_::random_access_iterator<T>			iterator;
+			typedef ft::map_::const_random_access_iterator<T>	const_iterator;
+			typedef ft::map_::reverse_iterator<T>				reverse_iterator;
+			typedef ft::map_::const_reverse_iterator<T>			const_reverse_iterator;
 		/**
 		 * Private declarations.
 		 * 
 		 */
 		private:
 			rb_node					*m_root;
+			key_compare				m_comp;
 			allocator_type			m_alloc;
-			rb_node::allocator_type m_rb_alloc;
+			typename rb_node::allocator_type m_rb_alloc;
+
+		/**
+		 * Public member functions.
+		 * 
+		 */
+		public:
+			/**
+			 * Construct map
+			 * 
+			 * (1) empty container constructor (default constructor)
+			 * 
+			 * Constructs an empty container, with no elements.
+			 */
+			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
+				: m_root( nullptr ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ) { }
+			
+
+			/**
+			 * Insert elements
+			 * 
+			 * Extends the container by inserting new elements, effectively increasing the container 
+			 * size by the number of elements inserted.
+			 * 
+			 * Because element keys in a map are unique, the insertion operation checks whether each 
+			 * inserted element has a key equivalent to the one of an element already in the container, 
+			 * and if so, the element is not inserted, returning an iterator to this existing element 
+			 * (if the function returns a value).
+			 * 
+			 * For a similar container allowing for duplicate elements, see multimap.
+			 * 
+			 * An alternative way to insert elements in a map is by using member function map::operator[].
+			 * 
+			 * Internally, map containers keep all their elements sorted by their key following the criterion 
+			 * specified by its comparison object. The elements are always inserted in its respective position 
+			 * following this ordering.
+			 * 
+			 */
+			ft::pair<iterator, bool> insert(const value_type &val){
+				(void)val;
+			}
+
+
+			/**
+			 * Print the binary tree structure.
+			 * 
+			 * Debug purpose only.
+			 * 
+			 * TODO: Remove before push
+			 * 
+			 */
+			void debug_print_btree_structure(){
+				debug_print_btree_structure_(m_root, 0);
+			}
+
 
 		/**
 		 * Private implementations.
 		 * 
 		 */
 		private:
-			rb_node *create_node(){
+			void debug_print_btree_structure_(rb_node *current, int space){
+				if ( current != nullptr ){
+					space += 10;
+					debug_print_btree_structure_(current->right, space);
+					std::cout << std::endl;
+					for ( int _ = 0 ; _ < space ; _++ ){ std::cout << " "; }
+					std::cout << "( " << current->value << ", " << ((current->color == BLACK) ? "B" : "R") << " )" << std::endl;
+					debug_print_btree_structure_(current->left, space);
+				}
+			}
+
+			rb_node *create_node_(){
 				rb_node *node = m_rb_alloc.allocate( 1 );
 
 				m_rb_alloc.construct( node );
 				return node;
 			}
 
-			rb_node *create_node( const value_type &data ){
+			rb_node *create_node_( const value_type &data ){
 				rb_node *node = m_rb_alloc.allocate( 1 );
 
 				m_rb_alloc.construct( node, data );
 				return node;
 			}
 
-			rb_node *create_node( const value_type &data, rb_node *parent ){
+			rb_node *create_node_( const value_type &data, rb_node *parent ){
 				rb_node *node = m_rb_alloc.allocate( 1 );
 
 				m_rb_alloc.construct( node, data, parent );
 				return node;
+			}
+
+			void rotate_left_(rb_node *x){
+				rb_node *y = x->right;
+				x->right = y->left;
+
+				if ( y->left != nullptr ){
+					y->left->parent = x;
+				}
+				y->parent = x->parent;
+				if ( x->parent == nullptr ){
+					m_root = y;
+				}
+				else if ( x == x->parent->left ){
+					x->parent->left = y;
+				} else {
+					x->parent->right = y;
+				}
+				y->left = x;
+				x->parent = y;
+			}
+
+			void rotate_right_(rb_node *y){
+				rb_node *x = y->left;
+				y->left = x->right;
+
+				if ( x->right != nullptr ){
+					x->right->parent = y;
+				}
+				x->parent = y->parent;
+				if ( y->parent == nullptr ){
+					m_root = x;
+				}
+				else if ( y == y->parent->right ){
+					y->parent->right = x;
+				} else {
+					y->parent->left = x;
+				}
+				x->right = y;
+				y->parent = x;
 			}
 
 			enum rb_color { BLACK = 1, RED };
@@ -81,7 +190,7 @@ namespace ft
 				rb_node		*parent;
 				rb_node		*left;
 				rb_node		*right;
-				rb_color	color;
+				int			color;
 
 				/**
 				 * Default constructor

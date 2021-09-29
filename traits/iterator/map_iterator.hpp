@@ -1,8 +1,8 @@
-#ifndef _FT_VECTOR_ITERATOR_HPP_
-#define _FT_VECTOR_ITERATOR_HPP_
+#ifndef MAP_ITERATOR_HPP
+#define MAP_ITERATOR_HPP
 
 namespace ft {
-	namespace vector_ {
+    namespace map_ {
 		template<class T>
 		class random_access_iterator;
 
@@ -240,8 +240,9 @@ namespace ft {
 				bool operator==(const_reverse_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
 				pointer	m_ptr;
-		};
-	}
+		};       
+    }
 }
+
 
 #endif

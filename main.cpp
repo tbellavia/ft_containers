@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <vector>
 #include <stack>
+#include <map>
 #include "vector.hpp"
 #include "stack.hpp"
+#include "map.hpp"
 
 # define COLOR_OK "\033[1;32m"
 # define COLOR_FAIL "\033[1;31m"
@@ -826,6 +828,11 @@ void test_stack() {
 	test_stack_size();
 	test_stack_top();
 	test_stack_pop();
+}
+
+void test_map(){
+	ft::map<int, int> m;
+	std::map<int, int> m_s;
 }
 
 int	main(void){
