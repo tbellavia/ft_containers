@@ -833,9 +833,15 @@ void test_stack() {
 void test_map(){
 	ft::map<int, int> m;
 	std::map<int, int> m_s;
+
+	ft::pair<ft::map<int, int>::iterator, bool> ret;
+
+	ret = m.insert(ft::make_pair(1, 2));
+	std::cout << ret.second << std::endl;
 }
 
 int	main(void){
-	test_vector();
-	test_stack();
+	test_map();
+	// test_vector();
+	// test_stack();
 }

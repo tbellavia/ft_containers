@@ -45,6 +45,7 @@ namespace ft
 		 */
 		private:
 			rb_node					*m_root;
+			size_type				m_size;
 			key_compare				m_comp;
 			allocator_type			m_alloc;
 			typename rb_node::allocator_type m_rb_alloc;
@@ -62,7 +63,7 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( nullptr ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ) { }
+				: m_root( nullptr ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ) { }
 			
 
 			/**
@@ -86,7 +87,10 @@ namespace ft
 			 * 
 			 */
 			ft::pair<iterator, bool> insert(const value_type &val){
-				(void)val;
+				if ( m_root == nullptr ){
+					return ft::pair<iterator, bool>( m_root = this->create_node_(val), true );
+				}
+				return insert_recursive_(m_root, val);
 			}
 
 
@@ -116,6 +120,27 @@ namespace ft
 					for ( int _ = 0 ; _ < space ; _++ ){ std::cout << " "; }
 					std::cout << "( " << current->value << ", " << ((current->color == BLACK) ? "B" : "R") << " )" << std::endl;
 					debug_print_btree_structure_(current->left, space);
+				}
+			}
+
+			ft::pair<iterator, bool> insert_recursive_(rb_node *current, const value_type &val){
+				if ( current != nullptr ){
+					if ( val.first == current->data.first ){
+						return ft::pair<iterator, bool>( current, false );
+					}
+					if ( Compare( val, current->data ) ){
+						if ( current->left == NULL ){
+							return ft::pair<iterator, bool>( current->left = this->create_node_(val, current), true );
+						} else {
+							return insert_recursive_(current->left, val);
+						}
+					} else {
+						if ( current->right == NULL ){
+							return ft::pair<iterator, bool>( current->right = this->create_node_(val, current), true );
+						} else {
+							return insert_recursive_(current->right, val);
+						}
+					}
 				}
 			}
 
