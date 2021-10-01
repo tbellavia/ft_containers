@@ -35,10 +35,10 @@ namespace ft
 			typedef typename allocator_type::const_pointer		const_pointer;
 			typedef std::ptrdiff_t								difference_type;
 			typedef std::size_t									size_type;
-			typedef ft::map_::random_access_iterator<T>			iterator;
-			typedef ft::map_::const_random_access_iterator<T>	const_iterator;
-			typedef ft::map_::reverse_iterator<T>				reverse_iterator;
-			typedef ft::map_::const_reverse_iterator<T>			const_reverse_iterator;
+			typedef ft::map_::random_access_iterator<rb_node>			iterator;
+			typedef ft::map_::const_random_access_iterator<rb_node>	const_iterator;
+			typedef ft::map_::reverse_iterator<rb_node>				reverse_iterator;
+			typedef ft::map_::const_reverse_iterator<rb_node>			const_reverse_iterator;
 		/**
 		 * Private declarations.
 		 * 
@@ -88,7 +88,7 @@ namespace ft
 			 */
 			ft::pair<iterator, bool> insert(const value_type &val){
 				if ( m_root == nullptr ){
-					return ft::pair<iterator, bool>( m_root = this->create_node_(val), true );
+					return ft::pair<iterator, bool>( iterator( m_root = this->create_node_(val) ), true );
 				}
 				return insert_recursive_(m_root, val);
 			}
@@ -118,7 +118,7 @@ namespace ft
 					debug_print_btree_structure_(current->right, space);
 					std::cout << std::endl;
 					for ( int _ = 0 ; _ < space ; _++ ){ std::cout << " "; }
-					std::cout << "( " << current->value << ", " << ((current->color == BLACK) ? "B" : "R") << " )" << std::endl;
+					std::cout << "( " << current->data.first << " : " << current->data.second  << ", " << ((current->color == BLACK) ? "B" : "R") << " )" << std::endl;
 					debug_print_btree_structure_(current->left, space);
 				}
 			}
@@ -126,22 +126,23 @@ namespace ft
 			ft::pair<iterator, bool> insert_recursive_(rb_node *current, const value_type &val){
 				if ( current != nullptr ){
 					if ( val.first == current->data.first ){
-						return ft::pair<iterator, bool>( current, false );
+						return ft::pair<iterator, bool>( iterator( current ), false );
 					}
-					if ( Compare( val, current->data ) ){
+					if ( m_comp( val.first, current->data.first ) ){
 						if ( current->left == NULL ){
-							return ft::pair<iterator, bool>( current->left = this->create_node_(val, current), true );
+							return ft::pair<iterator, bool>( iterator( current->left = this->create_node_(val, current) ), true );
 						} else {
 							return insert_recursive_(current->left, val);
 						}
 					} else {
 						if ( current->right == NULL ){
-							return ft::pair<iterator, bool>( current->right = this->create_node_(val, current), true );
+							return ft::pair<iterator, bool>( iterator( current->right = this->create_node_(val, current) ), true );
 						} else {
 							return insert_recursive_(current->right, val);
 						}
 					}
 				}
+				return ft::pair<iterator, bool>( iterator( current ), false );
 			}
 
 			rb_node *create_node_(){
@@ -228,7 +229,7 @@ namespace ft
 				 * 
 				 */
 				rb_node() 
-					: data( value_type() ), parent( nullptr ), left( nullptr ), right( nullptr ), color( rb_color::RED ) { }
+					: data( value_type() ), parent( nullptr ), left( nullptr ), right( nullptr ), color( RED ) { }
 
 				/**
 				 * Data constructor
@@ -240,7 +241,7 @@ namespace ft
 				 * 
 				 */
 				rb_node( const value_type &__data )
-					: data( __data ), parent( nullptr ), left( nullptr ), right( nullptr ), color( rb_color::RED ) { }
+					: data( __data ), parent( nullptr ), left( nullptr ), right( nullptr ), color( RED ) { }
 
 				/**
 				 * Data-Parent constructor
@@ -253,7 +254,7 @@ namespace ft
 				 * 
 				 */
 				rb_node( const value_type &__data, rb_node *__parent )
-					: data( __data ), parent( __parent ), left( nullptr ), right( nullptr ), color( rb_color::RED ) { }
+					: data( __data ), parent( __parent ), left( nullptr ), right( nullptr ), color( RED ) { }
 
 				/**
 				 * Get the grand parent

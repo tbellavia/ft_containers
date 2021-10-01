@@ -831,13 +831,18 @@ void test_stack() {
 }
 
 void test_map(){
-	ft::map<int, int> m;
-	std::map<int, int> m_s;
+	ft::map<char, int> m;
 
-	ft::pair<ft::map<int, int>::iterator, bool> ret;
+	ft::pair<ft::map<char, int>::iterator, bool> ret;
 
-	ret = m.insert(ft::make_pair(1, 2));
-	std::cout << ret.second << std::endl;
+	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
+	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
+	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
+	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
+	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
+	ret = m.insert( ft::pair<char, int>( 't', 1 ) );
+	
+	m.debug_print_btree_structure();
 }
 
 int	main(void){
