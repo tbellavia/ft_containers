@@ -1,0 +1,6 @@
+[Wednesday 6 October]
+
+- Iterators :
+    - Changed definitions in map iterator to match its internal data definition
+    - Transformed random_access_iterator into bidirectional iterator
+        - Removed unecessary function members (Arithmetic)

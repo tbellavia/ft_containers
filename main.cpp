@@ -835,12 +835,13 @@ void test_map(){
 
 	ft::pair<ft::map<char, int>::iterator, bool> ret;
 
-	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
-	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
-	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
-	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
-	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
-	ret = m.insert( ft::pair<char, int>( 't', 1 ) );
+	// ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
+	// ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
+	// ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
+	// ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
+	// ret = m.insert( ft::pair<char, int>( 't', 0 ) );
+	// ret = m.insert( ft::pair<char, int>( 't', 1 ) );
+	m['b'] = 1;
 	
 	m.debug_print_btree_structure();
 }
