@@ -78,8 +78,6 @@ void test_vector_capacity() {
 }
 
 void test_vector_resize(){
-	std::vector<int>::iterator std_it;
-	ft::vector<int>::iterator ft_it;
 	std::vector<int>	s_vec;
 	ft::vector<int>		f_vec;
 
@@ -123,8 +121,6 @@ void test_vector_iterator(){
 }
 
 void test_vector_pop_back(){
-	std::vector<int>::iterator std_it;
-	ft::vector<int>::iterator ft_it;
 	std::vector<int>	s_vec;
 	ft::vector<int>		f_vec;
 
@@ -160,8 +156,6 @@ void test_vector_clear(){
 }
 
 void test_vector_assign(){
-	std::vector<int>::iterator std_it;
-	ft::vector<int>::iterator ft_it;
 	std::vector<int>	s_fill;
 	ft::vector<int>		f_fill;
 	int fill[] = {1, 2, 3, 4, 5, 6};
@@ -830,19 +824,20 @@ void test_stack() {
 	test_stack_pop();
 }
 
+/* Test map */
+
 void test_map(){
 	ft::map<char, int> m;
 
 	ft::pair<ft::map<char, int>::iterator, bool> ret;
 
-	// ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
-	// ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
-	// ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
-	// ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
-	// ret = m.insert( ft::pair<char, int>( 't', 0 ) );
-	// ret = m.insert( ft::pair<char, int>( 't', 1 ) );
-	m['b'] = 1;
-	
+	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
+	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
+	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
+	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
+	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
+	ret = m.insert( ft::pair<char, int>( 't', 1 ) );
+
 	m.debug_print_btree_structure();
 }
 

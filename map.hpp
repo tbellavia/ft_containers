@@ -91,39 +91,39 @@ namespace ft
 				 * Default constructor
 				 * 
 				 * Constructs a new empty node with default value_type() and all
-				 * pointers to nullptr.
+				 * pointers to NULL.
 				 * 
 				 * Color is always set to RED as it will always be inserted as a RED
 				 * node.
 				 * 
 				 */
 				rb_node() 
-					: data( value_type() ), parent( nullptr ), left( nullptr ), right( nullptr ), color( RED ) { }
+					: data( value_type() ), parent( NULL ), left( NULL ), right( NULL ), color( RED ) { }
 
 				/**
 				 * Data constructor
 				 * 
-				 * Constructs a new node with data and all pointers to nullptr.
+				 * Constructs a new node with data and all pointers to NULL.
 				 * 
 				 * Color is always set to RED as it will always be inserted as a RED
 				 * node.
 				 * 
 				 */
 				rb_node( const value_type &__data )
-					: data( __data ), parent( nullptr ), left( nullptr ), right( nullptr ), color( RED ) { }
+					: data( __data ), parent( NULL ), left( NULL ), right( NULL ), color( RED ) { }
 
 				/**
 				 * Data-Parent constructor
 				 * 
 				 * Constructs a new node with data and a parent, right and left 
-				 * pointers are set to nullptr.
+				 * pointers are set to NULL.
 				 * 
 				 * Color is always set to RED as it will always be inserted as a RED
 				 * node.
 				 * 
 				 */
 				rb_node( const value_type &__data, rb_node *__parent )
-					: data( __data ), parent( __parent ), left( nullptr ), right( nullptr ), color( RED ) { }
+					: data( __data ), parent( __parent ), left( NULL ), right( NULL ), color( RED ) { }
 
 				/**
 				 * Get the grand parent
@@ -132,8 +132,8 @@ namespace ft
 				 * 
 				 */
 				rb_node *grand_parent() {
-					if ( this->parent == nullptr )
-						return nullptr;
+					if ( this->parent == NULL )
+						return NULL;
 					return this->parent->parent;
 				}
 
@@ -146,8 +146,8 @@ namespace ft
 				rb_node *uncle() {
 					rb_node *gp = this->grand_parent();
 
-					if ( gp == nullptr )
-						return nullptr;
+					if ( gp == NULL )
+						return NULL;
 					return this->parent->sibling();
 				}
 
@@ -158,8 +158,8 @@ namespace ft
 				 * 
 				 */
 				rb_node *sibling() {
-					if ( this->parent == nullptr )
-						return nullptr;
+					if ( this->parent == NULL )
+						return NULL;
 					if ( this == this->parent->left )
 						return this->parent->right;
 					return this->parent->left;
@@ -191,7 +191,7 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( nullptr ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ) { }
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ) { }
 			
 
 			/**
@@ -215,7 +215,7 @@ namespace ft
 			 * 
 			 */
 			ft::pair<iterator, bool> insert(const value_type &val){
-				if ( m_root == nullptr ){
+				if ( m_root == NULL ){
 					m_size++;
 					return ft::pair<iterator, bool>( iterator( m_root = this->create_node_(val) ), true );
 				}
@@ -226,11 +226,51 @@ namespace ft
 			}
 
 			/**
+			 * Access element
 			 * 
+			 * If k matches the key of an element in the container, the function returns a reference to its mapped value.
+			 * If k does not match the key of any element in the container, the function inserts a new element with that
+			 * key and returns a reference to its mapped value. Notice that this always increases the container size by
+			 * one, even if no mapped value is assigned to the element (the element is constructed using its default constructor).
+			 * A similar member function, map::at, has the same behavior when an element with the key exists, 
+			 * but throws an exception when it does not.
 			 * 
 			 */
 			mapped_type& operator[](const key_type& k) {
 				return (*((this->insert(ft::make_pair(k,mapped_type()))).first)).second;
+			}
+
+			/**
+			 * Return iterator to beginnin
+			 * 
+			 * Returns an iterator referring to the first element in the map container
+			 * Because map containers keep their elements ordered at all times, begin points to the element that goes 
+			 * first following the container's sorting criterion
+			 * If the container is empty, the returned iterator value shall not be dereferenced.
+			 * 
+			 */
+			iterator begin(){
+				rb_node *current = m_root;
+
+				if ( m_root == NULL ){
+					return iterator( NULL );
+				}
+				while ( current->left != NULL ){
+					current = current->left;
+				}
+				return iterator( current );
+			}
+
+			const_iterator begin() const {
+				rb_node *current = m_root;
+
+				if ( m_root == NULL ){
+					return const_iterator( NULL );
+				}
+				while ( current->left != NULL ){
+					current = current->left;
+				}
+				return const_iterator( current );
 			}
 
 
@@ -253,7 +293,7 @@ namespace ft
 		 */
 		private:
 			void debug_print_btree_structure_(rb_node *current, int space){
-				if ( current != nullptr ){
+				if ( current != NULL ){
 					space += 10;
 					debug_print_btree_structure_(current->right, space);
 					std::cout << std::endl;
@@ -272,7 +312,7 @@ namespace ft
 			 * 
 			 */
 			ft::pair<iterator, bool> insert_recursive_(rb_node *current, const value_type &val){
-				if ( current != nullptr ){
+				if ( current != NULL ){
 					if ( val.first == current->data.first ){
 						return ft::pair<iterator, bool>( iterator( current ), false );
 					}
@@ -318,11 +358,11 @@ namespace ft
 				rb_node *y = x->right;
 				x->right = y->left;
 
-				if ( y->left != nullptr ){
+				if ( y->left != NULL ){
 					y->left->parent = x;
 				}
 				y->parent = x->parent;
-				if ( x->parent == nullptr ){
+				if ( x->parent == NULL ){
 					m_root = y;
 				}
 				else if ( x == x->parent->left ){
@@ -338,11 +378,11 @@ namespace ft
 				rb_node *x = y->left;
 				y->left = x->right;
 
-				if ( x->right != nullptr ){
+				if ( x->right != NULL ){
 					x->right->parent = y;
 				}
 				x->parent = y->parent;
-				if ( y->parent == nullptr ){
+				if ( y->parent == NULL ){
 					m_root = x;
 				}
 				else if ( y == y->parent->right ){
