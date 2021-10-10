@@ -172,11 +172,11 @@ namespace ft
 		 * Member variables
 		 */
 		private:
-			rb_node					*m_root;
-			size_type				m_size;
-			key_compare				m_comp;
-			allocator_type			m_alloc;
-			typename rb_node::allocator_type m_rb_alloc;
+			rb_node								*m_root;
+			size_type							m_size;
+			key_compare							m_comp;
+			allocator_type						m_alloc;
+			typename rb_node::allocator_type 	m_rb_alloc;
 
 		/**
 		 * Public member functions.
@@ -241,7 +241,7 @@ namespace ft
 			}
 
 			/**
-			 * Return iterator to beginnin
+			 * Return iterator to begining
 			 * 
 			 * Returns an iterator referring to the first element in the map container
 			 * Because map containers keep their elements ordered at all times, begin points to the element that goes 
@@ -261,6 +261,15 @@ namespace ft
 				return iterator( current );
 			}
 
+			/**
+			 * Return iterator to begining
+			 * 
+			 * Returns an iterator referring to the first element in the map container
+			 * Because map containers keep their elements ordered at all times, begin points to the element that goes 
+			 * first following the container's sorting criterion
+			 * If the container is empty, the returned iterator value shall not be dereferenced.
+			 * 
+			 */
 			const_iterator begin() const {
 				rb_node *current = m_root;
 
@@ -271,6 +280,15 @@ namespace ft
 					current = current->left;
 				}
 				return const_iterator( current );
+			}
+
+			/**
+			 * Get allocator
+			 * 
+			 * Returns a copy of the allocator object associated with the map.
+			 */
+			allocator_type get_allocator() const {
+				return m_alloc;
 			}
 
 
