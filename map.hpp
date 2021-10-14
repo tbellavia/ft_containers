@@ -241,6 +241,46 @@ namespace ft
 			}
 
 			/**
+			 * Get iterator to element
+			 * 
+			 * Searches the container for an element with a key equivalent to k and returns an iterator to it if found,
+			 * otherwise it returns an iterator to map::end.
+			 * 
+			 * Two keys are considered equivalent if the container's comparison object returns false reflexively 
+			 * (i.e., no matter the order in which the elements are passed as arguments).
+			 * Another member function, map::count, can be used to just check whether a particular key exists.
+			 */
+			iterator find(const key_type &k){
+				rb_node *current = m_root;
+
+				while ( current != NULL ){
+					if ( k == current->data.first ){
+						return iterator( current );
+					}
+					if ( m_comp(k, current->data.first) ){
+						current = current->left;
+					} else {
+						current = current->right;
+					}
+				}
+				return end();
+			}
+
+			/**
+			 * Get iterator to element
+			 * 
+			 * Searches the container for an element with a key equivalent to k and returns an iterator to it if found,
+			 * otherwise it returns an iterator to map::end.
+			 * 
+			 * Two keys are considered equivalent if the container's comparison object returns false reflexively 
+			 * (i.e., no matter the order in which the elements are passed as arguments).
+			 * Another member function, map::count, can be used to just check whether a particular key exists.
+			 */
+			const_iterator find(const key_type &k){
+
+			}
+
+			/**
 			 * Return iterator to begining
 			 * 
 			 * Returns an iterator referring to the first element in the map container
