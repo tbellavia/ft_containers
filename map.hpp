@@ -255,21 +255,13 @@ namespace ft
 			 * (i.e., no matter the order in which the elements are passed as arguments).
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
-			// iterator find(const key_type &k){
-			// 	rb_node *current = m_root;
+			iterator find(const key_type &k){
+				rb_node *found = find_(k);
 
-			// 	while ( current != NULL ){
-			// 		if ( k == current->data.first ){
-			// 			return iterator( current );
-			// 		}
-			// 		if ( m_comp(k, current->data.first) ){
-			// 			current = current->left;
-			// 		} else {
-			// 			current = current->right;
-			// 		}
-			// 	}
-			// 	return end();
-			// }
+				if ( found == NULL )
+					return end();
+				return iterator( found );
+			}
 
 			/**
 			 * Get iterator to element
@@ -281,9 +273,13 @@ namespace ft
 			 * (i.e., no matter the order in which the elements are passed as arguments).
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
-			// const_iterator find(const key_type &k){
+			const_iterator find(const key_type &k) const {
+				rb_node *found = find_(k);
 
-			// }
+				if ( found == NULL )
+					return end();
+				return const_iterator( found );
+			}
 
 			/**
 			 * Return iterator to begining
@@ -431,6 +427,22 @@ namespace ft
 						return insert_recursive_(current->right, val);
 					}
 				}
+			}
+
+			rb_node *find_(const key_type &k){
+				rb_node *current = m_root;
+
+				while ( current != NULL ){
+					if ( k == current->data.first ){
+						return current;
+					}
+					if ( m_comp(k, current->data.first) ){
+						current = current->left;
+					} else {
+						current = current->right;
+					}
+				}
+				return NULL;
 			}
 
 			rb_node *create_node_(){

@@ -828,6 +828,7 @@ void test_stack() {
 
 void test_map(){
 	typedef ft::map<char, int>::const_iterator const_map_it;
+	typedef ft::map<char, int>::iterator map_it;
 	ft::map<char, int> m;
 
 	ft::pair<ft::map<char, int>::iterator, bool> ret;
@@ -842,7 +843,14 @@ void test_map(){
 		std::cout << (*it).first << " : " << (*it).second << std::endl;
 	}
 
-	m.debug_print_btree_structure();
+	map_it it;
+	if ( (it = m.find('b')) != m.end() ){
+		std::cout << "Found : " << (*it).first << std::endl;
+	} else {
+		std::cout << "Not found!" << std::endl;
+	}
+
+	// m.debug_print_btree_structure();
 }
 
 int	main(void){
