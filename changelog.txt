@@ -4,3 +4,15 @@
     - Changed definitions in map iterator to match its internal data definition
     - Transformed random_access_iterator into bidirectional iterator
         - Removed unecessary function members (Arithmetic)
+
+[Saturday 16 October]
+
+- Iterators :
+	- Add increment_ private function member
+		(Will add decrement function next time)
+- Map :
+	- Add end
+	- Add sentinel node
+		- Add private function member create_sentinel_node
+		- Add private function member set_sentinel
+	- Refactor insert function member to add sentinel node to the rightmost node

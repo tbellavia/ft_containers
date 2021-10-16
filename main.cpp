@@ -834,13 +834,13 @@ void test_map(){
 
 	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
 	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
-
-	const_map_it insert_it = ret.first;
-	std::cout << "Insert : " << (*insert_it).first << std::endl;
-
 	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
 	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
 	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
+
+	for ( const_map_it it = m.begin() ; it != m.end() ; ++it ){
+		std::cout << (*it).first << " : " << (*it).second << std::endl;
+	}
 
 	m.debug_print_btree_structure();
 }

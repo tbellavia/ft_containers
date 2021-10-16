@@ -37,9 +37,7 @@ namespace ft {
 
 				/* Accesses operators */
 				data_const_reference operator*() const { return m_ptr->data; }
-				data_pointer operator->() { return m_ptr->data; }
-				data_pointer operator->() const { return m_ptr->data; }
-				data_const_reference operator[](difference_type offset) const { return m_ptr[offset]; }
+				data_const_pointer operator->() const { return m_ptr->data; }
 
 				/* Increment / Decrement */
 				const_bidirectional_iterator &operator++() {
@@ -64,6 +62,8 @@ namespace ft {
 				bool operator!=(const_bidirectional_iterator const &it) const { return m_ptr != it.m_ptr; }
 				bool operator==(const_bidirectional_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
+				pointer m_ptr;
+
 				void increment_(){
 					if ( m_ptr->right != NULL ){
 						m_ptr = m_ptr->right;
@@ -79,7 +79,6 @@ namespace ft {
 							m_ptr = y;
 					}
 				}
-				pointer m_ptr;
 		};
 
 		template<class T>
@@ -134,6 +133,22 @@ namespace ft {
 				bool operator==(bidirectional_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
 				pointer m_ptr;
+
+				void increment_(){
+					if ( m_ptr->right != NULL ){
+						m_ptr = m_ptr->right;
+						while ( m_ptr->left != NULL )
+							m_ptr = m_ptr->left;
+					} else {
+						pointer y = m_ptr->parent;
+						while ( m_ptr == y->right ){
+							m_ptr = y;
+							y = y->parent;
+						}
+						if ( m_ptr->right != y )
+							m_ptr = y;
+					}
+				}
 		};
 
 		template<typename T>

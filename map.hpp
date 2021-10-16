@@ -221,8 +221,7 @@ namespace ft
 				if ( m_root == NULL ){
 					m_size++;
 					m_root = this->create_node_(val);
-					// Add the sentinel node to the rightmost node
-					m_root->right = m_sentinel;
+					set_sentinel_(m_root);
 					return ft::pair<iterator, bool>( iterator( m_root ), true );
 				}
 				ret = insert_recursive_(m_root, val);
@@ -422,11 +421,12 @@ namespace ft
 						return insert_recursive_(current->left, val);
 					}
 				} else {
-					if ( current->right == NULL || current->color == SENTINEL ){
-						current->right = this->create_node_(val, current);
-						// Add the sentinel node to the rightmost node
-						current->right->right = m_sentinel;
-						return ft::pair<iterator, bool>( iterator( current->right ), true );
+					if ( current->right == NULL || is_sentinel_(current) ){
+						rb_node *node = this->create_node_(val, current->parent);
+
+						current->parent->right = node;
+						set_sentinel_(node);
+						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {
 						return insert_recursive_(current->right, val);
 					}
@@ -459,6 +459,15 @@ namespace ft
 
 				node->color = SENTINEL;
 				return node;
+			}
+
+			void set_sentinel_(rb_node *current){
+				current->right = m_sentinel;
+				m_sentinel->parent = current;
+			}
+
+			bool is_sentinel_(rb_node *node){
+				return node->color == SENTINEL;
 			}
 
 			void rotate_left_(rb_node *x){
@@ -504,4 +513,4 @@ namespace ft
 }
 
 
-#endif
+#endif /* MAP_HPP */
