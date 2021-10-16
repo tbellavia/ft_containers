@@ -69,7 +69,7 @@ namespace ft
 		 * 
 		 */
 		private:
-			enum rb_color { BLACK = 1, RED };
+			enum rb_color { BLACK = 1, RED, SENTINEL };
 			/**
 			 * Internal struct representing a binary tree node.
 			 * 
@@ -177,6 +177,7 @@ namespace ft
 			key_compare							m_comp;
 			allocator_type						m_alloc;
 			typename rb_node::allocator_type 	m_rb_alloc;
+			rb_node								*m_sentinel;
 
 		/**
 		 * Public member functions.
@@ -191,7 +192,7 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ) { }
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ), m_sentinel( create_sentinel_node_() ) { }
 			
 
 			/**
@@ -215,11 +216,16 @@ namespace ft
 			 * 
 			 */
 			ft::pair<iterator, bool> insert(const value_type &val){
+				ft::pair<iterator, bool> ret;
+
 				if ( m_root == NULL ){
 					m_size++;
-					return ft::pair<iterator, bool>( iterator( m_root = this->create_node_(val) ), true );
+					m_root = this->create_node_(val);
+					// Add the sentinel node to the rightmost node
+					m_root->right = m_sentinel;
+					return ft::pair<iterator, bool>( iterator( m_root ), true );
 				}
-				ft::pair<iterator, bool> ret = insert_recursive_(m_root, val);
+				ret = insert_recursive_(m_root, val);
 				if ( ret.second )
 					m_size++;
 				return ret;
@@ -323,6 +329,42 @@ namespace ft
 			}
 
 			/**
+			 * Return iterator to end
+			 * 
+			 * Returns an iterator referring to the past-the-end element in the map container.
+			 * 
+			 * The past-the-end element is the theoretical element that would follow the last 
+			 * element in the map container. It does not point to any element, and thus shall not be dereferenced.
+			 * 
+			 * Because the ranges used by functions of the standard library do not include the element pointed 
+			 * by their closing iterator, this function is often used in combination with map::begin to specify 
+			 * a range including all the elements in the container.
+			 * 
+			 * If the container is empty, this function returns the same as map::begin.
+			 */
+			iterator end() {
+				return iterator( m_sentinel );
+			}
+
+			/**
+			 * Return iterator to end
+			 * 
+			 * Returns an iterator referring to the past-the-end element in the map container.
+			 * 
+			 * The past-the-end element is the theoretical element that would follow the last 
+			 * element in the map container. It does not point to any element, and thus shall not be dereferenced.
+			 * 
+			 * Because the ranges used by functions of the standard library do not include the element pointed 
+			 * by their closing iterator, this function is often used in combination with map::begin to specify 
+			 * a range including all the elements in the container.
+			 * 
+			 * If the container is empty, this function returns the same as map::begin.
+			 */
+			const_iterator end() const {
+				return const_iterator( m_sentinel );
+			}
+
+			/**
 			 * Get allocator
 			 * 
 			 * Returns a copy of the allocator object associated with the map.
@@ -356,7 +398,7 @@ namespace ft
 					debug_print_btree_structure_(current->right, space);
 					std::cout << std::endl;
 					for ( int _ = 0 ; _ < space ; _++ ){ std::cout << " "; }
-					std::cout << "( " << current->data.first << " : " << current->data.second  << ", " << ((current->color == BLACK) ? "B" : "R") << " )" << std::endl;
+					std::cout << "( " << current->data.first << " : " << current->data.second  << ", " << (std::string[3]){ "B", "R", "S" }[current->color - 1] << " )" << std::endl;
 					debug_print_btree_structure_(current->left, space);
 				}
 			}
@@ -370,25 +412,25 @@ namespace ft
 			 * 
 			 */
 			ft::pair<iterator, bool> insert_recursive_(rb_node *current, const value_type &val){
-				if ( current != NULL ){
-					if ( val.first == current->data.first ){
-						return ft::pair<iterator, bool>( iterator( current ), false );
-					}
-					if ( m_comp( val.first, current->data.first ) ){
-						if ( current->left == NULL ){
-							return ft::pair<iterator, bool>( iterator( current->left = this->create_node_(val, current) ), true );
-						} else {
-							return insert_recursive_(current->left, val);
-						}
+				if ( val.first == current->data.first ){
+					return ft::pair<iterator, bool>( iterator( current ), false );
+				}
+				if ( m_comp( val.first, current->data.first ) ){
+					if ( current->left == NULL ){
+						return ft::pair<iterator, bool>( iterator( current->left = this->create_node_(val, current) ), true );
 					} else {
-						if ( current->right == NULL ){
-							return ft::pair<iterator, bool>( iterator( current->right = this->create_node_(val, current) ), true );
-						} else {
-							return insert_recursive_(current->right, val);
-						}
+						return insert_recursive_(current->left, val);
+					}
+				} else {
+					if ( current->right == NULL || current->color == SENTINEL ){
+						current->right = this->create_node_(val, current);
+						// Add the sentinel node to the rightmost node
+						current->right->right = m_sentinel;
+						return ft::pair<iterator, bool>( iterator( current->right ), true );
+					} else {
+						return insert_recursive_(current->right, val);
 					}
 				}
-				return ft::pair<iterator, bool>( iterator( current ), false );
 			}
 
 			rb_node *create_node_(){
@@ -409,6 +451,13 @@ namespace ft
 				rb_node *node = m_rb_alloc.allocate( 1 );
 
 				m_rb_alloc.construct( node, data, parent );
+				return node;
+			}
+
+			rb_node *create_sentinel_node_(){
+				rb_node *node = create_node_();
+
+				node->color = SENTINEL;
 				return node;
 			}
 

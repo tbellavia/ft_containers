@@ -842,25 +842,7 @@ void test_map(){
 	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
 	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
 
-	std::cout << (*insert_it).first << std::endl;
-	++insert_it;
-	std::cout << (*insert_it).first << std::endl;
-	++insert_it;
-	std::cout << (*insert_it).first << std::endl;
-
-	// const_map_it it = m.begin();
-
-	// std::cout << (*it).first << std::endl;
-	// ++it;
-	// std::cout << (*it).first << std::endl;
-	// ++it;
-	// std::cout << (*it).first << std::endl;
-	// ++it;
-	// std::cout << (*it).first << std::endl;
-	// ++it;
-	// std::cout << (*it).first << std::endl;
-
-	// m.debug_print_btree_structure();
+	m.debug_print_btree_structure();
 }
 
 int	main(void){
