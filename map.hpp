@@ -250,21 +250,21 @@ namespace ft
 			 * (i.e., no matter the order in which the elements are passed as arguments).
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
-			iterator find(const key_type &k){
-				rb_node *current = m_root;
+			// iterator find(const key_type &k){
+			// 	rb_node *current = m_root;
 
-				while ( current != NULL ){
-					if ( k == current->data.first ){
-						return iterator( current );
-					}
-					if ( m_comp(k, current->data.first) ){
-						current = current->left;
-					} else {
-						current = current->right;
-					}
-				}
-				return end();
-			}
+			// 	while ( current != NULL ){
+			// 		if ( k == current->data.first ){
+			// 			return iterator( current );
+			// 		}
+			// 		if ( m_comp(k, current->data.first) ){
+			// 			current = current->left;
+			// 		} else {
+			// 			current = current->right;
+			// 		}
+			// 	}
+			// 	return end();
+			// }
 
 			/**
 			 * Get iterator to element
@@ -276,9 +276,9 @@ namespace ft
 			 * (i.e., no matter the order in which the elements are passed as arguments).
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
-			const_iterator find(const key_type &k){
+			// const_iterator find(const key_type &k){
 
-			}
+			// }
 
 			/**
 			 * Return iterator to begining

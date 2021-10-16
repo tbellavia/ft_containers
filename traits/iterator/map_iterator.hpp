@@ -26,7 +26,7 @@ namespace ft {
 				const_bidirectional_iterator() : m_ptr( NULL ) { }
 				const_bidirectional_iterator(pointer p) : m_ptr( p ) { }
 				const_bidirectional_iterator(const_bidirectional_iterator const &it) : m_ptr( it.m_ptr ) { }
-				const_bidirectional_iterator(bidirectional_iterator<T> const &it) : m_ptr( it.operator->() ) { }
+				const_bidirectional_iterator(bidirectional_iterator<T> const &it) : m_ptr( it.get_ptr() ) { }
 				const_bidirectional_iterator &operator=(const_bidirectional_iterator const &it) {
 					if ( &it == this )
 						return *this;
@@ -36,14 +36,23 @@ namespace ft {
 				~const_bidirectional_iterator() {}
 
 				/* Accesses operators */
-				data_const_reference operator*() const { return *m_ptr; }
-				data_pointer operator->() { return m_ptr; }
-				data_pointer operator->() const { return m_ptr; }
+				data_const_reference operator*() const { return m_ptr->data; }
+				data_pointer operator->() { return m_ptr->data; }
+				data_pointer operator->() const { return m_ptr->data; }
 				data_const_reference operator[](difference_type offset) const { return m_ptr[offset]; }
 
 				/* Increment / Decrement */
-				const_bidirectional_iterator &operator++() { m_ptr++; return *this; };
-				const_bidirectional_iterator operator++(int) { const_bidirectional_iterator tmp = *this; ++(*this); return tmp; }
+				const_bidirectional_iterator &operator++() {
+					this->increment_();
+					return *this; 
+				}
+
+				const_bidirectional_iterator operator++(int) { 
+					const_bidirectional_iterator tmp = *this; 
+					this->increment_(); 
+					return tmp; 
+				}
+
 				const_bidirectional_iterator &operator--() { m_ptr--; return *this; }
 				const_bidirectional_iterator operator--(int) { const_bidirectional_iterator tmp = *this; --(*this); return tmp; }
 
@@ -55,6 +64,21 @@ namespace ft {
 				bool operator!=(const_bidirectional_iterator const &it) const { return m_ptr != it.m_ptr; }
 				bool operator==(const_bidirectional_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
+				void increment_(){
+					if ( m_ptr->right != NULL ){
+						m_ptr = m_ptr->right;
+						while ( m_ptr->left != NULL )
+							m_ptr = m_ptr->left;
+					} else {
+						pointer y = m_ptr->parent;
+						while ( m_ptr == y->right ){
+							m_ptr = y;
+							y = y->parent;
+						}
+						if ( m_ptr->right != y )
+							m_ptr = y;
+					}
+				}
 				pointer m_ptr;
 		};
 
@@ -67,6 +91,7 @@ namespace ft {
 				typedef std::ptrdiff_t					difference_type;
 				typedef typename T::value_type			value_type;
 				typedef T*								pointer;
+				typedef const T*						const_pointer;
 				typedef T&								reference;
 				typedef const T&						const_reference;
 				typedef typename T::pointer				data_pointer;
@@ -87,9 +112,11 @@ namespace ft {
 				~bidirectional_iterator() {}
 
 				/* Accesses operators */
+				pointer get_ptr() const{ return m_ptr; }
+
 				data_reference operator*() const { return m_ptr->data; }
-				data_pointer operator->() { return m_ptr; }
-				data_pointer operator->() const { return m_ptr; }
+				data_reference operator->() { return m_ptr->data; }
+				data_const_pointer operator->() const { return m_ptr->data; }
 				data_reference operator[](difference_type offset) const { return m_ptr[offset]; }
 
 				/* Increment / Decrement */

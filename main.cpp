@@ -827,18 +827,40 @@ void test_stack() {
 /* Test map */
 
 void test_map(){
+	typedef ft::map<char, int>::const_iterator const_map_it;
 	ft::map<char, int> m;
 
 	ft::pair<ft::map<char, int>::iterator, bool> ret;
 
 	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
 	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
+
+	const_map_it insert_it = ret.first;
+	std::cout << "Insert : " << (*insert_it).first << std::endl;
+
 	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
 	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
 	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
-	ret = m.insert( ft::pair<char, int>( 't', 1 ) );
 
-	m.debug_print_btree_structure();
+	std::cout << (*insert_it).first << std::endl;
+	++insert_it;
+	std::cout << (*insert_it).first << std::endl;
+	++insert_it;
+	std::cout << (*insert_it).first << std::endl;
+
+	// const_map_it it = m.begin();
+
+	// std::cout << (*it).first << std::endl;
+	// ++it;
+	// std::cout << (*it).first << std::endl;
+	// ++it;
+	// std::cout << (*it).first << std::endl;
+	// ++it;
+	// std::cout << (*it).first << std::endl;
+	// ++it;
+	// std::cout << (*it).first << std::endl;
+
+	// m.debug_print_btree_structure();
 }
 
 int	main(void){
