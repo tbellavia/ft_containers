@@ -194,6 +194,9 @@ namespace ft
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
 				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ), m_sentinel( create_sentinel_node_() ) { }
 			
+			~map() {
+				clear();
+			}
 
 			/**
 			 * Insert elements
@@ -243,6 +246,16 @@ namespace ft
 			 */
 			mapped_type& operator[](const key_type& k) {
 				return (*((this->insert(ft::make_pair(k,mapped_type()))).first)).second;
+			}
+
+			/**
+			 * Clear content
+			 * 
+			 * Removes all elements from the map container (which are destroyed), leaving the container with a size of 0.
+			 */
+			void clear() {
+				clear_(m_root);
+				m_root = NULL;
 			}
 
 			/**
@@ -429,6 +442,14 @@ namespace ft
 				}
 			}
 
+			void clear_(rb_node *current){
+				if ( current != NULL ){
+					clear_(current->left);
+					clear_(current->right);
+					destroy_node_(current);
+				}
+			}
+
 			rb_node *find_(const key_type &k){
 				rb_node *current = m_root;
 
@@ -471,6 +492,16 @@ namespace ft
 
 				node->color = SENTINEL;
 				return node;
+			}
+
+			/**
+			 * Destroy node
+			 * 
+			 * Call the delete operator of the node and deallocate memory.
+			 */
+			void destroy_node_(rb_node *node){
+				m_rb_alloc.destroy( node );
+				m_rb_alloc.deallocate( node, 1 );
 			}
 
 			void set_sentinel_(rb_node *current){

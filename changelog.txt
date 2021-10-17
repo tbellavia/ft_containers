@@ -16,3 +16,12 @@
 		- Add private function member create_sentinel_node
 		- Add private function member set_sentinel
 	- Refactor insert function member to add sentinel node to the rightmost node
+
+[Sunday 17 October (Mai-Nhi Birthday)]
+
+- Map : 
+	- Add clear function member
+	- Add delete
+
+- Iterators : 
+	- Modify operator->() to return data_const_reference instead of data_const_pointer

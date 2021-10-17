@@ -115,7 +115,7 @@ namespace ft {
 
 				data_reference operator*() const { return m_ptr->data; }
 				data_reference operator->() { return m_ptr->data; }
-				data_const_pointer operator->() const { return m_ptr->data; }
+				data_const_reference operator->() const { return m_ptr->data; }
 				data_reference operator[](difference_type offset) const { return m_ptr[offset]; }
 
 				/* Increment / Decrement */
