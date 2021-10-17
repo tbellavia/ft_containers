@@ -11,6 +11,35 @@
 # define COLOR_FAIL "\033[1;31m"
 # define COLOR_RESET "\033[1;0m"
 
+template<class T1, class T2>
+bool operator==(const ft::pair<T1, T2> &x, const std::pair<T1, T2> &y){
+	return x.first == y.first && x.second == y.second;
+}
+
+template<class T1, class T2>
+bool operator!=(const ft::pair<T1, T2> &x, const std::pair<T1, T2> &y){
+	return !( x == y );
+}
+
+template<class T1, class T2>
+bool operator<(const ft::pair<T1, T2> &x, const std::pair<T1, T2> &y){
+	return x.first < y.first || (!( y.first < x.first) && x.second < y.second);
+}
+
+template<class T1, class T2>
+bool operator<=(const ft::pair<T1, T2> &x, const std::pair<T1, T2> &y){
+	return !( y < x );
+}
+
+template<class T1, class T2>
+bool operator>(const ft::pair<T1, T2> &x, const std::pair<T1, T2> &y){
+	return y < x;
+}
+
+template<class T1, class T2>
+bool operator>=(const ft::pair<T1, T2> &x, const std::pair<T1, T2> &y){
+	return !( x < y );
+}
 
 template<typename T>
 void _report_failure( T const &actual, T const &expected, std::string const &test_name ){
@@ -21,6 +50,13 @@ void _report_failure( T const &actual, T const &expected, std::string const &tes
 void _report_failure( std::string const &message, std::string const &test_name ){
 	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
 	std::cout << "\t" << message << std::endl;
+}
+
+template<typename T1, typename T2>
+void _report_failure_pair( T1 const &actual, T2 const &expected, std::string const &test_name ){
+	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
+	std::cout << "\t" << "Expected : `(" << expected.first << " : " << expected.second << 
+	")` but got `(" << actual.first << " : " << actual.second << ")`" << std::endl;
 }
 
 void _report_success( std::string const &test_name ){
@@ -45,6 +81,27 @@ void _assert_each_equal( InputIt actual_first, InputIt actual_last,
 	for ( ; actual_first != actual_last && expected_first != expected_last ; actual_first++, expected_first++ ){
 		if ( *actual_first != *expected_first ){
 			_report_failure( *actual_first, *expected_first, test_name );
+			error = true;
+		}
+	}
+	if ( !error ){
+		if ( actual_first != actual_last || expected_first != expected_last ){
+			_report_failure("The size differ", test_name);
+		} else {
+			_report_success( test_name );
+		}
+	}
+}
+
+template<typename InputIt, typename OutputIt>
+void _assert_each_equal_pair( InputIt actual_first, InputIt actual_last, 
+								OutputIt expected_first, OutputIt expected_last, std::string const &test_name ){
+	
+	bool error = false;
+
+	for ( ; actual_first != actual_last && expected_first != expected_last ; actual_first++, expected_first++ ){
+		if ( *actual_first != *expected_first ){
+			_report_failure_pair( *actual_first, *expected_first, test_name );
 			error = true;
 		}
 	}
@@ -825,30 +882,77 @@ void test_stack() {
 }
 
 /* Test map */
+typedef ft::pair<char, int>		ft_pair_t;
+typedef std::pair<char, int>	std_pair_t;
+typedef ft::map<char, int>		ft_map_t;
+typedef std::map<char, int>		std_map_t;
+
+
+void test_map_insert() {
+	// Check size
+	// Check if node is inserted
+	// Node that already exists
+	// Check the iterator
+	typedef ft::pair<ft_map_t::iterator, bool> ft_rtype_t;
+	typedef std::pair<std_map_t::iterator, bool> std_rtype_t;
+
+	ft::map<char, int> ft_map;
+	std::map<char, int> std_map;
+	ft_rtype_t ft_ret;
+	std_rtype_t std_ret;
+
+	// Test basic insertion
+	for ( int c = 'a' ; c < 'f' ; ++c ){
+		ft_ret = ft_map.insert( ft_pair_t( c, c ) );
+		std_ret = std_map.insert( std_pair_t( c, c ) );
+		_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert return iterator first");
+		_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert return iterator second");
+		_assert_equal(ft_ret.second, std_ret.second, "test map insert return boolean");
+		_assert_equal(ft_map.size(), std_map.size(), "test insert size");
+	}
+
+	// Test with existent node with same value
+	ft_ret = ft_map.insert( ft_pair_t( 'a', 'a' ) );
+	std_ret = std_map.insert( std_pair_t( 'a', 'a' ) );
+	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert return iterator first");
+	_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert return iterator second");
+	_assert_equal(ft_ret.second, std_ret.second, "test map insert return boolean");
+	_assert_equal(ft_map.size(), std_map.size(), "test insert size");
+
+	// Test with existent node with different value
+	ft_ret = ft_map.insert( ft_pair_t( 'a', 'b' ) );
+	std_ret = std_map.insert( std_pair_t( 'a', 'b' ) );
+	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert return iterator first");
+	_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert return iterator second");
+	_assert_equal(ft_ret.second, std_ret.second, "test map insert return boolean");
+	_assert_equal(ft_map.size(), std_map.size(), "test insert size");
+	_assert_each_equal_pair(ft_map.begin(), ft_map.end(), std_map.begin(), std_map.end(), "test map insert items");
+}
 
 void test_map(){
-	typedef ft::map<char, int>::const_iterator const_map_it;
-	typedef ft::map<char, int>::iterator map_it;
-	ft::map<char, int> m;
+	test_map_insert();
+	// typedef ft::map<char, int>::const_iterator const_map_it;
+	// typedef ft::map<char, int>::iterator map_it;
+	// ft::map<char, int> m;
 
-	ft::pair<ft::map<char, int>::iterator, bool> ret;
+	// ft::pair<ft::map<char, int>::iterator, bool> ret;
 
-	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
-	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
-	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
-	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
-	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
+	// ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
+	// ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
+	// ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
+	// ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
+	// ret = m.insert( ft::pair<char, int>( 't', 0 ) );
 
-	for ( const_map_it it = m.begin() ; it != m.end() ; ++it ){
-		std::cout << (*it).first << " : " << (*it).second << std::endl;
-	}
+	// for ( const_map_it it = m.begin() ; it != m.end() ; ++it ){
+	// 	std::cout << (*it).first << " : " << (*it).second << std::endl;
+	// }
 
-	map_it it;
-	if ( (it = m.find('b')) != m.end() ){
-		std::cout << "Found : " << (*it).first << std::endl;
-	} else {
-		std::cout << "Not found!" << std::endl;
-	}
+	// map_it it;
+	// if ( (it = m.find('b')) != m.end() ){
+	// 	std::cout << "Found : " << (*it).first << std::endl;
+	// } else {
+	// 	std::cout << "Not found!" << std::endl;
+	// }
 
 	// m.debug_print_btree_structure();
 }

@@ -119,8 +119,15 @@ namespace ft {
 				data_reference operator[](difference_type offset) const { return m_ptr[offset]; }
 
 				/* Increment / Decrement */
-				bidirectional_iterator &operator++() { m_ptr++; return *this; };
-				bidirectional_iterator operator++(int) { bidirectional_iterator tmp = *this; ++(*this); return tmp; }
+				bidirectional_iterator &operator++() { 
+					increment_();
+					return *this; 
+				}
+				bidirectional_iterator operator++(int) {
+					bidirectional_iterator tmp = *this; 
+					increment_();
+					return tmp;
+				}
 				bidirectional_iterator &operator--() { m_ptr--; return *this; }
 				bidirectional_iterator operator--(int) { bidirectional_iterator tmp = *this; --(*this); return tmp; }
 

@@ -22,6 +22,11 @@
 - Map : 
 	- Add clear function member
 	- Add delete
+	- Refactor :
+		- Move create_node functions into `rb_node` class as a static function members
+		- Move sentinel util functions into `rb_node` class as function members
+	- Add tests for insert function member
+	- Add size function member
 
 - Iterators : 
 	- Modify operator->() to return data_const_reference instead of data_const_pointer

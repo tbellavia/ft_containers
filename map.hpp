@@ -341,6 +341,27 @@ namespace ft
 			}
 
 			/**
+			 * Return container size
+			 * 
+			 * Returns the number of elements in the map container.
+			 */
+			size_type size() const {
+				return m_size;
+			}
+
+			/**
+			 * Test whether container is empty
+			 * 
+			 * Returns whether the map container is empty (i.e. whether its size is 0).
+			 * 
+			 * This function does not modify the container in any way. To clear the content of a map container, 
+			 * see map::clear.
+			 */
+			bool empty() const {
+				return m_size == 0;
+			}
+
+			/**
 			 * Return iterator to begining
 			 * 
 			 * Returns an iterator referring to the first element in the map container
@@ -353,7 +374,7 @@ namespace ft
 				rb_node *current = m_root;
 
 				if ( m_root == NULL ){
-					return iterator( NULL );
+					return iterator( m_sentinel );
 				}
 				while ( current->left != NULL ){
 					current = current->left;
@@ -374,7 +395,7 @@ namespace ft
 				rb_node *current = m_root;
 
 				if ( m_root == NULL ){
-					return const_iterator( NULL );
+					return const_iterator( m_sentinel );
 				}
 				while ( current->left != NULL ){
 					current = current->left;
