@@ -80,6 +80,7 @@ namespace ft
 				typedef typename allocator_type::const_reference	const_reference;
 				typedef typename allocator_type::pointer			pointer;
 				typedef typename allocator_type::const_pointer		const_pointer;
+				typedef std::allocator<rb_node>						allocator_type;
 
 				value_type	data;
 				rb_node		*parent;
@@ -165,7 +166,52 @@ namespace ft
 					return this->parent->left;
 				}
 
-				typedef std::allocator<rb_node> allocator_type;
+				bool is_sentinel() const {
+					return color == SENTINEL;
+				}
+
+				void set_sentinel( rb_node *sentinel ){
+					this->right = sentinel;
+					sentinel->parent = this;
+				}
+
+				static rb_node *create_node( allocator_type alloc = allocator_type() ){
+					rb_node *node = alloc.allocate( 1 );
+
+					alloc.construct( node );
+					return node;
+				}
+
+				static rb_node *create_node( const value_type &data, allocator_type alloc = allocator_type() ){
+					rb_node *node = alloc.allocate( 1 );
+
+					alloc.construct( node, data );
+					return node;
+				}
+
+				static rb_node *create_node( const value_type &data, rb_node *parent, allocator_type alloc = allocator_type() ){
+					rb_node *node = alloc.allocate( 1 );
+
+					alloc.construct( node, data, parent );
+					return node;
+				}
+
+				static rb_node *create_sentinel_node( allocator_type alloc = allocator_type() ){
+					rb_node *node = rb_node::create_node( alloc );
+
+					node->color = SENTINEL;
+					return node;
+				}
+
+				/**
+				 * Destroy node
+				 * 
+				 * Call the delete operator of the node and deallocate memory.
+				 */
+				static void destroy_node( rb_node *node, allocator_type alloc = allocator_type() ){
+					alloc.destroy( node );
+					alloc.deallocate( node, 1 );
+				}
 			};
 		
 		/**
@@ -192,7 +238,7 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ), m_sentinel( create_sentinel_node_() ) { }
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ), m_sentinel( rb_node::create_sentinel_node() ) { }
 			
 			~map() {
 				clear();
@@ -223,8 +269,8 @@ namespace ft
 
 				if ( m_root == NULL ){
 					m_size++;
-					m_root = this->create_node_(val);
-					set_sentinel_(m_root);
+					m_root = rb_node::create_node( val );
+					m_root->set_sentinel(m_sentinel);
 					return ft::pair<iterator, bool>( iterator( m_root ), true );
 				}
 				ret = insert_recursive_(m_root, val);
@@ -254,7 +300,7 @@ namespace ft
 			 * Removes all elements from the map container (which are destroyed), leaving the container with a size of 0.
 			 */
 			void clear() {
-				clear_(m_root);
+				clear_recursive_(m_root);
 				m_root = NULL;
 			}
 
@@ -269,7 +315,7 @@ namespace ft
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
 			iterator find(const key_type &k){
-				rb_node *found = find_(k);
+				rb_node *found = find_recursive_(k);
 
 				if ( found == NULL )
 					return end();
@@ -287,7 +333,7 @@ namespace ft
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
 			const_iterator find(const key_type &k) const {
-				rb_node *found = find_(k);
+				rb_node *found = find_recursive_(k);
 
 				if ( found == NULL )
 					return end();
@@ -425,16 +471,16 @@ namespace ft
 				}
 				if ( m_comp( val.first, current->data.first ) ){
 					if ( current->left == NULL ){
-						return ft::pair<iterator, bool>( iterator( current->left = this->create_node_(val, current) ), true );
+						return ft::pair<iterator, bool>( iterator( current->left = rb_node::create_node(val, current) ), true );
 					} else {
 						return insert_recursive_(current->left, val);
 					}
 				} else {
-					if ( current->right == NULL || is_sentinel_(current) ){
-						rb_node *node = this->create_node_(val, current->parent);
+					if ( current->right == NULL || current->is_sentinel() ){
+						rb_node *node = rb_node::create_node( val, current->parent);
 
 						current->parent->right = node;
-						set_sentinel_(node);
+						node->set_sentinel(m_sentinel);
 						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {
 						return insert_recursive_(current->right, val);
@@ -442,15 +488,15 @@ namespace ft
 				}
 			}
 
-			void clear_(rb_node *current){
+			void clear_recursive_(rb_node *current){
 				if ( current != NULL ){
-					clear_(current->left);
-					clear_(current->right);
-					destroy_node_(current);
+					clear_recursive_(current->left);
+					clear_recursive_(current->right);
+					rb_node::destroy_node(current);
 				}
 			}
 
-			rb_node *find_(const key_type &k){
+			rb_node *find_recursive_(const key_type &k){
 				rb_node *current = m_root;
 
 				while ( current != NULL ){
@@ -464,53 +510,6 @@ namespace ft
 					}
 				}
 				return NULL;
-			}
-
-			rb_node *create_node_(){
-				rb_node *node = m_rb_alloc.allocate( 1 );
-
-				m_rb_alloc.construct( node );
-				return node;
-			}
-
-			rb_node *create_node_( const value_type &data ){
-				rb_node *node = m_rb_alloc.allocate( 1 );
-
-				m_rb_alloc.construct( node, data );
-				return node;
-			}
-
-			rb_node *create_node_( const value_type &data, rb_node *parent ){
-				rb_node *node = m_rb_alloc.allocate( 1 );
-
-				m_rb_alloc.construct( node, data, parent );
-				return node;
-			}
-
-			rb_node *create_sentinel_node_(){
-				rb_node *node = create_node_();
-
-				node->color = SENTINEL;
-				return node;
-			}
-
-			/**
-			 * Destroy node
-			 * 
-			 * Call the delete operator of the node and deallocate memory.
-			 */
-			void destroy_node_(rb_node *node){
-				m_rb_alloc.destroy( node );
-				m_rb_alloc.deallocate( node, 1 );
-			}
-
-			void set_sentinel_(rb_node *current){
-				current->right = m_sentinel;
-				m_sentinel->parent = current;
-			}
-
-			bool is_sentinel_(rb_node *node){
-				return node->color == SENTINEL;
 			}
 
 			void rotate_left_(rb_node *x){
@@ -556,4 +555,4 @@ namespace ft
 }
 
 
-#endif /* MAP_HPP */
+#endif
