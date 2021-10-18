@@ -170,6 +170,18 @@ namespace ft
 					return color == SENTINEL;
 				}
 
+				bool is_left() const {
+					if ( this->parent == NULL )
+						return false;
+					return this->parent->left == this;
+				}
+
+				bool is_right() const {
+					if ( this->parent == NULL )
+						return false;
+					return this->parent->right == this;
+				}
+
 				void set_sentinel( rb_node *sentinel ){
 					this->right = sentinel;
 					sentinel->parent = this;
@@ -222,7 +234,6 @@ namespace ft
 			size_type							m_size;
 			key_compare							m_comp;
 			allocator_type						m_alloc;
-			typename rb_node::allocator_type 	m_rb_alloc;
 			rb_node								*m_sentinel;
 
 		/**
@@ -238,8 +249,17 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_rb_alloc( std::allocator<rb_node>() ), m_sentinel( rb_node::create_sentinel_node() ) { }
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_sentinel( rb_node::create_sentinel_node() ) { }
 			
+			template<class InputIterator>
+			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_sentinel( rb_node::create_sentinel_node() )
+			{
+				for ( ; first != last ; ++first ){
+					insert(*first);
+				}
+			}
+
 			~map() {
 				clear();
 			}
@@ -339,6 +359,28 @@ namespace ft
 					return end();
 				return const_iterator( found );
 			}
+
+			/**
+			 * Erase elements
+			 * 
+			 * Removes from the map container either a single element or a range of elements ([first,last)).
+			 * 
+			 * This effectively reduces the container size by the number of elements removed, which are destroyed.
+			 */
+			// void erase(iterator position){
+				
+			// }
+
+			/**
+			 * Erase elements
+			 * 
+			 * Removes from the map container either a single element or a range of elements ([first,last)).
+			 * 
+			 * This effectively reduces the container size by the number of elements removed, which are destroyed.
+			 */
+			// size_type erase(const key_type &k){
+
+			// }
 
 			/**
 			 * Return container size

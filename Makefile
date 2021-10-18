@@ -1,8 +1,8 @@
 CLANG = clang++
-CFLAGS = -Wall -Werror -Wextra -g # -std=c++98 -fsanitize=address
+CFLAGS = -Wall -Werror -Wextra # -std=c++98 -fsanitize=address
 
 SRCS = main.cpp
-HEADERS = vector.hpp
+HEADERS = vector.hpp stack.hpp map.hpp
 
 NAME = ft_containers
 
