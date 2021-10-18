@@ -930,24 +930,34 @@ void test_map_insert() {
 }
 
 void test_map(){
-	test_map_insert();
-	// typedef ft::map<char, int>::const_iterator const_map_it;
-	// typedef ft::map<char, int>::iterator map_it;
-	// ft::map<char, int> m;
+	// test_map_insert();
+	typedef ft::map<char, int> map_t;
+	ft::map<char, int> m;
 
-	// ft::pair<ft::map<char, int>::iterator, bool> ret;
+	ft::pair<map_t::iterator, bool> ret;
 
-	// ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
-	// ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
-	// ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
-	// ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
-	// ret = m.insert( ft::pair<char, int>( 't', 0 ) );
+	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
+	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
+	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
+	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
+	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
 
-	// for ( const_map_it it = m.begin() ; it != m.end() ; ++it ){
+	// for ( map_t::const_iterator it = m.begin() ; it != m.end() ; ++it ){
 	// 	std::cout << (*it).first << " : " << (*it).second << std::endl;
 	// }
 
-	// map_it it;
+	map_t::const_iterator it = m.end();
+
+	--it;
+	std::cout << (*it).first << " : " << (*it).second << std::endl;
+	--it;
+	std::cout << (*it).first << " : " << (*it).second << std::endl;
+	--it;
+	std::cout << (*it).first << " : " << (*it).second << std::endl;
+	--it;
+	std::cout << (*it).first << " : " << (*it).second << std::endl;
+
+	// map_t::iterator it;
 	// if ( (it = m.find('b')) != m.end() ){
 	// 	std::cout << "Found : " << (*it).first << std::endl;
 	// } else {
