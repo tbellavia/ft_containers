@@ -943,49 +943,11 @@ void test_map_bracket_operator(){
 		_assert_equal(ft_map.size(), std_map.size(), "test map bracket operator - size");
 	}
 	TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map bracket operator - items");
-	// for ( ft::map<char, int>::iterator it = ft_map.begin() ; it != ft_map.end() ; ++it ){
-	// 	std::cout << (*it).first << " : " << (*it).second << std::endl;
-	// }
-	ft_map.debug_print_btree_structure();
 }
 
 void test_map(){
 	test_map_insert();
 	test_map_bracket_operator();
-	// typedef ft::map<char, int> map_t;
-	// ft::map<char, int> m;
-
-	// ft::pair<map_t::iterator, bool> ret;
-
-	// ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
-	// ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
-	// ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
-	// ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
-	// ret = m.insert( ft::pair<char, int>( 't', 0 ) );
-
-	// for ( map_t::const_iterator it = m.begin() ; it != m.end() ; ++it ){
-	// 	std::cout << (*it).first << " : " << (*it).second << std::endl;
-	// }
-
-	// map_t::const_iterator it = m.end();
-
-	// --it;
-	// std::cout << (*it).first << " : " << (*it).second << std::endl;
-	// --it;
-	// std::cout << (*it).first << " : " << (*it).second << std::endl;
-	// --it;
-	// std::cout << (*it).first << " : " << (*it).second << std::endl;
-	// --it;
-	// std::cout << (*it).first << " : " << (*it).second << std::endl;
-
-	// map_t::iterator it;
-	// if ( (it = m.find('b')) != m.end() ){
-	// 	std::cout << "Found : " << (*it).first << std::endl;
-	// } else {
-	// 	std::cout << "Not found!" << std::endl;
-	// }
-
-	// m.debug_print_btree_structure();
 }
 
 int	main(void){

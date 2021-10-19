@@ -576,7 +576,7 @@ namespace ft
 				}
 				if ( m_comp( val.first, current->data.first ) ){
 					if ( current->left == NULL ){
-						return ft::pair<iterator, bool>( iterator( current->left = rb_node::create_node( val, current->parent ) ), true );
+						return ft::pair<iterator, bool>( iterator( current->left = rb_node::create_node( val, current ) ), true );
 					} 
 					else if ( current->left->is_sentinel() ){
 						rb_node *node = rb_node::create_node( val, current );
@@ -589,8 +589,8 @@ namespace ft
 					}
 				} else {
 					if ( current->right == NULL ){
-						return ft::pair<iterator, bool>( iterator( current->right = rb_node::create_node( val, current->parent ) ), true );
-					} else if ( current->is_sentinel() ){
+						return ft::pair<iterator, bool>( iterator( current->right = rb_node::create_node( val, current ) ), true );
+					} else if ( current->right->is_sentinel() ){
 						rb_node *node = rb_node::create_node( val, current );
 
 						current->right = node;
