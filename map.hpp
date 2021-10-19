@@ -576,19 +576,24 @@ namespace ft
 				}
 				if ( m_comp( val.first, current->data.first ) ){
 					if ( current->left == NULL ){
-						rb_node *node = rb_node::create_node( val, current->parent );
+						return ft::pair<iterator, bool>( iterator( current->left = rb_node::create_node( val, current->parent ) ), true );
+					} 
+					else if ( current->left->is_sentinel() ){
+						rb_node *node = rb_node::create_node( val, current );
 
-						current->parent->left = node;
+						current->left = node;
 						node->set_left_sentinel(m_left_sentinel);
 						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {
 						return insert_recursive_(current->left, val);
 					}
 				} else {
-					if ( current->right == NULL || current->is_sentinel() ){
-						rb_node *node = rb_node::create_node( val, current->parent );
+					if ( current->right == NULL ){
+						return ft::pair<iterator, bool>( iterator( current->right = rb_node::create_node( val, current->parent ) ), true );
+					} else if ( current->is_sentinel() ){
+						rb_node *node = rb_node::create_node( val, current );
 
-						current->parent->right = node;
+						current->right = node;
 						node->set_right_sentinel(m_right_sentinel);
 						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {

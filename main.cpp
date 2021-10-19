@@ -115,6 +115,7 @@ void _assert_each_equal_pair( InputIt actual_first, InputIt actual_last,
 }
 
 # define TEST_EACH_EQUAL(actual, expected, name) _assert_each_equal(actual.begin(), actual.end(), expected.begin(), expected.end(), name)
+# define TEST_EACH_EQUAL_PAIR(actual, expected, name) _assert_each_equal_pair(actual.begin(), actual.end(), expected.begin(), expected.end(), name)
 
 void test_vector_max_size() {
 	std::vector<int> s_vec;
@@ -905,57 +906,77 @@ void test_map_insert() {
 	for ( int c = 'a' ; c < 'f' ; ++c ){
 		ft_ret = ft_map.insert( ft_pair_t( c, c ) );
 		std_ret = std_map.insert( std_pair_t( c, c ) );
-		_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert return iterator first");
-		_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert return iterator second");
-		_assert_equal(ft_ret.second, std_ret.second, "test map insert return boolean");
-		_assert_equal(ft_map.size(), std_map.size(), "test insert size");
+		_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert - return iterator first");
+		_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert - return iterator second");
+		_assert_equal(ft_ret.second, std_ret.second, "test map insert - return boolean");
+		_assert_equal(ft_map.size(), std_map.size(), "test map insert - size");
 	}
 
 	// Test with existent node with same value
 	ft_ret = ft_map.insert( ft_pair_t( 'a', 'a' ) );
 	std_ret = std_map.insert( std_pair_t( 'a', 'a' ) );
-	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert return iterator first");
-	_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert return iterator second");
-	_assert_equal(ft_ret.second, std_ret.second, "test map insert return boolean");
-	_assert_equal(ft_map.size(), std_map.size(), "test insert size");
+	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert - return iterator first");
+	_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert - return iterator second");
+	_assert_equal(ft_ret.second, std_ret.second, "test map insert - return boolean");
+	_assert_equal(ft_map.size(), std_map.size(), "test map insert - size");
 
 	// Test with existent node with different value
 	ft_ret = ft_map.insert( ft_pair_t( 'a', 'b' ) );
 	std_ret = std_map.insert( std_pair_t( 'a', 'b' ) );
-	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert return iterator first");
-	_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert return iterator second");
-	_assert_equal(ft_ret.second, std_ret.second, "test map insert return boolean");
-	_assert_equal(ft_map.size(), std_map.size(), "test insert size");
-	_assert_each_equal_pair(ft_map.begin(), ft_map.end(), std_map.begin(), std_map.end(), "test map insert items");
+	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test map insert - return iterator first");
+	_assert_equal((*ft_ret.first).second, (*std_ret.first).second, "test map insert - return iterator second");
+	_assert_equal(ft_ret.second, std_ret.second, "test map insert - return boolean");
+	_assert_equal(ft_map.size(), std_map.size(), "test map insert - size");
+	_assert_each_equal_pair(ft_map.begin(), ft_map.end(), std_map.begin(), std_map.end(), "test map insert - items");
+	// ft_map.debug_print_btree_structure();
+}
+
+void test_map_bracket_operator(){
+	ft::map<char, int> ft_map;
+	std::map<char, int> std_map;
+
+	for ( int index = 0 ; index < 5 ; index++ ){
+		char c = (char[5]){ 'z', 'a', 'c', 'd', 'e'}[index];
+		
+		ft_map[c] = (int)c;
+		std_map[c] = (int)c;
+		_assert_equal(ft_map.size(), std_map.size(), "test map bracket operator - size");
+	}
+	TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map bracket operator - items");
+	// for ( ft::map<char, int>::iterator it = ft_map.begin() ; it != ft_map.end() ; ++it ){
+	// 	std::cout << (*it).first << " : " << (*it).second << std::endl;
+	// }
+	ft_map.debug_print_btree_structure();
 }
 
 void test_map(){
-	// test_map_insert();
-	typedef ft::map<char, int> map_t;
-	ft::map<char, int> m;
+	test_map_insert();
+	test_map_bracket_operator();
+	// typedef ft::map<char, int> map_t;
+	// ft::map<char, int> m;
 
-	ft::pair<map_t::iterator, bool> ret;
+	// ft::pair<map_t::iterator, bool> ret;
 
-	ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
-	ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
-	ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
-	ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
-	ret = m.insert( ft::pair<char, int>( 't', 0 ) );
+	// ret = m.insert( ft::pair<char, int>( 'b', 20 ) );
+	// ret = m.insert( ft::pair<char, int>( 'c', 5 ) );
+	// ret = m.insert( ft::pair<char, int>( 'a', 10 ) );
+	// ret = m.insert( ft::pair<char, int>( 'g', 1 ) );
+	// ret = m.insert( ft::pair<char, int>( 't', 0 ) );
 
 	// for ( map_t::const_iterator it = m.begin() ; it != m.end() ; ++it ){
 	// 	std::cout << (*it).first << " : " << (*it).second << std::endl;
 	// }
 
-	map_t::const_iterator it = m.end();
+	// map_t::const_iterator it = m.end();
 
-	--it;
-	std::cout << (*it).first << " : " << (*it).second << std::endl;
-	--it;
-	std::cout << (*it).first << " : " << (*it).second << std::endl;
-	--it;
-	std::cout << (*it).first << " : " << (*it).second << std::endl;
-	--it;
-	std::cout << (*it).first << " : " << (*it).second << std::endl;
+	// --it;
+	// std::cout << (*it).first << " : " << (*it).second << std::endl;
+	// --it;
+	// std::cout << (*it).first << " : " << (*it).second << std::endl;
+	// --it;
+	// std::cout << (*it).first << " : " << (*it).second << std::endl;
+	// --it;
+	// std::cout << (*it).first << " : " << (*it).second << std::endl;
 
 	// map_t::iterator it;
 	// if ( (it = m.find('b')) != m.end() ){

@@ -184,7 +184,7 @@ namespace ft {
 							m_ptr = m_ptr->left;
 					} else {
 						pointer y = m_ptr->parent;
-						while ( m_ptr == y->right ){
+						while ( y != NULL && m_ptr == y->right ){
 							m_ptr = y;
 							y = y->parent;
 						}
