@@ -38,7 +38,7 @@ namespace ft {
 
 				/* Accesses operators */
 				pointer					base() { return m_ptr; }
-				// const_pointer			base() const { return m_ptr; }
+				const_pointer			base() const { return m_ptr; }
 				data_const_reference	operator*() const { return m_ptr->data; }
 				data_const_pointer		operator->() const { return m_ptr->data; }
 
@@ -244,13 +244,28 @@ namespace ft {
 				iterator_type base() const { return m_ptr; }
 				data_const_reference operator*() const { return *m_ptr; }
 				data_const_pointer operator->() const { return m_ptr; }
-				data_const_reference operator[](difference_type offset) const { return m_ptr[offset]; }
 
 				/* Increment / Decrement (which is inverted with reverse iterator) */
-				reverse_iterator &operator++() { m_ptr--; return *this; };
-				reverse_iterator operator++(int) { reverse_iterator tmp = *this; ++(*this); return tmp; }
-				reverse_iterator &operator--() { m_ptr++; return *this; }
-				reverse_iterator operator--(int) { reverse_iterator tmp = *this; --(*this); return tmp; }
+				reverse_iterator &operator++() {
+					this->decrement_();
+					return *this; 
+				};
+				reverse_iterator operator++(int) {
+					reverse_iterator tmp = *this;
+					this->decrement_();
+					return tmp;
+				}
+
+				reverse_iterator &operator--() {
+					this->increment_();
+					return *this;
+				}
+
+				reverse_iterator operator--(int) {
+					reverse_iterator tmp = *this;
+					this->increment_();
+					return tmp;
+				}
 
 				/* Comparison operators */
 				bool operator<(reverse_iterator const &it) const { return m_ptr > it.m_ptr; }
@@ -261,6 +276,38 @@ namespace ft {
 				bool operator==(reverse_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
 				pointer	m_ptr;
+
+				void increment_(){
+					if ( m_ptr->right != NULL ){
+						m_ptr = m_ptr->right;
+						while ( m_ptr->left != NULL )
+							m_ptr = m_ptr->left;
+					} else {
+						pointer y = m_ptr->parent;
+						while ( m_ptr == y->right ){
+							m_ptr = y;
+							y = y->parent;
+						}
+						if ( m_ptr->right != y )
+							m_ptr = y;
+					}
+				}
+
+				void decrement_(){
+					if ( m_ptr->left != NULL ){
+						m_ptr = m_ptr->left;
+						while ( m_ptr->right != NULL )
+							m_ptr = m_ptr->right;
+					} else {
+						pointer y = m_ptr->parent;
+						while ( m_ptr == y->left ){
+							m_ptr = y;
+							y = y->parent;
+						}
+						if ( m_ptr->left != y )
+							m_ptr = y;
+					}
+				}
 		};
 
 			template<typename T>
@@ -298,13 +345,29 @@ namespace ft {
 				iterator_type base() const { return m_ptr; }
 				data_const_reference operator*() const { return *m_ptr; }
 				data_pointer operator->() const { return m_ptr; }
-				data_const_reference operator[](difference_type offset) const { return m_ptr[offset]; }
 
 				/* Increment / Decrement (which is inverted with reverse iterator) */
-				const_reverse_iterator &operator++() { m_ptr--; return *this; };
-				const_reverse_iterator operator++(int) { const_reverse_iterator tmp = *this; ++(*this); return tmp; }
-				const_reverse_iterator &operator--() { m_ptr++; return *this; }
-				const_reverse_iterator operator--(int) { const_reverse_iterator tmp = *this; --(*this); return tmp; }
+				const_reverse_iterator &operator++() {
+					this->decrement_();
+					return *this;
+				}
+
+				const_reverse_iterator operator++(int) {
+					const_reverse_iterator tmp = *this;
+					this->decrement_();
+					return tmp; 
+				}
+
+				const_reverse_iterator &operator--() {
+					this->increment_();
+					return *this;
+				}
+
+				const_reverse_iterator operator--(int) {
+					const_reverse_iterator tmp = *this;
+					this->increment_();
+					return tmp;
+				}
 
 				/* Comparison operators */
 				bool operator<(const_reverse_iterator const &it) const { return m_ptr > it.m_ptr; }
@@ -315,6 +378,38 @@ namespace ft {
 				bool operator==(const_reverse_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
 				pointer	m_ptr;
+
+				void increment_(){
+					if ( m_ptr->right != NULL ){
+						m_ptr = m_ptr->right;
+						while ( m_ptr->left != NULL )
+							m_ptr = m_ptr->left;
+					} else {
+						pointer y = m_ptr->parent;
+						while ( m_ptr == y->right ){
+							m_ptr = y;
+							y = y->parent;
+						}
+						if ( m_ptr->right != y )
+							m_ptr = y;
+					}
+				}
+
+				void decrement_(){
+					if ( m_ptr->left != NULL ){
+						m_ptr = m_ptr->left;
+						while ( m_ptr->right != NULL )
+							m_ptr = m_ptr->right;
+					} else {
+						pointer y = m_ptr->parent;
+						while ( m_ptr == y->left ){
+							m_ptr = y;
+							y = y->parent;
+						}
+						if ( m_ptr->left != y )
+							m_ptr = y;
+					}
+				}
 		};       
     }
 }
