@@ -182,8 +182,13 @@ namespace ft
 					return this->parent->right == this;
 				}
 
-				void set_sentinel( rb_node *sentinel ){
+				void set_right_sentinel( rb_node *sentinel ){
 					this->right = sentinel;
+					sentinel->parent = this;
+				}
+
+				void set_left_sentinel( rb_node *sentinel ){
+					this->left = sentinel;
 					sentinel->parent = this;
 				}
 
@@ -234,7 +239,8 @@ namespace ft
 			size_type							m_size;
 			key_compare							m_comp;
 			allocator_type						m_alloc;
-			rb_node								*m_sentinel;
+			rb_node								*m_right_sentinel;
+			rb_node								*m_left_sentinel;
 
 		/**
 		 * Public member functions.
@@ -249,11 +255,14 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_sentinel( rb_node::create_sentinel_node() ) { }
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() ) 
+			{
+				
+			}
 			
 			template<class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_sentinel( rb_node::create_sentinel_node() )
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() )
 			{
 				for ( ; first != last ; ++first ){
 					insert(*first);
@@ -290,7 +299,8 @@ namespace ft
 				if ( m_root == NULL ){
 					m_size++;
 					m_root = rb_node::create_node( val );
-					m_root->set_sentinel(m_sentinel);
+					m_root->set_right_sentinel(m_right_sentinel);
+					m_root->set_left_sentinel(m_left_sentinel);
 					return ft::pair<iterator, bool>( iterator( m_root ), true );
 				}
 				ret = insert_recursive_(m_root, val);
@@ -413,15 +423,7 @@ namespace ft
 			 * 
 			 */
 			iterator begin(){
-				rb_node *current = m_root;
-
-				if ( m_root == NULL ){
-					return iterator( m_sentinel );
-				}
-				while ( current->left != NULL ){
-					current = current->left;
-				}
-				return iterator( current );
+				return iterator( m_left_sentinel->parent );
 			}
 
 			/**
@@ -434,15 +436,33 @@ namespace ft
 			 * 
 			 */
 			const_iterator begin() const {
-				rb_node *current = m_root;
+				return const_iterator( m_left_sentinel->parent );
+			}
 
-				if ( m_root == NULL ){
-					return const_iterator( m_sentinel );
-				}
-				while ( current->left != NULL ){
-					current = current->left;
-				}
-				return const_iterator( current );
+			/**
+			 * Return reverse iterator to reverse beginning
+			 * 
+			 * Returns a reverse iterator pointing to the last element in the container (i.e., its reverse beginning).
+			 * 
+			 * Reverse iterators iterate backwards: increasing them moves them towards the beginning of the container.
+			 * 
+			 * rbegin points to the element preceding the one that would be pointed to by member end.
+			 */ 
+			reverse_iterator rbegin() {
+				return reverse_iterator( m_right_sentinel->parent );
+			}
+
+			/**
+			 * Return reverse iterator to reverse beginning
+			 * 
+			 * Returns a reverse iterator pointing to the last element in the container (i.e., its reverse beginning).
+			 * 
+			 * Reverse iterators iterate backwards: increasing them moves them towards the beginning of the container.
+			 * 
+			 * rbegin points to the element preceding the one that would be pointed to by member end.
+			 */
+			const_reverse_iterator rbegin() const {
+				return const_reverse_iterator( m_right_sentinel->parent );
 			}
 
 			/**
@@ -460,7 +480,7 @@ namespace ft
 			 * If the container is empty, this function returns the same as map::begin.
 			 */
 			iterator end() {
-				return iterator( m_sentinel );
+				return iterator( m_right_sentinel );
 			}
 
 			/**
@@ -478,7 +498,29 @@ namespace ft
 			 * If the container is empty, this function returns the same as map::begin.
 			 */
 			const_iterator end() const {
-				return const_iterator( m_sentinel );
+				return const_iterator( m_right_sentinel );
+			}
+
+			/**
+			 * Return reverse iterator to reverse end
+			 * 
+			 * Returns a reverse iterator pointing to the theoretical element right before the first element in the map container
+			 * (which is considered its reverse end).
+			 * The range between map::rbegin and map::rend contains all the elements of the container (in reverse order).
+			 */
+			reverse_iterator rend() {
+				return ( m_left_sentinel );
+			}
+
+			/**
+			 * Return reverse iterator to reverse end
+			 * 
+			 * Returns a reverse iterator pointing to the theoretical element right before the first element in the map container
+			 * (which is considered its reverse end).
+			 * The range between map::rbegin and map::rend contains all the elements of the container (in reverse order).
+			 */
+			const_reverse_iterator rend() const {
+				return ( m_left_sentinel );
 			}
 
 			/**
@@ -534,16 +576,20 @@ namespace ft
 				}
 				if ( m_comp( val.first, current->data.first ) ){
 					if ( current->left == NULL ){
-						return ft::pair<iterator, bool>( iterator( current->left = rb_node::create_node(val, current) ), true );
+						rb_node *node = rb_node::create_node( val, current->parent );
+
+						current->parent->left = node;
+						node->set_left_sentinel(m_left_sentinel);
+						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {
 						return insert_recursive_(current->left, val);
 					}
 				} else {
 					if ( current->right == NULL || current->is_sentinel() ){
-						rb_node *node = rb_node::create_node( val, current->parent);
+						rb_node *node = rb_node::create_node( val, current->parent );
 
 						current->parent->right = node;
-						node->set_sentinel(m_sentinel);
+						node->set_right_sentinel(m_right_sentinel);
 						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {
 						return insert_recursive_(current->right, val);
