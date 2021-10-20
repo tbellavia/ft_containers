@@ -414,6 +414,20 @@ namespace ft
 			}
 
 			/**
+			 * Return maximum size
+			 * 
+			 * Returns the maximum number of elements that the map container can hold.
+			 * 
+			 * This is the maximum potential size the container can reach due to known
+			 * system or library implementation limitations, but the container is by 
+			 * no means guaranteed to be able to reach that size: it can still fail to 
+			 * allocate storage at any point before that size is reached.
+			 */
+			size_type max_size() const {
+				return ( m_alloc.max_size() );
+			}
+
+			/**
 			 * Return iterator to begining
 			 * 
 			 * Returns an iterator referring to the first element in the map container
