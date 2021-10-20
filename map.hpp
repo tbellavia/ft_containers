@@ -182,14 +182,22 @@ namespace ft
 					return this->parent->right == this;
 				}
 
+				void set_left( rb_node *node ){
+					this->left = node;
+					node->parent = this;
+				}
+
+				void set_right( rb_node *node ){
+					this->right = node;
+					node->parent = this;
+				}
+
 				void set_right_sentinel( rb_node *sentinel ){
-					this->right = sentinel;
-					sentinel->parent = this;
+					this->set_right(sentinel);
 				}
 
 				void set_left_sentinel( rb_node *sentinel ){
-					this->left = sentinel;
-					sentinel->parent = this;
+					this->set_left(sentinel);
 				}
 
 				static rb_node *create_node( allocator_type alloc = allocator_type() ){
@@ -377,9 +385,43 @@ namespace ft
 			 * 
 			 * This effectively reduces the container size by the number of elements removed, which are destroyed.
 			 */
-			// void erase(iterator position){
-				
-			// }
+			void erase(iterator position){
+				if ( position != this->end() ){
+					rb_node *node = position.base();
+
+					if ( node->left == NULL && node->right == NULL ){
+						// Case 1, node has no children
+						if ( node->is_left() ){
+							node->parent->left = NULL;
+						} else {
+							node->parent->right = NULL;
+						}
+						rb_node::destroy_node( node );
+					}
+					else if ( node->left != NULL ){
+						// Case 2, node has one child
+						if ( node->is_left() ){
+							node->parent->set_left(node->right);
+						} else {
+							node->parent->set_right(node->left);
+						}
+						rb_node::destroy_node( node );
+					}
+					else if ( node->right != NULL ){
+						// Case 2, node has one child
+						if ( node->is_left() ){
+							node->parent->set_left(node->right);
+						} else {
+							node->parent->set_right(node->right);
+						}
+						rb_node::destroy_node( node );
+					}
+					else {
+						// Case 3, node has children
+						rb_node *max_node;
+					}
+				}
+			}
 
 			/**
 			 * Erase elements
@@ -388,9 +430,14 @@ namespace ft
 			 * 
 			 * This effectively reduces the container size by the number of elements removed, which are destroyed.
 			 */
-			// size_type erase(const key_type &k){
+			size_type erase(const key_type &k){
+				iterator it = this->find( k );
 
-			// }
+				if ( it == this->end() )
+					return 0;
+				this->erase( it );
+				return 1;
+			}
 
 			/**
 			 * Return container size

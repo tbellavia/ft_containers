@@ -982,10 +982,42 @@ void test_map_find() {
 	_assert_equal(ft_it == ft_map.end(), "test map find - non existent key");
 }
 
+void test_map_empty(){
+	ft::map<char, int> ft_map;
+	std::map<char, int> std_map;
+
+	_assert_equal(ft_map.empty(), std_map.empty(), "test map empty");
+	ft_map.insert(ft::make_pair(1, 1));
+	std_map.insert(std::make_pair(1, 1));
+	_assert_equal(ft_map.empty(), std_map.empty(), "test map empty");
+}
+
+void test_map_erase(){
+	int keys[10] = { 12, 5, 15, 3, 7, 13, 17, 1, 9, 19 };
+	ft::map<int, int> ft_map;
+	std::map<int, int> std_map;
+
+	for ( int index = 0 ; index < 10 ; index++ ){
+		ft_map.insert(ft::make_pair(keys[index], index));
+		std_map.insert(std::make_pair(keys[index], index));
+	}
+	ft_map.debug_print_btree_structure();
+	std::cout << "=================================================" << std::endl;
+	ft_map.erase(7);
+	std_map.erase(7);
+	ft_map.debug_print_btree_structure();
+	std::cout << "=================================================" << std::endl;
+	ft_map.erase(9);
+	ft_map.debug_print_btree_structure();
+	std::cout << "=================================================" << std::endl;
+}
+
 void test_map(){
 	test_map_insert();
 	test_map_bracket_operator();
 	test_map_find();
+	test_map_empty();
+	test_map_erase();
 }
 
 int	main(void){
