@@ -30,3 +30,21 @@
 
 - Iterators : 
 	- Modify operator->() to return data_const_reference instead of data_const_pointer
+
+
+[Tuesday 19 October (Safae Birthday)]
+
+- Map :
+	- Add left sentinel
+	- Refactor :
+		- insert function member with left sentinel
+		- begin function member with a constant access
+		- rbegin function member with a constant access
+
+- Iterator :
+	- Add decrement private function member on all map iterators
+
+[Wednesday 20 October]
+
+- Map :
+	- Add unit test for find function member

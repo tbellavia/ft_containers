@@ -72,6 +72,14 @@ void _assert_equal( const T & actual, const T & expected, const std::string &tes
 	}
 }
 
+void _assert_equal(bool predicate, const std::string &test_name){
+	if ( predicate ){
+		_report_success( test_name );
+	} else {
+		_report_failure( "Comparison is false", test_name );
+	}
+}
+
 template<typename InputIt, typename OutputIt>
 void _assert_each_equal( InputIt actual_first, InputIt actual_last, 
 							OutputIt expected_first, OutputIt expected_last, std::string const &test_name ){
@@ -945,9 +953,39 @@ void test_map_bracket_operator(){
 	TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map bracket operator - items");
 }
 
+void test_map_find() {
+	int keys[6] = {10, 5, 20, 1, 8, 15};
+	ft::map<int, int>::iterator		ft_it;
+	std::map<int, int>::iterator	std_it;
+	ft::map<int, int>				ft_map;
+	std::map<int, int>				std_map;
+
+	for ( int index = 0 ; index < 6 ; index++ ){
+		int k = keys[index];
+		int v = index;
+
+		ft_map.insert(ft::make_pair(k, v));
+		std_map.insert(std::make_pair(k, v));
+	}
+
+	// Test with existent keys
+	for ( int index = 0 ; index < 6 ; index++ ){
+		ft_it = ft_map.find(keys[index]);
+		std_it = std_map.find(keys[index]);
+
+		_assert_equal((*ft_it).first, (*std_it).first, "test map find - item first");
+		_assert_equal((*ft_it).second, (*std_it).second, "test map find - item second");
+	}
+
+	// Test with non-existent key
+	ft_it = ft_map.find(1000);
+	_assert_equal(ft_it == ft_map.end(), "test map find - non existent key");
+}
+
 void test_map(){
 	test_map_insert();
 	test_map_bracket_operator();
+	test_map_find();
 }
 
 int	main(void){
