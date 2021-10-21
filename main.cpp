@@ -1003,11 +1003,10 @@ void test_map_erase(){
 	}
 	ft_map.debug_print_btree_structure();
 	std::cout << "=================================================" << std::endl;
-	ft_map.erase(7);
-	std_map.erase(7);
+	ft_map.erase(15);
 	ft_map.debug_print_btree_structure();
 	std::cout << "=================================================" << std::endl;
-	ft_map.erase(9);
+	ft_map.erase(17);
 	ft_map.debug_print_btree_structure();
 	std::cout << "=================================================" << std::endl;
 }

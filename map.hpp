@@ -378,6 +378,12 @@ namespace ft
 				return const_iterator( found );
 			}
 
+			// rb_node *get_max_node_(rb_node *node){
+			// 	value_type max_data = node->data;
+
+			// 	for (  )
+			// }
+
 			/**
 			 * Erase elements
 			 * 
@@ -389,23 +395,30 @@ namespace ft
 				if ( position != this->end() ){
 					rb_node *node = position.base();
 
-					if ( node->left == NULL && node->right == NULL ){
-						// Case 1, node has no children
-						if ( node->is_left() ){
-							node->parent->left = NULL;
-						} else {
-							node->parent->right = NULL;
+					if ( node->left != NULL && node->right != NULL ){
+						// Case 3, node has children
+						rb_node *max_node = m_right_sentinel->parent;
+
+						if ( max_node->parent != NULL ){
+							max_node->parent->set_right(m_right_sentinel);
 						}
-						rb_node::destroy_node( node );
+						max_node->parent = node->parent;
+						max_node->right = node->right;
+						max_node->left = node->left;
+
+						if ( node->is_left() ){
+							node->parent->set_left(max_node);
+						} else {
+							node->parent->set_right(max_node);
+						}
 					}
 					else if ( node->left != NULL ){
 						// Case 2, node has one child
 						if ( node->is_left() ){
-							node->parent->set_left(node->right);
+							node->parent->set_left(node->left);
 						} else {
 							node->parent->set_right(node->left);
 						}
-						rb_node::destroy_node( node );
 					}
 					else if ( node->right != NULL ){
 						// Case 2, node has one child
@@ -414,12 +427,16 @@ namespace ft
 						} else {
 							node->parent->set_right(node->right);
 						}
-						rb_node::destroy_node( node );
 					}
 					else {
-						// Case 3, node has children
-						rb_node *max_node;
+						// Case 1, node has no children
+						if ( node->is_left() ){
+							node->parent->left = NULL;
+						} else {
+							node->parent->right = NULL;
+						}
 					}
+					rb_node::destroy_node( node );
 				}
 			}
 
