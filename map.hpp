@@ -378,11 +378,14 @@ namespace ft
 				return const_iterator( found );
 			}
 
-			// rb_node *get_max_node_(rb_node *node){
-			// 	value_type max_data = node->data;
-
-			// 	for (  )
-			// }
+			rb_node *get_max_node_(rb_node *node){
+				if ( node == NULL )
+					return NULL;
+				while ( node->right != NULL ){
+					node = node->right;
+				}
+				return node;
+			}
 
 			/**
 			 * Erase elements
@@ -397,11 +400,19 @@ namespace ft
 
 					if ( node->left != NULL && node->right != NULL ){
 						// Case 3, node has children
-						rb_node *max_node = m_right_sentinel->parent;
+						rb_node *max_node = get_max_node_(node->left);
+
+						std::cout << "Max node : " << max_node->data.first << std::endl;
 
 						if ( max_node->parent != NULL ){
-							max_node->parent->set_right(m_right_sentinel);
+							// max_node->parent->set_right(m_right_sentinel);
+							if ( max_node->is_left() ){
+								max_node->parent->right = NULL;
+							} else {
+								max_node->parent->left = NULL;
+							}
 						}
+
 						max_node->parent = node->parent;
 						max_node->right = node->right;
 						max_node->left = node->left;
@@ -454,6 +465,43 @@ namespace ft
 					return 0;
 				this->erase( it );
 				return 1;
+			}
+
+			/**
+			 * Swap content
+			 * 
+			 * Exchanges the content of the container by the content of x, which is another map of the same type. 
+			 * Sizes may differ.
+			 * 
+			 * After the call to this member function, the elements in this container are those which were in x 
+			 * before the call, and the elements of x are those which were in this.
+			 * All iterators, references and pointers remain valid for the swapped objects.
+			 * 
+			 * Notice that a non-member function exists with the same name, swap, overloading that algorithm 
+			 * with an optimization that behaves like this member function.
+			 * 
+			 */
+			void swap(map &x){
+				rb_node			*tmp_root = x.m_root;
+				size_type		tmp_size = x.m_size;
+				key_compare		tmp_comp = x.m_comp;
+				allocator_type	tmp_alloc = x.m_alloc;
+				rb_node			*tmp_right_sentinel = x.m_right_sentinel;
+				rb_node			*tmp_left_sentinel = x.m_left_sentinel;
+
+				x.m_root = this->m_root;
+				x.m_size = this->m_size;
+				x.m_comp = this->m_comp;
+				x.m_alloc = this->m_alloc;
+				x.m_right_sentinel = this->m_right_sentinel;
+				x.m_left_sentinel = this->m_left_sentinel;
+				
+				this->m_root = tmp_root;
+				this->m_size = tmp_size;
+				this->m_comp = tmp_comp;
+				this->m_alloc = tmp_alloc;
+				this->m_right_sentinel = tmp_right_sentinel;
+				this->m_left_sentinel = tmp_left_sentinel;
 			}
 
 			/**
