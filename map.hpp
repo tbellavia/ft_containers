@@ -387,6 +387,14 @@ namespace ft
 				return node;
 			}
 
+			ft::pair<iterator,iterator> equal_range(const key_type& k) {
+				iterator found = this->find(k);
+
+				if ( found != this->end() ){
+					return ft::make_pair(found, ++found);
+				}
+			}
+
 			/**
 			 * Erase elements
 			 * 
@@ -400,28 +408,6 @@ namespace ft
 
 					if ( node->left != NULL && node->right != NULL ){
 						// Case 3, node has children
-						rb_node *max_node = get_max_node_(node->left);
-
-						std::cout << "Max node : " << max_node->data.first << std::endl;
-
-						if ( max_node->parent != NULL ){
-							// max_node->parent->set_right(m_right_sentinel);
-							if ( max_node->is_left() ){
-								max_node->parent->right = NULL;
-							} else {
-								max_node->parent->left = NULL;
-							}
-						}
-
-						max_node->parent = node->parent;
-						max_node->right = node->right;
-						max_node->left = node->left;
-
-						if ( node->is_left() ){
-							node->parent->set_left(max_node);
-						} else {
-							node->parent->set_right(max_node);
-						}
 					}
 					else if ( node->left != NULL ){
 						// Case 2, node has one child

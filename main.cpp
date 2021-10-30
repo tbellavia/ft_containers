@@ -1001,22 +1001,48 @@ void test_map_erase(){
 		ft_map.insert(ft::make_pair(keys[index], index));
 		std_map.insert(std::make_pair(keys[index], index));
 	}
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	ft_map.erase(15);
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	ft_map.erase(17);
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+	// ft_map.erase(15);
+	// ft_map.debug_print_btree_structure();
+	// // std::cout << "=================================================" << std::endl;
+	// ft_map.erase(17);
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+}
+
+template<typename T>
+struct Greater : public std::binary_function<T, T, bool>
+{
+    bool operator()(const T& lhs, const T& rhs) const
+    {
+        return lhs > rhs;
+    }
+};
+
+void test_map_equal_range(){
+	typedef ft::map<int, int> map_t;
+
+	map_t m;
+	ft::pair<map_t::iterator, map_t::iterator> ret;
+
+	for ( int index = 0 ; index < 8 ; index++ ){
+		m[(int[8]){10, 5, 19, 25, 20, 30, 19, 23}[index]] = 1;
+	}
+
+	ret = m.equal_range(25);
+
+	std::cout << (*ret.first).first << std::endl;
+	std::cout << (*ret.second).first << std::endl;
 }
 
 void test_map(){
-	test_map_insert();
-	test_map_bracket_operator();
-	test_map_find();
-	test_map_empty();
-	test_map_erase();
+	// test_map_insert();
+	// test_map_bracket_operator();
+	// test_map_find();
+	// test_map_empty();
+	// test_map_erase();
+	test_map_equal_range();
 }
 
 int	main(void){
