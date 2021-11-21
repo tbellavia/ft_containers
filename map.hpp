@@ -200,6 +200,15 @@ namespace ft
 					this->set_left(sentinel);
 				}
 
+				void assign( rb_node *node ){
+					if ( node ){
+						this->parent = node->parent;
+						this->left = node->left;
+						this->right = node->right;
+						this->color = node->color;
+					}
+				}
+
 				static rb_node *create_node( allocator_type alloc = allocator_type() ){
 					rb_node *node = alloc.allocate( 1 );
 
@@ -387,13 +396,13 @@ namespace ft
 				return node;
 			}
 
-			ft::pair<iterator,iterator> equal_range(const key_type& k) {
-				iterator found = this->find(k);
+			// ft::pair<iterator,iterator> equal_range(const key_type& k) {
+			// 	iterator found = this->find(k);
 
-				if ( found != this->end() ){
-					return ft::make_pair(found, ++found);
-				}
-			}
+			// 	if ( found != this->end() ){
+			// 		return ft::make_pair(found, ++found);
+			// 	}
+			// }
 
 			/**
 			 * Erase elements
@@ -404,36 +413,68 @@ namespace ft
 			 */
 			void erase(iterator position){
 				if ( position != this->end() ){
-					rb_node *node = position.base();
+					rb_node *target = position.base();
 
-					if ( node->left != NULL && node->right != NULL ){
+					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
-					}
-					else if ( node->left != NULL ){
-						// Case 2, node has one child
-						if ( node->is_left() ){
-							node->parent->set_left(node->left);
+						// Go to the right subtree, then find the min (go to leftmost)
+						rb_node *min_node = target->right;
+
+						// Find the leftmost child
+						while ( min_node->left != NULL ){
+							min_node = min_node->left;
+						}
+						if ( min_node->parent == target ){
+							min_node->assign(target);
+							if ( target->parent != NULL ){
+								if ( target->is_left() ){
+									target->parent->set_left(min_node);
+								} else {
+									target->parent->set_right(min_node);
+								}
+							} else {
+								m_root = min_node;
+							}
+							min_node->right = NULL;
 						} else {
-							node->parent->set_right(node->left);
+							min_node->parent->left = NULL;
+							min_node->assign(target);
+							if ( target->parent != NULL ){
+								if ( target->is_left() ){
+									target->parent->set_left(min_node);
+								} else {
+									target->parent->set_right(min_node);
+								}
+							} else {
+								m_root = min_node;
+							}
 						}
 					}
-					else if ( node->right != NULL ){
-						// Case 2, node has one child
-						if ( node->is_left() ){
-							node->parent->set_left(node->right);
+					else if ( target->left != NULL ){
+						// Case 2, target has one child
+						if ( target->is_left() ){
+							target->parent->set_left(target->left);
 						} else {
-							node->parent->set_right(node->right);
+							target->parent->set_right(target->left);
+						}
+					}
+					else if ( target->right != NULL ){
+						// Case 2, target has one child
+						if ( target->is_left() ){
+							target->parent->set_left(target->right);
+						} else {
+							target->parent->set_right(target->right);
 						}
 					}
 					else {
-						// Case 1, node has no children
-						if ( node->is_left() ){
-							node->parent->left = NULL;
+						// Case 1, target has no children
+						if ( target->is_left() ){
+							target->parent->left = NULL;
 						} else {
-							node->parent->right = NULL;
+							target->parent->right = NULL;
 						}
 					}
-					rb_node::destroy_node( node );
+					rb_node::destroy_node( target );
 				}
 			}
 
