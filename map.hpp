@@ -396,13 +396,14 @@ namespace ft
 				return node;
 			}
 
-			// ft::pair<iterator,iterator> equal_range(const key_type& k) {
-			// 	iterator found = this->find(k);
+			ft::pair<iterator,iterator> equal_range(const key_type& k) {
+				iterator found = this->find(k);
 
-			// 	if ( found != this->end() ){
-			// 		return ft::make_pair(found, ++found);
-			// 	}
-			// }
+				if ( found != this->end() ){
+					return ft::make_pair(found, ++found);
+				}
+				return ft::make_pair(end(), end());
+			}
 
 			/**
 			 * Erase elements

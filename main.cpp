@@ -1003,10 +1003,10 @@ void test_map_erase(){
 	}
 	ft_map.debug_print_btree_structure();
 	std::cout << "=================================================" << std::endl;
-	ft_map.erase(15);
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	// ft_map.erase(17);
+	// ft_map.erase(15);
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+	// ft_map.erase();
 	// ft_map.debug_print_btree_structure();
 	// std::cout << "=================================================" << std::endl;
 }
@@ -1020,29 +1020,41 @@ void test_map_erase(){
 //     }
 // };
 
-// void test_map_equal_range(){
-// 	typedef ft::map<int, int> map_t;
+void test_map_equal_range(){
+	typedef ft::map<int, int> ft_map_t;
+	typedef std::map<int, int> std_map_t;
+	ft_map_t ft_map;
+	std_map_t std_map;
 
-// 	map_t m;
-// 	ft::pair<map_t::iterator, map_t::iterator> ret;
+	ft::pair<ft_map_t::iterator, ft_map_t::iterator>	f_ret;
+	std::pair<std_map_t::iterator, std_map_t::iterator>	s_ret;
 
-// 	for ( int index = 0 ; index < 8 ; index++ ){
-// 		m[(int[8]){10, 5, 19, 25, 20, 30, 19, 23}[index]] = 1;
-// 	}
+	for ( int index = 0 ; index < 8 ; index++ ){
+		int key = (int[8]){10, 5, 19, 25, 20, 30, 19, 23}[index];
 
-// 	ret = m.equal_range(25);
+		ft_map.insert(
+			ft::make_pair(key, 1)
+		);
 
-// 	std::cout << (*ret.first).first << std::endl;
-// 	std::cout << (*ret.second).first << std::endl;
-// }
+		std_map.insert(
+			std::make_pair(key, 1)
+		);
+	}
+
+	f_ret = ft_map.equal_range(25);
+	s_ret = std_map.equal_range(25);
+
+	_assert_equal((*f_ret.first).first, (*s_ret.first).first, "test assert equal range");
+	_assert_equal((*f_ret.second).first, (*s_ret.second).first, "test assert equal range");
+}
 
 void test_map(){
 	// test_map_insert();
 	// test_map_bracket_operator();
 	// test_map_find();
 	// test_map_empty();
-	test_map_erase();
-	// test_map_equal_range();
+	// test_map_erase();
+	test_map_equal_range();
 }
 
 int	main(void){
