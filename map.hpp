@@ -396,13 +396,14 @@ namespace ft
 				return node;
 			}
 
-			// ft::pair<iterator,iterator> equal_range(const key_type& k) {
-			// 	iterator found = this->find(k);
+			ft::pair<iterator,iterator> equal_range(const key_type& k) {
+				iterator found = this->find(k);
 
-			// 	if ( found != this->end() ){
-			// 		return ft::make_pair(found, ++found);
-			// 	}
-			// }
+				if ( found != this->end() ){
+					return ft::make_pair(found, ++found);
+				}
+				return ft::make_pair(end(), end());
+			}
 
 			/**
 			 * Erase elements
@@ -418,52 +419,16 @@ namespace ft
 					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
 						// Go to the right subtree, then find the min (go to leftmost)
-						rb_node *min_node = target->right;
+						detach_node_(target);
+					}
+					else if ( target->left != NULL || target->right != NULL){
+						// Case 2, target has one child
+						rb_node *successor = (target->right != NULL) ? target->right : target->left;
 
-						// Find the leftmost child
-						while ( min_node->left != NULL ){
-							min_node = min_node->left;
-						}
-						if ( min_node->parent == target ){
-							min_node->assign(target);
-							if ( target->parent != NULL ){
-								if ( target->is_left() ){
-									target->parent->set_left(min_node);
-								} else {
-									target->parent->set_right(min_node);
-								}
-							} else {
-								m_root = min_node;
-							}
-							min_node->right = NULL;
-						} else {
-							min_node->parent->left = NULL;
-							min_node->assign(target);
-							if ( target->parent != NULL ){
-								if ( target->is_left() ){
-									target->parent->set_left(min_node);
-								} else {
-									target->parent->set_right(min_node);
-								}
-							} else {
-								m_root = min_node;
-							}
-						}
-					}
-					else if ( target->left != NULL ){
-						// Case 2, target has one child
 						if ( target->is_left() ){
-							target->parent->set_left(target->left);
+							target->parent->set_left(successor);
 						} else {
-							target->parent->set_right(target->left);
-						}
-					}
-					else if ( target->right != NULL ){
-						// Case 2, target has one child
-						if ( target->is_left() ){
-							target->parent->set_left(target->right);
-						} else {
-							target->parent->set_right(target->right);
+							target->parent->set_right(successor);
 						}
 					}
 					else {
@@ -777,6 +742,46 @@ namespace ft
 					}
 				}
 				return NULL;
+			}
+
+			void detach_node_(rb_node *target){
+				rb_node *rightmost;
+				rb_node *successor = target->right;
+
+				// If the min node is a sentinel node, then take the left child
+				// and set the sentinel node to the rightmost subtree.
+				if ( successor->is_sentinel() ){
+					successor = target->left;
+					successor->parent = target->parent;
+
+					rightmost = successor;
+					// Go to the right most node and set right sentinel
+					while ( rightmost->right != NULL ){
+						rightmost = rightmost->right;
+					}
+					rightmost->right = m_right_sentinel;
+				} else {
+					while ( successor->left != NULL && !successor->left->is_sentinel() ){
+						successor = successor->left;
+					}
+					if ( successor->parent == target ){
+						successor->parent = target->parent;
+						successor->left = target->left;
+					} else {
+						successor->parent->left = NULL;
+						successor->assign( target );
+					}
+				}
+				if ( target->parent != NULL ){
+					if ( target->is_left() ){
+						target->parent->set_left(successor);
+					} else {
+						target->parent->set_right(successor);
+					}
+				}
+				else {
+					m_root = successor;
+				}
 			}
 
 			void rotate_left_(rb_node *x){

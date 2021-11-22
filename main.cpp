@@ -993,22 +993,31 @@ void test_map_empty(){
 }
 
 void test_map_erase(){
-	int keys[10] = { 12, 5, 15, 3, 7, 13, 17, 1, 9, 19 };
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
 	ft::map<int, int> ft_map;
 	std::map<int, int> std_map;
 
-	for ( int index = 0 ; index < 10 ; index++ ){
+	for ( int index = 0 ; index < 13 ; index++ ){
 		ft_map.insert(ft::make_pair(keys[index], index));
 		std_map.insert(std::make_pair(keys[index], index));
 	}
 	ft_map.debug_print_btree_structure();
 	std::cout << "=================================================" << std::endl;
-	ft_map.erase(15);
+	// Try with a node with two children
+	ft_map.erase(30);
 	ft_map.debug_print_btree_structure();
 	std::cout << "=================================================" << std::endl;
-	// ft_map.erase(17);
-	// ft_map.debug_print_btree_structure();
-	// std::cout << "=================================================" << std::endl;
+	// Try with a node with only one child
+	ft_map.erase(17);
+	ft_map.debug_print_btree_structure();
+	std::cout << "=================================================" << std::endl;
+	// Try with the root node
+	ft_map.erase(12);
+	ft_map.debug_print_btree_structure();
+	std::cout << "=================================================" << std::endl;
+	ft_map.erase(25);
+	ft_map.debug_print_btree_structure();
+	std::cout << "=================================================" << std::endl;
 }
 
 // template<typename T>
@@ -1020,21 +1029,38 @@ void test_map_erase(){
 //     }
 // };
 
-// void test_map_equal_range(){
-// 	typedef ft::map<int, int> map_t;
+void test_map_equal_range(){
+	typedef ft::map<int, int>	ft_map_t;
+	typedef std::map<int, int>	std_map_t;
 
-// 	map_t m;
-// 	ft::pair<map_t::iterator, map_t::iterator> ret;
+	ft_map_t ft_map;
+	std_map_t std_map;
 
-// 	for ( int index = 0 ; index < 8 ; index++ ){
-// 		m[(int[8]){10, 5, 19, 25, 20, 30, 19, 23}[index]] = 1;
-// 	}
+	ft::pair<ft_map_t::iterator, ft_map_t::iterator> ft_ret;
+	std::pair<std_map_t::iterator, std_map_t::iterator> std_ret;
 
-// 	ret = m.equal_range(25);
+	for ( int index = 0 ; index < 8 ; index++ ){
+		int key = (int[8]){10, 5, 19, 25, 20, 30, 19, 23}[index];
+		
+		ft_map.insert(ft::make_pair(key, 0));
+		std_map.insert(std::make_pair(key, 0));
+	}
 
-// 	std::cout << (*ret.first).first << std::endl;
-// 	std::cout << (*ret.second).first << std::endl;
-// }
+	for ( ft_map_t::iterator it = ft_map.begin() ; it != ft_map.end() ; ++it ){
+		ft_ret = ft_map.equal_range((*it).first);
+		std_ret = std_map.equal_range((*it).first);
+
+		_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test equal range - items [first]");
+		_assert_equal((*ft_ret.second).first, (*std_ret.second).first, "test equal range - items [second]");
+	}
+
+
+	ft_ret = ft_map.equal_range(100);
+	std_ret = std_map.equal_range(100);
+
+	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test equal range");
+	_assert_equal((*ft_ret.second).first, (*std_ret.second).first, "test equal range");
+}
 
 void test_map(){
 	// test_map_insert();
@@ -1042,7 +1068,7 @@ void test_map(){
 	// test_map_find();
 	// test_map_empty();
 	test_map_erase();
-	// test_map_equal_range();
+	test_map_equal_range();
 }
 
 int	main(void){
