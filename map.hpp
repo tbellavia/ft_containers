@@ -472,6 +472,19 @@ namespace ft
 			}
 
 			/**
+			 * Erase elements
+			 * 
+			 * Removes from the map container either a single element or a range of elements ([first,last)).
+			 * 
+			 * This effectively reduces the container size by the number of elements removed, which are destroyed.
+			 */
+			void erase(iterator first, iterator last){
+				while ( first != last ){
+					this->erase((*first++).first);
+				}
+			}
+
+			/**
 			 * Swap content
 			 * 
 			 * Exchanges the content of the container by the content of x, which is another map of the same type. 
@@ -553,6 +566,9 @@ namespace ft
 			 * 
 			 */
 			iterator begin(){
+				if ( m_root == NULL ){
+					return end();
+				}
 				return iterator( m_left_sentinel->parent );
 			}
 
@@ -566,6 +582,9 @@ namespace ft
 			 * 
 			 */
 			const_iterator begin() const {
+				if ( m_root == NULL ){
+					return end();
+				}
 				return const_iterator( m_left_sentinel->parent );
 			}
 
@@ -579,6 +598,9 @@ namespace ft
 			 * rbegin points to the element preceding the one that would be pointed to by member end.
 			 */ 
 			reverse_iterator rbegin() {
+				if ( m_root == NULL ){
+					return rend();
+				}
 				return reverse_iterator( m_right_sentinel->parent );
 			}
 
@@ -592,6 +614,9 @@ namespace ft
 			 * rbegin points to the element preceding the one that would be pointed to by member end.
 			 */
 			const_reverse_iterator rbegin() const {
+				if ( m_root == NULL ){
+					return rend();
+				}
 				return const_reverse_iterator( m_right_sentinel->parent );
 			}
 
@@ -743,7 +768,7 @@ namespace ft
 			rb_node *find_recursive_(const key_type &k){
 				rb_node *current = m_root;
 
-				while ( current != NULL ){
+				while ( current != NULL && !current->is_sentinel() ){
 					if ( k == current->data.first ){
 						return current;
 					}
@@ -773,6 +798,7 @@ namespace ft
 					}
 					rightmost->set_right(m_right_sentinel);
 				} else {
+					// Find the left most child
 					while ( successor->left != NULL && !successor->left->is_sentinel() ){
 						successor = successor->left;
 					}
@@ -780,10 +806,17 @@ namespace ft
 						successor->parent = target->parent;
 						successor->set_left(target->left);
 					} else {
-						successor->parent->left = NULL;
+						// If successor node has a child, then set the successor parent
+						// set this node as his new left child, otherwise, it is set to NULL.
+						if ( successor->right != NULL ){
+							successor->parent->set_left(successor->right);
+						} else {
+							successor->parent->left = NULL;
+						}
 						successor->assign( target );
 					}
 				}
+				// Set the parent to point to the new successor, otherwise root is set to NULL.
 				if ( target->parent != NULL ){
 					if ( target->is_left() ){
 						target->parent->set_left(successor);

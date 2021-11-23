@@ -1163,8 +1163,62 @@ void test_map_erase_key(){
 	}
 }
 
-void test_map_erase_range(){
+void test_map_erase_it(){
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	ft::map<int, int>::iterator		ft_it;
+	ft::map<int, int>				ft_map;
+	std::map<int, int>::iterator	std_it;
+	std::map<int, int>				std_map;
 
+	for ( int index = 0 ; index < 13 ; index++ ){
+		ft_map.insert(ft::make_pair(keys[index], 0));
+		std_map.insert(std::make_pair(keys[index], 0));
+	}
+
+	for ( int index = 0 ; index < 5 ; index++ ){
+		int key = (int[5]){4, 17, 15, 1, 12}[index];
+
+		ft_it = ft_map.find(key);
+		std_it = std_map.find(key);
+		ft_map.erase(ft_it);
+		std_map.erase(std_it);
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by iterator - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by iterator - items");
+	}
+}
+
+void test_map_erase_range(){
+	// Erase full range
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		ft_map.erase(ft_map.begin(), ft_map.end());
+		std_map.erase(std_map.begin(), std_map.end());
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by range - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range - items");
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		ft_map.erase(ft_map.begin(), ft_map.find(15));
+		std_map.erase(std_map.begin(), std_map.find(15));
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by range - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range - items");
+	}
 }
 
 void test_map_clear(){
@@ -1240,18 +1294,18 @@ void test_map_equal_range(){
 }
 
 void test_map(){
-	// test_map_insert();
-	// test_map_bracket_operator();
-	// test_map_find();
-	// test_map_empty();
-	// test_map_erase_it();
+	test_map_insert();
+	test_map_bracket_operator();
+	test_map_find();
+	test_map_empty();
+	test_map_erase_it();
 	test_map_erase_key();
-	// test_map_erase_range();
+	test_map_erase_range();
 	// test_map_equal_range();
 }
 
 int	main(void){
-	test_map();
 	// test_vector();
 	// test_stack();
+	test_map();
 }
