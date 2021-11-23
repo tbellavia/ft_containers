@@ -203,8 +203,8 @@ namespace ft
 				void assign( rb_node *node ){
 					if ( node ){
 						this->parent = node->parent;
-						this->left = node->left;
-						this->right = node->right;
+						this->set_left(node->left);
+						this->set_right(node->right);
 						this->color = node->color;
 					}
 				}
@@ -243,8 +243,11 @@ namespace ft
 				 * Call the delete operator of the node and deallocate memory.
 				 */
 				static void destroy_node( rb_node *node, allocator_type alloc = allocator_type() ){
-					alloc.destroy( node );
-					alloc.deallocate( node, 1 );
+					if ( node != NULL ){
+						alloc.destroy( node );
+						alloc.deallocate( node, 1 );
+						node = NULL;
+					}
 				}
 			};
 		
@@ -288,6 +291,8 @@ namespace ft
 
 			~map() {
 				clear();
+				rb_node::destroy_node(m_right_sentinel);
+				rb_node::destroy_node(m_left_sentinel);
 			}
 
 			/**
@@ -347,8 +352,10 @@ namespace ft
 			 * Removes all elements from the map container (which are destroyed), leaving the container with a size of 0.
 			 */
 			void clear() {
-				clear_recursive_(m_root);
-				m_root = NULL;
+				if ( m_root ){
+					clear_recursive_(m_root);
+					m_root = NULL;
+				}
 			}
 
 			/**
@@ -415,56 +422,24 @@ namespace ft
 			void erase(iterator position){
 				if ( position != this->end() ){
 					rb_node *target = position.base();
-
+					
 					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
 						// Go to the right subtree, then find the min (go to leftmost)
-						rb_node *min_node = target->right;
+						if ( target->left->is_sentinel() && target->right->is_sentinel() ){
+							m_root = NULL;
+						} else {
+							detach_node_(target);
+						}
+					}
+					else if ( target->left != NULL || target->right != NULL){
+						// Case 2, target has one child
+						rb_node *successor = (target->right != NULL) ? target->right : target->left;
 
-						// Find the leftmost child
-						while ( min_node->left != NULL ){
-							min_node = min_node->left;
-						}
-						if ( min_node->parent == target ){
-							min_node->assign(target);
-							if ( target->parent != NULL ){
-								if ( target->is_left() ){
-									target->parent->set_left(min_node);
-								} else {
-									target->parent->set_right(min_node);
-								}
-							} else {
-								m_root = min_node;
-							}
-							min_node->right = NULL;
-						} else {
-							min_node->parent->left = NULL;
-							min_node->assign(target);
-							if ( target->parent != NULL ){
-								if ( target->is_left() ){
-									target->parent->set_left(min_node);
-								} else {
-									target->parent->set_right(min_node);
-								}
-							} else {
-								m_root = min_node;
-							}
-						}
-					}
-					else if ( target->left != NULL ){
-						// Case 2, target has one child
 						if ( target->is_left() ){
-							target->parent->set_left(target->left);
+							target->parent->set_left(successor);
 						} else {
-							target->parent->set_right(target->left);
-						}
-					}
-					else if ( target->right != NULL ){
-						// Case 2, target has one child
-						if ( target->is_left() ){
-							target->parent->set_left(target->right);
-						} else {
-							target->parent->set_right(target->right);
+							target->parent->set_right(successor);
 						}
 					}
 					else {
@@ -476,6 +451,7 @@ namespace ft
 						}
 					}
 					rb_node::destroy_node( target );
+					m_size--;
 				}
 			}
 
@@ -757,7 +733,7 @@ namespace ft
 			}
 
 			void clear_recursive_(rb_node *current){
-				if ( current != NULL ){
+				if ( current != NULL && !current->is_sentinel() ){
 					clear_recursive_(current->left);
 					clear_recursive_(current->right);
 					rb_node::destroy_node(current);
@@ -778,6 +754,46 @@ namespace ft
 					}
 				}
 				return NULL;
+			}
+
+			void detach_node_(rb_node *target){
+				rb_node *rightmost;
+				rb_node *successor = target->right;
+
+				// If the min node is a sentinel node, then take the left child
+				// and set the sentinel node to the rightmost subtree.
+				if ( successor->is_sentinel() ){
+					successor = target->left;
+					successor->parent = target->parent;
+
+					rightmost = successor;
+					// Go to the right most node and set right sentinel
+					while ( rightmost->right != NULL ){
+						rightmost = rightmost->right;
+					}
+					rightmost->set_right(m_right_sentinel);
+				} else {
+					while ( successor->left != NULL && !successor->left->is_sentinel() ){
+						successor = successor->left;
+					}
+					if ( successor->parent == target ){
+						successor->parent = target->parent;
+						successor->set_left(target->left);
+					} else {
+						successor->parent->left = NULL;
+						successor->assign( target );
+					}
+				}
+				if ( target->parent != NULL ){
+					if ( target->is_left() ){
+						target->parent->set_left(successor);
+					} else {
+						target->parent->set_right(successor);
+					}
+				}
+				else {
+					m_root = successor;
+				}
 			}
 
 			void rotate_left_(rb_node *x){

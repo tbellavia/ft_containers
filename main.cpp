@@ -992,23 +992,209 @@ void test_map_empty(){
 	_assert_equal(ft_map.empty(), std_map.empty(), "test map empty");
 }
 
-void test_map_erase(){
-	int keys[10] = { 12, 5, 15, 3, 7, 13, 17, 1, 9, 19 };
+// void test_map_erase_it(){
+// 	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+// 	ft::map<int, int> ft_map;
+// 	std::map<int, int> std_map;
+
+// 	// Test erase node that does not exist - []
+// 	// ft_map.erase();
+
+// 	// Test erase one node - []
+// 	// Test erase leaf - []
+// 	// Test erase node with one child - []
+// 	// Test erase node with two children - []
+
+	
+// 	// ft_map.insert(ft::make_pair(12, 0));
+// 	// ft_map.debug_print_btree_structure();
+// 	// std::cout << "=================================================" << std::endl;
+
+
+// 	// ft_map.erase(15);
+// 	// ft_map.debug_print_btree_structure();
+// 	// std::cout << "=================================================" << std::endl;
+// 	// ft_map.erase();
+// 	// ft_map.debug_print_btree_structure();
+// 	// std::cout << "=================================================" << std::endl;
+// 	// // Try with the root node
+// 	// ft_map.erase(12);
+// 	// ft_map.debug_print_btree_structure();
+// 	// std::cout << "=================================================" << std::endl;
+// 	// ft_map.erase(25);
+// 	// ft_map.debug_print_btree_structure();
+// 	// std::cout << "=================================================" << std::endl;
+// }
+
+void test_map_erase_key(){
+	// Test without preserving the tree
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+		_assert_equal(ft_map.erase(10000), std_map.erase(10000), "test map erase by key (inexistent node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (inexistent node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (inexistent node) - items");
+
+		// Test erase leaf - []
+		_assert_equal(ft_map.erase(4), std_map.erase(4), "test map erase by key (leaf node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (leaf node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (leaf node) - items");
+
+		// Test erase node with one child - []
+		_assert_equal(ft_map.erase(17), std_map.erase(17), "test map erase by key (one child node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (one child node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (one child node) - items");
+
+		// Test erase node with two children - []
+		_assert_equal(ft_map.erase(15), std_map.erase(15), "test map erase by key (two children node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (two children node) - size");
+
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (two children node) - items");
+
+		// Test erase node with sentinel node
+		_assert_equal(ft_map.erase(1), std_map.erase(1), "test map erase by key (sentinel node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (sentinel node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (sentinel node) - items");
+
+
+		// Test erase root node
+		_assert_equal(ft_map.erase(12), std_map.erase(12), "test map erase by key (root node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (root node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (root node) - items");
+	}
+	// Test preserving the tree
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+		_assert_equal(ft_map.erase(10000), std_map.erase(10000), "test map erase by key (inexistent node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (inexistent node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (inexistent node) - items");
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+		_assert_equal(ft_map.erase(4), std_map.erase(4), "test map erase by key (leaf node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (leaf node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (leaf node) - items");
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+		_assert_equal(ft_map.erase(17), std_map.erase(17), "test map erase by key (one child node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (one child node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (one child node) - items");
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+		_assert_equal(ft_map.erase(15), std_map.erase(15), "test map erase by key (Two children node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (Two children node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (Two children node) - items");
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+		_assert_equal(ft_map.erase(1), std_map.erase(1), "test map erase by key (node with sentinel child) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (node with sentinel child) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (node with sentinel child) - items");
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+		_assert_equal(ft_map.erase(12), std_map.erase(12), "test map erase by key (root node) - return value");
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by key (root node) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by key (root node) - items");
+	}
+}
+
+void test_map_erase_range(){
+
+}
+
+void test_map_clear(){
 	ft::map<int, int> ft_map;
 	std::map<int, int> std_map;
 
-	for ( int index = 0 ; index < 10 ; index++ ){
-		ft_map.insert(ft::make_pair(keys[index], index));
-		std_map.insert(std::make_pair(keys[index], index));
+	// Test with empty
+	ft_map.clear();
+	std_map.clear();
+	_assert_equal(ft_map.size(), std_map.size(), "test map clear - size");
+	_assert_equal(ft_map.empty(), std_map.empty(), "test map clear - empty");
+	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
+
+	// Test with only one node
+	ft_map.insert(ft::make_pair(0, 0));
+	std_map.insert(std::make_pair(0, 0));
+	ft_map.clear();
+	std_map.clear();
+	_assert_equal(ft_map.size(), std_map.size(), "test map clear - size");
+	_assert_equal(ft_map.empty(), std_map.empty(), "test map clear - empty");
+	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
+
+	// Test with multiple nodes
+	for ( int i = 0 ; i < 10 ; i++ ){
+		ft_map.insert(ft::make_pair(i, 0));
+		std_map.insert(std::make_pair(i, 0));
 	}
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	// ft_map.erase(15);
-	// ft_map.debug_print_btree_structure();
-	// std::cout << "=================================================" << std::endl;
-	// ft_map.erase();
-	// ft_map.debug_print_btree_structure();
-	// std::cout << "=================================================" << std::endl;
+	_assert_equal(ft_map.size(), std_map.size(), "test map clear - size");
+	_assert_equal(ft_map.empty(), std_map.empty(), "test map clear - empty");
+	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
 }
 
 // template<typename T>
@@ -1021,31 +1207,36 @@ void test_map_erase(){
 // };
 
 void test_map_equal_range(){
-	typedef ft::map<int, int> ft_map_t;
-	typedef std::map<int, int> std_map_t;
+	typedef ft::map<int, int>	ft_map_t;
+	typedef std::map<int, int>	std_map_t;
+
 	ft_map_t ft_map;
 	std_map_t std_map;
 
-	ft::pair<ft_map_t::iterator, ft_map_t::iterator>	f_ret;
-	std::pair<std_map_t::iterator, std_map_t::iterator>	s_ret;
+	ft::pair<ft_map_t::iterator, ft_map_t::iterator> ft_ret;
+	std::pair<std_map_t::iterator, std_map_t::iterator> std_ret;
 
 	for ( int index = 0 ; index < 8 ; index++ ){
 		int key = (int[8]){10, 5, 19, 25, 20, 30, 19, 23}[index];
-
-		ft_map.insert(
-			ft::make_pair(key, 1)
-		);
-
-		std_map.insert(
-			std::make_pair(key, 1)
-		);
+		
+		ft_map.insert(ft::make_pair(key, 0));
+		std_map.insert(std::make_pair(key, 0));
 	}
 
-	f_ret = ft_map.equal_range(25);
-	s_ret = std_map.equal_range(25);
+	for ( ft_map_t::iterator it = ft_map.begin() ; it != ft_map.end() ; ++it ){
+		ft_ret = ft_map.equal_range((*it).first);
+		std_ret = std_map.equal_range((*it).first);
 
-	_assert_equal((*f_ret.first).first, (*s_ret.first).first, "test assert equal range");
-	_assert_equal((*f_ret.second).first, (*s_ret.second).first, "test assert equal range");
+		_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test equal range - items [first]");
+		_assert_equal((*ft_ret.second).first, (*std_ret.second).first, "test equal range - items [second]");
+	}
+
+
+	ft_ret = ft_map.equal_range(100);
+	std_ret = std_map.equal_range(100);
+
+	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test equal range");
+	_assert_equal((*ft_ret.second).first, (*std_ret.second).first, "test equal range");
 }
 
 void test_map(){
@@ -1053,8 +1244,10 @@ void test_map(){
 	// test_map_bracket_operator();
 	// test_map_find();
 	// test_map_empty();
-	// test_map_erase();
-	test_map_equal_range();
+	// test_map_erase_it();
+	test_map_erase_key();
+	// test_map_erase_range();
+	// test_map_equal_range();
 }
 
 int	main(void){

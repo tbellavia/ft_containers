@@ -48,3 +48,13 @@
 
 - Map :
 	- Add unit test for find function member
+
+[Tuesday 23 November]
+
+- Map :
+	- Clear :
+		- Refactor clear so that it does not destroy sentinel node
+	- Erase :
+		- Change setting of children nodes because children wasn't setting their parent
+	- Destructor :
+		- Add erase sentinel nodes
