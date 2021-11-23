@@ -243,8 +243,11 @@ namespace ft
 				 * Call the delete operator of the node and deallocate memory.
 				 */
 				static void destroy_node( rb_node *node, allocator_type alloc = allocator_type() ){
-					alloc.destroy( node );
-					alloc.deallocate( node, 1 );
+					if ( node != NULL ){
+						alloc.destroy( node );
+						alloc.deallocate( node, 1 );
+						node = NULL;
+					}
 				}
 			};
 		
@@ -347,8 +350,13 @@ namespace ft
 			 * Removes all elements from the map container (which are destroyed), leaving the container with a size of 0.
 			 */
 			void clear() {
-				clear_recursive_(m_root);
-				m_root = NULL;
+				if ( m_root == NULL ){
+					rb_node::destroy_node(m_right_sentinel);
+					rb_node::destroy_node(m_left_sentinel);
+				} else {
+					clear_recursive_(m_root);
+					m_root = NULL;
+				}
 			}
 
 			/**
@@ -415,8 +423,11 @@ namespace ft
 			void erase(iterator position){
 				if ( position != this->end() ){
 					rb_node *target = position.base();
-
-					if ( target->left != NULL && target->right != NULL ){
+					
+					if ( target->left->is_sentinel() && target->right->is_sentinel() ){
+						m_root = NULL;
+					}
+					else if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
 						// Go to the right subtree, then find the min (go to leftmost)
 						detach_node_(target);
@@ -440,6 +451,7 @@ namespace ft
 						}
 					}
 					rb_node::destroy_node( target );
+					m_size--;
 				}
 			}
 

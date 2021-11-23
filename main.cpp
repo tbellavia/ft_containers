@@ -997,27 +997,59 @@ void test_map_erase(){
 	ft::map<int, int> ft_map;
 	std::map<int, int> std_map;
 
-	for ( int index = 0 ; index < 13 ; index++ ){
-		ft_map.insert(ft::make_pair(keys[index], index));
-		std_map.insert(std::make_pair(keys[index], index));
-	}
+	ft_map.insert(ft::make_pair(12, 0));
 	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	// Try with a node with two children
-	ft_map.erase(30);
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	// Try with a node with only one child
-	ft_map.erase(17);
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	// Try with the root node
 	ft_map.erase(12);
 	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
-	ft_map.erase(25);
-	ft_map.debug_print_btree_structure();
-	std::cout << "=================================================" << std::endl;
+	// for ( int index = 0 ; index < 13 ; index++ ){
+	// 	ft_map.insert(ft::make_pair(keys[index], index));
+	// 	std_map.insert(std::make_pair(keys[index], index));
+	// }
+
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+	// // Try with a node with two children
+	// ft_map.erase(30);
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+	// // Try with a node with only one child
+	// ft_map.erase(17);
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+	// // Try with the root node
+	// ft_map.erase(12);
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+	// ft_map.erase(25);
+	// ft_map.debug_print_btree_structure();
+	// std::cout << "=================================================" << std::endl;
+}
+
+void test_map_clear(){
+	// Test with empty
+	ft::map<int, int> ft_map;
+	std::map<int, int> std_map;
+
+	ft_map.clear();
+	std_map.clear();
+	_assert_equal(ft_map.size(), std_map.size(), "test map clear - size");
+	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
+
+	// Test with only one node
+	ft_map.insert(ft::make_pair(0, 0));
+	std_map.insert(std::make_pair(0, 0));
+	ft_map.clear();
+	std_map.clear();
+	_assert_equal(ft_map.size(), std_map.size(), "test map clear - size");
+	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
+
+	// Test with multiple nodes
+	for ( int i = 0 ; i < 10 ; i++ ){
+		ft_map.insert(ft::make_pair(i, 0));
+		std_map.insert(std::make_pair(i, 0));
+	}
+	_assert_equal(ft_map.size(), std_map.size(), "test map clear - size");
+	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
 }
 
 // template<typename T>
@@ -1068,7 +1100,7 @@ void test_map(){
 	// test_map_find();
 	// test_map_empty();
 	test_map_erase();
-	test_map_equal_range();
+	// test_map_equal_range();
 }
 
 int	main(void){
