@@ -192,14 +192,6 @@ namespace ft
 					node->parent = this;
 				}
 
-				void set_right_sentinel( rb_node *sentinel ){
-					this->set_right(sentinel);
-				}
-
-				void set_left_sentinel( rb_node *sentinel ){
-					this->set_left(sentinel);
-				}
-
 				void assign( rb_node *node ){
 					if ( node ){
 						this->parent = node->parent;
@@ -321,8 +313,8 @@ namespace ft
 				if ( m_root == NULL ){
 					m_size++;
 					m_root = rb_node::create_node( val );
-					m_root->set_right_sentinel(m_right_sentinel);
-					m_root->set_left_sentinel(m_left_sentinel);
+					m_root->set_right(m_right_sentinel);
+					m_root->set_left(m_left_sentinel);
 					return ft::pair<iterator, bool>( iterator( m_root ), true );
 				}
 				ret = insert_recursive_(m_root, val);
@@ -369,11 +361,9 @@ namespace ft
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
 			iterator find(const key_type &k){
-				rb_node *found = find_recursive_(k);
+				iterator found = this->lower_bound(k);
 
-				if ( found == NULL )
-					return end();
-				return iterator( found );
+				return ( found == this->end() || (m_comp(k, (*found).first))) ? this->end() : found;
 			}
 
 			/**
@@ -387,11 +377,9 @@ namespace ft
 			 * Another member function, map::count, can be used to just check whether a particular key exists.
 			 */
 			const_iterator find(const key_type &k) const {
-				rb_node *found = find_recursive_(k);
+				const_iterator found = this->lower_bound(k);
 
-				if ( found == NULL )
-					return end();
-				return const_iterator( found );
+				return ( found == this->end() || (m_comp(k, (*found).first))) ? this->end() : found;
 			}
 
 			rb_node *get_max_node_(rb_node *node){
@@ -818,6 +806,20 @@ namespace ft
 				}
 			}
 
+			key_type &get_node_key_(rb_node *node){
+				if ( node == NULL ){
+					return key_type();
+				}
+				return node->data.first;
+			}
+
+			mapped_type &get_node_value_(rb_node *node){
+				if ( node == NULL ){
+					return mapped_type();
+				}
+				return node->data.second;
+			}
+
 			/**
 			 * 
 			 * Insert recursive
@@ -827,7 +829,7 @@ namespace ft
 			 * 
 			 */
 			ft::pair<iterator, bool> insert_recursive_(rb_node *current, const value_type &val){
-				if ( val.first == current->data.first ){
+				if ( this->is_equal_key_(val.first, current->data.first) ){
 					return ft::pair<iterator, bool>( iterator( current ), false );
 				}
 				if ( m_comp( val.first, current->data.first ) ){
@@ -838,7 +840,7 @@ namespace ft
 						rb_node *node = rb_node::create_node( val, current );
 
 						current->left = node;
-						node->set_left_sentinel(m_left_sentinel);
+						node->set_left(m_left_sentinel);
 						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {
 						return insert_recursive_(current->left, val);
@@ -850,7 +852,7 @@ namespace ft
 						rb_node *node = rb_node::create_node( val, current );
 
 						current->right = node;
-						node->set_right_sentinel(m_right_sentinel);
+						node->set_right(m_right_sentinel);
 						return ft::pair<iterator, bool>( iterator( node ), true );
 					} else {
 						return insert_recursive_(current->right, val);
@@ -928,6 +930,10 @@ namespace ft
 				else {
 					m_root = successor;
 				}
+			}
+
+			bool is_equal_key_(const key_type &a, const key_type &b){
+				return !m_comp(a, b) && !m_comp(b, a);
 			}
 
 			void rotate_left_(rb_node *x){
