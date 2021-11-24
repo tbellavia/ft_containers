@@ -686,26 +686,33 @@ namespace ft
 			 * to that element, whereas upper_bound returns an iterator pointing to the next element.
 			 */
 			iterator upper_bound(const key_type &k){
-				return end();
+				rb_node *y = NULL;
+				rb_node *x = m_root;
+
+				while ( x != NULL && !x->is_sentinel() ){
+					if ( m_comp(k, x->data.first) ){
+						y = x;
+						x = x->left;
+					} else {
+						x = x->right;
+					}
+				}
+				return (y == NULL) ? this->end() : iterator(y);
 			}
 
-			/**
-			 * Return iterator to upper bound
-			 * 
-			 * Returns an iterator pointing to the first element in the container whose key is considered to go after k.
-			 * 
-			 * The function uses its internal comparison object (key_comp) to determine this, returning an iterator to 
-			 * the first element for which key_comp(k,element_key) would return true.
-			 * 
-			 * If the map class is instantiated with the default comparison type (less), the function returns an iterator 
-			 * to the first element whose key is greater than k.
-			 * 
-			 * A similar member function, lower_bound, has the same behavior as upper_bound, except in the case that the 
-			 * map contains an element with a key equivalent to k: In this case lower_bound returns an iterator pointing 
-			 * to that element, whereas upper_bound returns an iterator pointing to the next element.
-			 */
 			const_iterator upper_bound(const key_type &k) const {
-				return end();
+				rb_node *y = NULL;
+				rb_node *x = m_root;
+
+				while ( x != NULL && !x->is_sentinel() ){
+					if ( m_comp(k, x->data.first) ){
+						y = x;
+						x = x->left;
+					} else {
+						x = x->right;
+					}
+				}
+				return (y == NULL) ? this->end() : const_iterator(y);
 			}
 
 			/**
@@ -720,11 +727,33 @@ namespace ft
 			 * A similar member function, upper_bound, has the same behavior as lower_bound, except in the case that the map contains an element with a key equivalent to k: In this case, lower_bound returns an iterator pointing to that element, whereas upper_bound returns an iterator pointing to the next element.
 			 */
 			iterator lower_bound(const key_type &k){
-				return end();
+				rb_node *y = NULL;
+				rb_node *x = m_root;
+
+				while ( x != NULL && !x->is_sentinel() ){
+					if ( !m_comp(x->data.first, k) ){
+						y = x;
+						x = x->left;
+					} else {
+						x = x->right;
+					}
+				}
+				return (y == NULL) ? this->end() : iterator(y);
 			}
 
 			const_iterator lower_bound(const key_type &k) const {
-				return end();
+				rb_node *y = NULL;
+				rb_node *x = m_root;
+
+				while ( x != NULL && !x->is_sentinel() ){
+					if ( !m_comp(x->data.first, k) ){
+						y = x;
+						x = x->left;
+					} else {
+						x = x->right;
+					}
+				}
+				return (y == NULL) ? this->end() : const_iterator(y);
 			}
 
 
@@ -742,11 +771,11 @@ namespace ft
 			 * (i.e., no matter the order in which the keys are passed as arguments).
 			 */
 			ft::pair<iterator, iterator> equal_range(const key_type& k) {
-				return ft::make_pair( this->lower_bound(k), this->upper_bound(k) );
+				return ft::pair<iterator, iterator>( this->lower_bound(k), this->upper_bound(k) );
 			}
 
 			ft::pair<const_iterator, const_iterator> equal_range(const key_type& k) const {
-				return ft::make_pair( this->lower_bound(k), this->upper_bound(k) );
+				return ft::pair<const_iterator, const_iterator>( this->lower_bound(k), this->upper_bound(k) );
 			}
 
 

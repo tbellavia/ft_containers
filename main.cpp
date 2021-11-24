@@ -1289,37 +1289,163 @@ void test_map_clear(){
 	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
 }
 
+void test_map_upper_bound(){
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int>::iterator 	f_upper_bound;
+		std::map<int, int>::iterator	s_upper_bound;
+		ft::map<int, int>				ft_map;
+		std::map<int, int>				std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			f_upper_bound = ft_map.upper_bound(keys[index]);
+			s_upper_bound = std_map.upper_bound(keys[index]);
+			// If iterator point to end, check that std::map also point to end
+			// Otherwise, check the value.
+			if ( f_upper_bound == ft_map.end() ){
+				_assert_equal((f_upper_bound == ft_map.end()) == (s_upper_bound == std_map.end()), "test map upper bound - existent key");
+			} else {
+				_assert_equal((*f_upper_bound).first, (*s_upper_bound).first, "test map upper bound - existent key");
+			}
+		}
+		for ( int index = 0 ; index < 5 ; index++ ){
+			int key = (int[5]){-1, 8, 1000, 16, 20}[index];
+
+			f_upper_bound = ft_map.upper_bound(key);
+			s_upper_bound = std_map.upper_bound(key);
+			// If iterator point to end, check that std::map also point to end
+			// Otherwise, check the value.
+			if ( f_upper_bound == ft_map.end() ){
+				_assert_equal((f_upper_bound == ft_map.end()) == (s_upper_bound == std_map.end()), "test map upper bound - inexistent key");
+			} else {
+				_assert_equal((*f_upper_bound).first, (*s_upper_bound).first, "test map upper bound - inexistent key");
+			}
+		}
+	}
+	{
+		ft::map<int, int>	ft_map;
+		std::map<int, int>	std_map;
+
+		_assert_equal((ft_map.upper_bound(10) == ft_map.end()) == (std_map.upper_bound(10) == std_map.end()), "test map upper bound - empty map");
+	}
+}
+
+void test_map_lower_bound(){
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int>::iterator 	f_lower_bound;
+		std::map<int, int>::iterator	s_lower_bound;
+		ft::map<int, int>				ft_map;
+		std::map<int, int>				std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			f_lower_bound = ft_map.upper_bound(keys[index]);
+			s_lower_bound = std_map.upper_bound(keys[index]);
+			// If iterator point to end, check that std::map also point to end
+			// Otherwise, check the value.
+			if ( f_lower_bound == ft_map.end() ){
+				_assert_equal((f_lower_bound == ft_map.end()) == (s_lower_bound == std_map.end()), "test map upper bound - existent key");
+			} else {
+				_assert_equal((*f_lower_bound).first, (*s_lower_bound).first, "test map upper bound - existent key");
+			}
+		}
+		for ( int index = 0 ; index < 5 ; index++ ){
+			int key = (int[5]){-1, 8, 1000, 16, 20}[index];
+
+			f_lower_bound = ft_map.lower_bound(key);
+			s_lower_bound = std_map.lower_bound(key);
+			// If iterator point to end, check that std::map also point to end
+			// Otherwise, check the value.
+			if ( f_lower_bound == ft_map.end() ){
+				_assert_equal((f_lower_bound == ft_map.end()) == (s_lower_bound == std_map.end()), "test map lower bound - inexistent key");
+			} else {
+				_assert_equal((*f_lower_bound).first, (*s_lower_bound).first, "test map lower bound - inexistent key");
+			}
+		}
+	}
+	{
+		ft::map<int, int>	ft_map;
+		std::map<int, int>	std_map;
+
+		_assert_equal((ft_map.lower_bound(10) == ft_map.end()) == (std_map.lower_bound(10) == std_map.end()), "test map lower bound - empty map");
+	}
+}
+
 void test_map_equal_range(){
-	typedef ft::map<int, int>	ft_map_t;
-	typedef std::map<int, int>	std_map_t;
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::pair<ft::map<int,int>::iterator, ft::map<int,int>::iterator>	f_equal_range;
+		std::pair<std::map<int,int>::iterator, std::map<int,int>::iterator>	s_equal_range;
+		ft::map<int, int>													ft_map;
+		std::map<int, int>													std_map;
 
-	ft_map_t ft_map;
-	std_map_t std_map;
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
 
-	ft::pair<ft_map_t::iterator, ft_map_t::iterator> ft_ret;
-	std::pair<std_map_t::iterator, std_map_t::iterator> std_ret;
+		// Test with key that exists
+		for ( int index = 0 ; index < 13 ; index++ ){
+			f_equal_range = ft_map.equal_range(keys[index]);
+			s_equal_range = std_map.equal_range(keys[index]);
 
-	for ( int index = 0 ; index < 8 ; index++ ){
-		int key = (int[8]){10, 5, 19, 25, 20, 30, 19, 23}[index];
-		
-		ft_map.insert(ft::make_pair(key, 0));
-		std_map.insert(std::make_pair(key, 0));
+			// If iterator point to end, check that std::map also point to end
+			// Otherwise, check the value.
+			if ( f_equal_range.first == ft_map.end() ){
+				_assert_equal(s_equal_range.first == std_map.end(), "test map equal range - existent key");
+			} else {
+				_assert_equal((*f_equal_range.first).first, (*f_equal_range.first).first, "test map equal range - existent key");
+			}
+			if ( f_equal_range.second == ft_map.end() ){
+				_assert_equal(s_equal_range.second == std_map.end(), "test map equal range - existent key");
+			} else {
+				_assert_equal((*f_equal_range.second).first, (*f_equal_range.second).first, "test map equal range - existent key");
+			}
+		}
+		// Test with key that does not exists
+		for ( int index = 0 ; index < 5 ; index++ ){
+			int key = (int[5]){-1, 8, 1000, 16, 20}[index];
+
+			f_equal_range = ft_map.equal_range(key);
+			s_equal_range = std_map.equal_range(key);
+
+			// If iterator point to end, check that std::map also point to end
+			// Otherwise, check the value.
+			if ( f_equal_range.first == ft_map.end() ){
+				_assert_equal(s_equal_range.first == std_map.end(), "test map equal range - inexistent key");
+			} else {
+				_assert_equal((*f_equal_range.first).first, (*f_equal_range.first).first, "test map equal range - inexsitent key");
+			}
+			if ( f_equal_range.second == ft_map.end() ){
+				_assert_equal(s_equal_range.second == std_map.end(), "test map equal range - inexistent key");
+			} else {
+				_assert_equal((*f_equal_range.second).first, (*f_equal_range.second).first, "test map equal range - inexsitent key");
+			}
+		}
 	}
+	{
+		ft::pair<ft::map<int,int>::iterator, ft::map<int,int>::iterator>	f_equal_range;
+		std::pair<std::map<int,int>::iterator, std::map<int,int>::iterator>	s_equal_range;
+		ft::map<int, int>													ft_map;
+		std::map<int, int>													std_map;
 
-	for ( ft_map_t::iterator it = ft_map.begin() ; it != ft_map.end() ; ++it ){
-		ft_ret = ft_map.equal_range((*it).first);
-		std_ret = std_map.equal_range((*it).first);
-
-		_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test equal range - items [first]");
-		_assert_equal((*ft_ret.second).first, (*std_ret.second).first, "test equal range - items [second]");
+		f_equal_range = ft_map.equal_range(10);
+		s_equal_range = std_map.equal_range(10);
+		_assert_equal(
+			(f_equal_range.first == ft_map.end() && f_equal_range.second == ft_map.end()), 
+			(s_equal_range.first == std_map.end() && s_equal_range.second == std_map.end()),
+			"test map equal range - empty map");
 	}
-
-
-	ft_ret = ft_map.equal_range(100);
-	std_ret = std_map.equal_range(100);
-
-	_assert_equal((*ft_ret.first).first, (*std_ret.first).first, "test equal range");
-	_assert_equal((*ft_ret.second).first, (*std_ret.second).first, "test equal range");
 }
 
 void test_map(){
@@ -1330,7 +1456,9 @@ void test_map(){
 	test_map_erase_it();
 	test_map_erase_key();
 	test_map_erase_range();
-	// test_map_equal_range();
+	test_map_lower_bound();
+	test_map_upper_bound();
+	test_map_equal_range();
 }
 
 int	main(void){
