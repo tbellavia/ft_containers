@@ -323,6 +323,13 @@ namespace ft
 				return ret;
 			}
 
+			template<class InputIterator>
+			void insert(InputIterator first, InputIterator last){
+				for ( ; first != last ; ++first ){
+					this->insert(*first);
+				}
+			}
+
 			/**
 			 * Access element
 			 * 
@@ -380,15 +387,6 @@ namespace ft
 				const_iterator found = this->lower_bound(k);
 
 				return ( found == this->end() || (m_comp(k, (*found).first))) ? this->end() : found;
-			}
-
-			rb_node *get_max_node_(rb_node *node){
-				if ( node == NULL )
-					return NULL;
-				while ( node->right != NULL ){
-					node = node->right;
-				}
-				return node;
 			}
 
 			/**
@@ -744,7 +742,6 @@ namespace ft
 				return (y == NULL) ? this->end() : const_iterator(y);
 			}
 
-
 			/**
 			 * Get range of equal elements
 			 * 
@@ -766,6 +763,18 @@ namespace ft
 				return ft::pair<const_iterator, const_iterator>( this->lower_bound(k), this->upper_bound(k) );
 			}
 
+			/**
+			 * Count elements with a specific key
+			 * 
+			 * Searches the container for elements with a key equivalent to k and returns the number of matches.
+			 * 
+			 * Because all elements in a map container are unique, the function can only return 1 (if the element is found) or zero (otherwise).
+			 * Two keys are considered equivalent if the container's comparison object returns false reflexively 
+			 * (i.e., no matter the order in which the keys are passed as arguments).
+			 */
+			size_type count(const key_type &k) const {
+				return this->find(k) != this->end();
+			}
 
 			/**
 			 * Get allocator

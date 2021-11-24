@@ -52,18 +52,18 @@ bool operator>=(const ft::pair<T1, T2> &x, const std::pair<T1, T2> &y){
 
 template<typename T>
 void _report_failure( T const &actual, T const &expected, std::string const &test_name ){
-	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
+	std::cout << COLOR_FAIL << "[KO] " << COLOR_RESET << ": " << test_name << std::endl;
 	std::cout << "\t" << "Expected : `" << expected << "` but got `" << actual << "`" << std::endl;
 }
 
 void _report_failure( std::string const &message, std::string const &test_name ){
-	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
+	std::cout << COLOR_FAIL << "[KO] " << COLOR_RESET << ": " << test_name << std::endl;
 	std::cout << "\t" << message << std::endl;
 }
 
 template<typename T1, typename T2>
 void _report_failure_pair( T1 const &actual, T2 const &expected, std::string const &test_name ){
-	std::cout << COLOR_FAIL << "[FAIL] " << COLOR_RESET << ": " << test_name << std::endl;
+	std::cout << COLOR_FAIL << "[KO] " << COLOR_RESET << ": " << test_name << std::endl;
 	std::cout << "\t" << "Expected : `(" << expected.first << " : " << expected.second << 
 	")` but got `(" << actual.first << " : " << actual.second << ")`" << std::endl;
 }
@@ -948,6 +948,67 @@ void test_map_insert() {
 	// ft_map.debug_print_btree_structure();
 }
 
+void test_map_insert_range() {
+	// Test empty range
+	{
+		ft_pair_t	ft_pairs[1] = {{'a', 0}};
+		std_pair_t	std_pairs[1] = {{'a', 0}};
+		ft_map_t	ft_map;
+		std_map_t	std_map;
+
+		ft_map.insert(ft_pairs, ft_pairs);
+		std_map.insert(std_pairs, std_pairs);
+		_assert_equal(ft_map.size(), std_map.size(), "test map insert by range (empty range) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert by range (empty range) - items");
+	}
+	// Test non empty range
+	{
+		ft_pair_t	ft_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
+		std_pair_t	std_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
+		ft_map_t	ft_map;
+		std_map_t	std_map;
+
+		ft_map.insert(ft_pairs, ft_pairs + 10);
+		std_map.insert(std_pairs, std_pairs + 10);
+		_assert_equal(ft_map.size(), std_map.size(), "test map insert by range (non empty range) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert by range (non empty range) - items");
+	}
+	// Test range with repetitive keys
+	{
+		ft_pair_t	ft_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'a', 0}, {'o', 0}, {'n', 0}, {'b', 0}, {'m', 0}, {'v', 0}, {'z', 0}};
+		std_pair_t	std_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'a', 0}, {'o', 0}, {'n', 0}, {'b', 0}, {'m', 0}, {'v', 0}, {'z', 0}};
+		ft_map_t	ft_map;
+		std_map_t	std_map;
+
+		ft_map.insert(ft_pairs, ft_pairs + 10);
+		std_map.insert(std_pairs, std_pairs + 10);
+		_assert_equal(ft_map.size(), std_map.size(), "test map insert by range (range with repetitive keys) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert by range (range with repetitive keys) - items");
+	}
+	// Test three case with same map
+	{
+		ft_pair_t	ft_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
+		std_pair_t	std_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
+		ft_map_t	ft_map;
+		std_map_t	std_map;
+
+		ft_map.insert(ft_pairs, ft_pairs);
+		std_map.insert(std_pairs, std_pairs);
+		_assert_equal(ft_map.size(), std_map.size(), "test map insert by range (empty range) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert by range (empty range) - items");
+
+		ft_map.insert(ft_pairs, ft_pairs + 5);
+		std_map.insert(std_pairs, std_pairs + 5);
+		_assert_equal(ft_map.size(), std_map.size(), "test map insert by range (non empty range) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert by range (non empty range) - items");
+
+		ft_map.insert(ft_pairs + 5, ft_pairs + 10);
+		std_map.insert(std_pairs + 5, std_pairs + 10);
+		_assert_equal(ft_map.size(), std_map.size(), "test map insert by range (non empty range) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert by range (non empty range) - items");
+	}
+}
+
 void test_map_bracket_operator(){
 	ft::map<char, int> ft_map;
 	std::map<char, int> std_map;
@@ -1000,40 +1061,6 @@ void test_map_empty(){
 	std_map.insert(std::make_pair(1, 1));
 	_assert_equal(ft_map.empty(), std_map.empty(), "test map empty");
 }
-
-// void test_map_erase_it(){
-// 	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
-// 	ft::map<int, int> ft_map;
-// 	std::map<int, int> std_map;
-
-// 	// Test erase node that does not exist - []
-// 	// ft_map.erase();
-
-// 	// Test erase one node - []
-// 	// Test erase leaf - []
-// 	// Test erase node with one child - []
-// 	// Test erase node with two children - []
-
-	
-// 	// ft_map.insert(ft::make_pair(12, 0));
-// 	// ft_map.debug_print_btree_structure();
-// 	// std::cout << "=================================================" << std::endl;
-
-
-// 	// ft_map.erase(15);
-// 	// ft_map.debug_print_btree_structure();
-// 	// std::cout << "=================================================" << std::endl;
-// 	// ft_map.erase();
-// 	// ft_map.debug_print_btree_structure();
-// 	// std::cout << "=================================================" << std::endl;
-// 	// // Try with the root node
-// 	// ft_map.erase(12);
-// 	// ft_map.debug_print_btree_structure();
-// 	// std::cout << "=================================================" << std::endl;
-// 	// ft_map.erase(25);
-// 	// ft_map.debug_print_btree_structure();
-// 	// std::cout << "=================================================" << std::endl;
-// }
 
 void test_map_erase_key(){
 	// Test without preserving the tree
@@ -1448,8 +1475,25 @@ void test_map_equal_range(){
 	}
 }
 
+void test_map_count(){
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	ft::map<int, int>	ft_map;
+	std::map<int, int>	std_map;
+
+	_assert_equal(ft_map.count(12), std_map.count(12), "test map count (empty map) - result");
+	for ( int index = 0 ; index < 13 ; index++ ){
+		ft_map.insert(ft::make_pair(keys[index], 0));
+		std_map.insert(std::make_pair(keys[index], 0));
+	}
+	for ( int index = 0 ; index < 13 ; index++ ){
+		_assert_equal(ft_map.count(keys[index]), std_map.count(keys[index]), "test map count (existent key) - result");
+	}
+	_assert_equal(ft_map.count(1000), std_map.count(1000), "test map count (inexistent key) - result");
+}
+
 void test_map(){
 	test_map_insert();
+	test_map_insert_range();
 	test_map_bracket_operator();
 	test_map_find();
 	test_map_empty();
@@ -1459,6 +1503,7 @@ void test_map(){
 	test_map_lower_bound();
 	test_map_upper_bound();
 	test_map_equal_range();
+	test_map_count();
 }
 
 int	main(void){
