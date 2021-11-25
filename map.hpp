@@ -43,16 +43,14 @@ namespace ft
 	class map {
 		private:
 			/**
-			 * Forward declaration
+			 * Forward declarations
 			 */
-			struct rb_node;
+			struct	rb_node;
 		public:
 			typedef Key													key_type;
 			typedef T													mapped_type;
 			typedef ft::pair<const key_type, mapped_type>				value_type;
 			typedef Compare												key_compare;
-			// TODO: Add value_comp
-			// typedef value_compare							
 			typedef Alloc												allocator_type;
 			typedef typename allocator_type::reference					reference;
 			typedef typename allocator_type::const_reference			const_reference;
@@ -64,6 +62,20 @@ namespace ft
 			typedef ft::map_::const_bidirectional_iterator<rb_node>		const_iterator;
 			typedef ft::map_::reverse_iterator<rb_node>					reverse_iterator;
 			typedef ft::map_::const_reverse_iterator<rb_node>			const_reverse_iterator;
+
+			class value_compare : std::binary_function<value_type, value_type, bool> {
+				friend class map;
+				protected:
+					Compare m_comp;
+					value_compare(Compare comp) : m_comp(comp) {}
+				public:
+					typedef bool result_type;
+					typedef value_type first_argument_type;
+					typedef value_type second_argument_type;
+					bool operator()(const value_type &x, const value_type &y) const {
+						return m_comp(x.first, y.first);
+					}
+			};
 		/**
 		 * Private declarations.
 		 * 
@@ -785,6 +797,42 @@ namespace ft
 				return m_alloc;
 			}
 
+			/**
+			 * Return value comparison object
+			 * 
+			 * Returns a comparison object that can be used to compare two elements to get whether the key of the first one goes before the second.
+			 * 
+			 * The arguments taken by this function object are of member type value_type (defined in map as an alias of pair<const key_type,mapped_type>),
+			 * but the mapped_type part of the value is not taken into consideration in this comparison.
+			 * 
+			 * The comparison object returned is an object of the member type map::value_compare, which is a nested class that uses the internal comparison
+			 * object to generate the appropriate comparison functional class.
+			 * 
+			 * The public member of this comparison class returns true if the key of the first argument is considered to go before that of the second 
+			 * (according to the strict weak ordering specified by the container's comparison object, key_comp), and false otherwise.
+			 * Notice that value_compare has no public constructor, therefore no objects can be directly created from this nested class outside map members.
+			 */
+			value_compare value_comp() const {
+				return value_compare(m_comp);
+			}
+
+			/**
+			 * Return key comparison object
+			 * 
+			 * Returns a copy of the comparison object used by the container to compare keys.
+			 * 
+			 * The comparison object of a map object is set on construction. Its type (member key_compare) is the third template parameter of the map template.
+			 * By default, this is a less object, which returns the same as operator<.
+			 * 
+			 * This object determines the order of the elements in the container: it is a function pointer or a function object that takes two arguments of the
+			 * same type as the element keys, and returns true if the first argument is considered to go before the second in the strict weak ordering it defines,
+			 * and false otherwise.
+			 * 
+			 * Two keys are considered equivalent if key_comp returns false reflexively (i.e., no matter the order in which the keys are passed as arguments).
+			 */
+			key_compare key_comp() const {
+				return m_comp;
+			}
 
 			/**
 			 * Print the binary tree structure.
@@ -797,7 +845,6 @@ namespace ft
 			void debug_print_btree_structure(){
 				debug_print_btree_structure_(m_root, 0);
 			}
-
 
 		/**
 		 * Private implementations.
