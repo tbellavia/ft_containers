@@ -342,6 +342,54 @@ namespace ft
 				}
 			}
 
+			iterator insert(iterator position, const value_type &val){
+				iterator					curr = position;
+				iterator					next = position;
+				ft::pair<iterator, bool>	result;
+
+				// If the position point to the end, insert normally
+				if ( size() == 0 || position == this->end() || position == (--this->begin()) ){
+					return this->insert(val).first;
+				}
+				// Otherwise, try another strategy, check that the val is within the range (position, position + 1)
+				// until a valid range is found, where node will be inserted.
+				// Check if greater or lower to determine the direction
+				if ( is_equal_val_(*position, val) ){
+					return position;
+				}
+				if ( this->value_comp()(*position, val) ){
+					// Go to right
+					while ( next != this->end() ) {
+						curr = next++;
+						
+						// Not found, insert at the end
+						if ( next == this->end() )
+							break;
+						if ( is_equal_val_(*curr, val) )
+							return curr;
+						if ( this->value_comp()(*curr, val) && this->value_comp()(val, *next) )
+							break;
+					}
+				} else {
+					// Go to left
+					while ( next != this->begin() ){
+						curr = next--;
+						
+						// Not found, insert at the end
+						if ( next == this->begin() )
+							break;
+						if ( is_equal_val_(*curr, val) )
+							return curr;
+						if ( this->value_comp()(val, *curr) && this->value_comp()(*next, val) )
+							break;
+					}
+				}
+				result = insert_recursive_(curr.base(), val);
+				if ( result.second )
+					m_size++;
+				return result.first;
+			}
+
 			/**
 			 * Access element
 			 * 
@@ -990,6 +1038,10 @@ namespace ft
 
 			bool is_equal_key_(const key_type &a, const key_type &b){
 				return !m_comp(a, b) && !m_comp(b, a);
+			}
+
+			bool is_equal_val_(const value_type &a, const value_type &b){
+				return !m_comp(a.first, b.first) && !m_comp(b.first, a.first);
 			}
 
 			void rotate_left_(rb_node *x){
