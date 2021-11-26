@@ -131,8 +131,20 @@ void _assert_each_equal_pair( InputIt actual_first, InputIt actual_last,
 	}
 }
 
+void print_header(const std::string &header){
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>%*s%*s<<<<<<<<<<<<<<<<<<<<<<<<<<\n",
+        (int)(15 + header.length() / 2), header.c_str(), (int)(15 - header.length() / 2), "");
+}
+
+void print_subheader(const std::string &header){
+    printf("==========================%*s%*s==========================\n",
+        (int)(15 + header.length() / 2), header.c_str(), 
+        (int)(15 - header.length() / 2), "");
+}
+
 # define TEST_EACH_EQUAL(actual, expected, name) _assert_each_equal(actual.begin(), actual.end(), expected.begin(), expected.end(), name)
 # define TEST_EACH_EQUAL_PAIR(actual, expected, name) _assert_each_equal_pair(actual.begin(), actual.end(), expected.begin(), expected.end(), name)
+
 
 void test_vector_max_size() {
 	std::vector<int> s_vec;
@@ -1812,22 +1824,155 @@ void test_map_assignment_operator(){
 	}
 }
 
+void test_map_max_size(){
+	_assert_equal(ft::map<int, int>().max_size(), std::map<int, int>().max_size(), "test map max size (int, int) - result");
+	_assert_equal(ft::map<bool, int>().max_size(), std::map<bool, int>().max_size(), "test map max size (bool, int) - result");
+	_assert_equal(ft::map<char, int>().max_size(), std::map<char, int>().max_size(), "test map max size (char, int) - result");
+	_assert_equal(ft::map<std::string, int>().max_size(), std::map<std::string, int>().max_size(), "test map max size (std::string, int) - result");
+	_assert_equal(ft::map<std::string, std::string>().max_size(), std::map<std::string, std::string>().max_size(), "test map max size (std::string, std::string) - result");
+	_assert_equal(ft::map<ft::pair<int, int>,ft::pair<int, int>>().max_size(), std::map<ft::pair<int, int>,ft::pair<int, int>>().max_size(), "test map max size (ft::pair<int, int>, ft::pair<int, int>) - result");
+	_assert_equal(ft::map<std::pair<int, int>,std::pair<int, int>>().max_size(), std::map<std::pair<int, int>,std::pair<int, int>>().max_size(), "test map max size (std::pair<int, int>, std::pair<int, int>) - result");
+}
+
+void test_map_default_constructor(){
+	_assert_equal(ft::map<int, int>().empty(), std::map<int, int>().empty(), "test map default constructor - size");
+	_assert_equal(ft::map<int, int, Greater<int>>().empty(), std::map<int, int, Greater<int>>().empty(), "test map default constructor - size");
+}
+
+void test_map_range_constructor(){
+	// Lower empty (begin - end)
+	{
+		ft::map<int, int>	ft_map;
+		ft::map<int, int>	ft_range_map(ft_map.begin(), ft_map.end());
+		std::map<int, int>	std_map;
+		std::map<int, int>	std_range_map(std_map.begin(), std_map.end());
+
+		_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (empty) - size");
+		TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (empty) - items");
+	}
+	// Greater empty (begin - end)
+	{
+		ft::map<int, int, Greater<int>>		ft_map;
+		ft::map<int, int, Greater<int>>		ft_range_map(ft_map.begin(), ft_map.end());
+		std::map<int, int, Greater<int>>	std_map;
+		std::map<int, int, Greater<int>>	std_range_map(std_map.begin(), std_map.end());
+
+		_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (empty) - size");
+		TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (empty) - items");
+	}
+	// Lower full
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int>	ft_map;
+		std::map<int, int>	std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Begin - end
+		{
+			ft::map<int, int>	ft_range_map(ft_map.begin(), ft_map.end());
+			std::map<int, int>	std_range_map(std_map.begin(), std_map.end());
+
+			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - begin / end) - size");
+			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - begin / end) - items");
+		}
+		// Begin - find
+		{
+			ft::map<int, int>	ft_range_map(ft_map.begin(), ft_map.find(13));
+			std::map<int, int>	std_range_map(std_map.begin(), std_map.find(13));
+
+			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - begin / middle) - size");
+			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - begin / middle) - items");
+		}
+		// Find - end
+		{
+			ft::map<int, int>	ft_range_map(ft_map.find(13), ft_map.end());
+			std::map<int, int>	std_range_map(std_map.find(13), std_map.end());
+
+			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - middle / end) - size");
+			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - middle / end) - items");
+		}
+	}
+	// Greater full
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int, Greater<int>>		ft_map;
+		std::map<int, int, Greater<int>>	std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		// Begin - end
+		{
+			ft::map<int, int, Greater<int>>		ft_range_map(ft_map.begin(), ft_map.end());
+			std::map<int, int, Greater<int>>	std_range_map(std_map.begin(), std_map.end());
+
+			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - begin / end) - size");
+			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - begin / end) - items");
+		}
+		// Begin - find
+		{
+			ft::map<int, int, Greater<int>>		ft_range_map(ft_map.begin(), ft_map.find(13));
+			std::map<int, int, Greater<int>>	std_range_map(std_map.begin(), std_map.find(13));
+
+			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - begin / middle) - size");
+			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - begin / middle) - items");
+		}
+		// Find - end
+		{
+			ft::map<int, int, Greater<int>>		ft_range_map(ft_map.find(13), ft_map.end());
+			std::map<int, int, Greater<int>>	std_range_map(std_map.find(13), std_map.end());
+
+			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - middle / end) - size");
+			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - middle / end) - items");
+		}
+	}
+}
+
 void test_map(){
+	print_header("Map");
+	// Constructors
+	print_subheader("Constructors");
+	test_map_default_constructor();
 	test_map_copy_constructor();
+	test_map_range_constructor();
 	test_map_assignment_operator();
+
+	// Capacity
+	print_subheader("Capacity");
+	test_map_empty();
+	test_map_max_size();
+
+	// Iterators
+
+	// Element access
+	print_subheader("Element access");
+	test_map_bracket_operator();
+
+	// Modifiers
+	print_subheader("Modifiers");
 	test_map_insert();
 	test_map_insert_hint();
 	test_map_insert_range();
-	test_map_bracket_operator();
-	test_map_find();
-	test_map_empty();
 	test_map_erase_it();
 	test_map_erase_key();
 	test_map_erase_range();
+
+	// Operations
+	print_subheader("Operations");
+	test_map_find();
+	test_map_count();
 	test_map_lower_bound();
 	test_map_upper_bound();
 	test_map_equal_range();
-	test_map_count();
+
+	// Observers
+	print_subheader("Observers");
 	test_map_key_comp();
 	test_map_val_comp();
 }

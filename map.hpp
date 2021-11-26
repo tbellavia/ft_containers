@@ -212,6 +212,10 @@ namespace ft
 						this->color = node->color;
 					}
 				}
+				
+				size_type max_size() const {
+					return allocator_type().max_size();
+				}
 
 				static rb_node *create_node( allocator_type alloc = allocator_type() ){
 					rb_node *node = alloc.allocate( 1 );
@@ -641,7 +645,7 @@ namespace ft
 			 * allocate storage at any point before that size is reached.
 			 */
 			size_type max_size() const {
-				return ( m_alloc.max_size() );
+				return ( rb_node().max_size() );
 			}
 
 			/**

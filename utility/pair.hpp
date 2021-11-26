@@ -70,7 +70,7 @@ namespace ft {
 		 * Destroy the pair object
 		 * 
 		 */
-		virtual ~pair() { }
+		~pair() { }
 	};
 
 	template<class T1, class T2>
