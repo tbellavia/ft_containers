@@ -1678,7 +1678,143 @@ void test_map_val_comp(){
 	}
 }
 
+void test_map_copy_constructor(){
+	// Lower empty
+	{
+		ft::map<int, int>	ft_map;
+		ft::map<int, int>	ft_cpy_map(ft_map);
+		std::map<int, int>	std_map;
+		std::map<int, int>	std_cpy_map(std_map);
+
+		_assert_equal(ft_map.size(), ft_cpy_map.size(), "test map copy constructor (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map copy constructor (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_cpy_map, "test map copy constructor (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_cpy_map, std_map, "test map copy constructor (copy / standard) - items");
+	}
+	// Greater empty
+	{
+		ft::map<int, int, Greater<int>>		ft_map;
+		ft::map<int, int, Greater<int>>		ft_cpy_map(ft_map);
+		std::map<int, int, Greater<int>>	std_map;
+		std::map<int, int, Greater<int>>	std_cpy_map(std_map);
+
+		_assert_equal(ft_map.size(), ft_cpy_map.size(), "test map copy constructor (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map copy constructor (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_cpy_map, "test map copy constructor (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_cpy_map, std_map, "test map copy constructor (copy / standard) - items");
+	}
+	// Lower fill
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int>	ft_map;
+		std::map<int, int>	std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+		ft::map<int, int>	ft_cpy_map(ft_map);
+		std::map<int, int>	std_cpy_map(std_map);
+
+		_assert_equal(ft_map.size(), ft_cpy_map.size(), "test map copy constructor (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map copy constructor (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_cpy_map, "test map copy constructor (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_cpy_map, std_map, "test map copy constructor (copy / standard) - items");
+	}
+	// Greater fill
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int, Greater<int>>		ft_map;
+		std::map<int, int, Greater<int>>	std_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+		ft::map<int, int, Greater<int>>		ft_cpy_map(ft_map);
+		std::map<int, int, Greater<int>>	std_cpy_map(std_map);
+
+		_assert_equal(ft_map.size(), ft_cpy_map.size(), "test map copy constructor (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map copy constructor (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_cpy_map, "test map copy constructor (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_cpy_map, std_map, "test map copy constructor (copy / standard) - items");
+	}
+}
+
+void test_map_assignment_operator(){
+	// Lower empty
+	{
+		ft::map<int, int>	ft_map;
+		ft::map<int, int>	ft_assign_map;
+		std::map<int, int>	std_map;
+		std::map<int, int>	std_assign_map;
+
+		std_assign_map = std_map;
+		ft_assign_map = ft_map;
+		_assert_equal(ft_map.size(), ft_assign_map.size(), "test map assignment operator (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map assignment operator (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_assign_map, "test map assignment operator (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_assign_map, std_map, "test map assignment operator (copy / standard) - items");
+	}
+	// Greater empty
+	{
+		ft::map<int, int, Greater<int>>		ft_map;
+		ft::map<int, int, Greater<int>>		ft_assign_map;
+		std::map<int, int, Greater<int>>	std_map;
+		std::map<int, int, Greater<int>>	std_assign_map;
+
+		std_assign_map = std_map;
+		ft_assign_map = ft_map;
+		_assert_equal(ft_map.size(), ft_assign_map.size(), "test map assignment operator (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map assignment operator (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_assign_map, "test map assignment operator (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_assign_map, std_map, "test map assignment operator (copy / standard) - items");
+	}
+	// Lower fill
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int>	ft_map;
+		std::map<int, int>	std_map;
+		ft::map<int, int>	ft_assign_map;
+		std::map<int, int>	std_assign_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		std_assign_map = std_map;
+		ft_assign_map = ft_map;
+		_assert_equal(ft_map.size(), ft_assign_map.size(), "test map assignment operator (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map assignment operator (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_assign_map, "test map assignment operator (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_assign_map, std_map, "test map assignment operator (copy / standard) - items");
+	}
+	// Greater fill
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int, Greater<int>>		ft_map;
+		std::map<int, int, Greater<int>>	std_map;
+		ft::map<int, int, Greater<int>>		ft_assign_map;
+		std::map<int, int, Greater<int>>	std_assign_map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		std_assign_map = std_map;
+		ft_assign_map = ft_map;
+		_assert_equal(ft_map.size(), ft_assign_map.size(), "test map assignment operator (original / copy) - size");
+		_assert_equal(ft_map.size(), std_map.size(), "test map assignment operator (copy / standard) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, ft_assign_map, "test map assignment operator (original / copy) - items");
+		TEST_EACH_EQUAL_PAIR(ft_assign_map, std_map, "test map assignment operator (copy / standard) - items");
+	}
+}
+
 void test_map(){
+	test_map_copy_constructor();
+	test_map_assignment_operator();
 	test_map_insert();
 	test_map_insert_hint();
 	test_map_insert_range();

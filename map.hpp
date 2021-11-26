@@ -283,7 +283,15 @@ namespace ft
 			{
 				
 			}
-			
+
+			/**
+			 * Construct map
+			 * 
+			 * (2) range constructor
+			 * 
+			 * Constructs a container with as many elements as the range [first,last), with each element constructed from its
+			 * corresponding element in that range.
+			 */
 			template<class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() )
@@ -291,6 +299,49 @@ namespace ft
 				for ( ; first != last ; ++first ){
 					insert(*first);
 				}
+			}
+
+			/**
+			 * Constructor map
+			 * 
+			 * (3) copy constructor
+			 * 
+			 * Constructs a container with a copy of each of the elements in x.
+			 */
+			map(const map &x) {
+				// Copy with breath first search, to get rid of rebalancing ?
+				// When x is copied, the traversal will be in order, that will cause
+				// rebalancing.
+				m_root = NULL;
+				m_size = 0;
+				m_comp = x.m_comp;
+				m_alloc = x.m_alloc;
+				m_right_sentinel = rb_node::create_sentinel_node();
+				m_left_sentinel = rb_node::create_sentinel_node();
+				this->insert(x.begin(), x.end());
+			}
+
+			/**
+			 * Copy container content
+			 * 
+			 * Assigns new contents to the container, replacing its current content.
+			 * 
+			 * Copies all the elements from x into the container, changing its size accordingly.
+			 * 
+			 * The container preserves its current allocator, which is used to allocate additional storage if needed.
+			 */
+			map &operator=(const map &x){
+				if ( this == &x ){
+					return *this;
+				}
+				// Delete previous
+				this->clear();
+				m_size = 0;
+
+				// Copy
+				m_comp = x.m_comp;
+				this->insert(x.begin(), x.end());
+				return *this;
 			}
 
 			~map() {
