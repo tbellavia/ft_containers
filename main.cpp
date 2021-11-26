@@ -810,26 +810,6 @@ void test_vector_assignation_operator(){
 	}
 }
 
-void test_vector() {
-	test_vector_max_size();
-	test_vector_capacity();
-	test_vector_resize();
-	test_vector_iterator();
-	test_vector_pop_back();
-	test_vector_clear();
-	test_vector_assign();
-	test_vector_insert();
-	test_vector_erase();
-	test_vector_access();
-	test_vector_at();
-	test_vector_reverse_iterator();
-	test_vector_fill_constructor();
-	test_vector_range_constructor();
-	test_vector_copy_constructor();
-	test_vector_swap();
-	test_vector_assignation_operator();
-}
-
 /* Test stack */
 
 void test_stack_push() {
@@ -901,14 +881,6 @@ void test_stack_pop() {
 		s_stack.pop();
 	}
 	_assert_equal(f_stack.size(), s_stack.size(), "test stack pop");
-}
-
-void test_stack() {
-	test_stack_push();
-	test_stack_empty();
-	test_stack_size();
-	test_stack_top();
-	test_stack_pop();
 }
 
 /* Test map */
@@ -1468,6 +1440,9 @@ void test_map_clear(){
 		ft_map.insert(ft::make_pair(i, 0));
 		std_map.insert(std::make_pair(i, 0));
 	}
+
+	ft_map.clear();
+	std_map.clear();
 	_assert_equal(ft_map.size(), std_map.size(), "test map clear - size");
 	_assert_equal(ft_map.empty(), std_map.empty(), "test map clear - empty");
 	_assert_equal(ft_map.begin() == ft_map.end(), "test map clear - iterator");
@@ -1934,6 +1909,36 @@ void test_map_range_constructor(){
 	}
 }
 
+void test_vector() {
+	print_header("Vector");
+	test_vector_max_size();
+	test_vector_capacity();
+	test_vector_resize();
+	test_vector_iterator();
+	test_vector_pop_back();
+	test_vector_clear();
+	test_vector_assign();
+	test_vector_insert();
+	test_vector_erase();
+	test_vector_access();
+	test_vector_at();
+	test_vector_reverse_iterator();
+	test_vector_fill_constructor();
+	test_vector_range_constructor();
+	test_vector_copy_constructor();
+	test_vector_swap();
+	test_vector_assignation_operator();
+}
+
+void test_stack() {
+	print_header("Stack");
+	test_stack_push();
+	test_stack_empty();
+	test_stack_size();
+	test_stack_top();
+	test_stack_pop();
+}
+
 void test_map(){
 	print_header("Map");
 	// Constructors
@@ -1962,6 +1967,7 @@ void test_map(){
 	test_map_erase_it();
 	test_map_erase_key();
 	test_map_erase_range();
+	test_map_clear();
 
 	// Operations
 	print_subheader("Operations");

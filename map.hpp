@@ -340,7 +340,6 @@ namespace ft
 				}
 				// Delete previous
 				this->clear();
-				m_size = 0;
 
 				// Copy
 				m_comp = x.m_comp;
@@ -470,6 +469,7 @@ namespace ft
 					clear_recursive_(m_root);
 					m_root = NULL;
 				}
+				m_size = 0;
 			}
 
 			/**
