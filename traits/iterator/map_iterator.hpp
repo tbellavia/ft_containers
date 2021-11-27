@@ -28,7 +28,7 @@ namespace ft {
 				const_bidirectional_iterator(pointer p) : m_ptr( p ) { }
 				const_bidirectional_iterator(const const_bidirectional_iterator<T> &it) : m_ptr( it.m_ptr ) { }
 				const_bidirectional_iterator(const bidirectional_iterator<T> &it) : m_ptr( (pointer)it.base() ) { }
-				const_bidirectional_iterator &operator=(const_bidirectional_iterator const &it) {
+				const_bidirectional_iterator &operator=(const_bidirectional_iterator<T> const &it) {
 					if ( &it == this )
 						return *this;
 					m_ptr = it.m_ptr;
@@ -65,10 +65,6 @@ namespace ft {
 				}
 
 				/* Comparison operators */
-				bool operator<(const_bidirectional_iterator const &it) const { return m_ptr < it.m_ptr; }
-				bool operator>(const_bidirectional_iterator const &it) const { return m_ptr > it.m_ptr; }
-				bool operator>=(const_bidirectional_iterator const &it) const { return m_ptr >= it.m_ptr; }
-				bool operator<=(const_bidirectional_iterator const &it) const { return m_ptr <= it.m_ptr; }
 				bool operator!=(const_bidirectional_iterator const &it) const { return m_ptr != it.m_ptr; }
 				bool operator==(const_bidirectional_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
@@ -127,8 +123,8 @@ namespace ft {
 				/* Constructors */
 				bidirectional_iterator() : m_ptr( NULL ) { }
 				bidirectional_iterator(pointer p) : m_ptr( p ) { }
-				bidirectional_iterator(bidirectional_iterator const &it) : m_ptr( it.m_ptr ) { }
-				bidirectional_iterator &operator=(bidirectional_iterator const &it) {
+				bidirectional_iterator(bidirectional_iterator<T> const &it) : m_ptr( it.m_ptr ) { }
+				bidirectional_iterator &operator=(bidirectional_iterator<T> const &it) {
 					if ( &it == this )
 						return *this;
 					m_ptr = it.m_ptr;
@@ -168,10 +164,6 @@ namespace ft {
 				}
 
 				/* Comparison operators */
-				bool operator<(bidirectional_iterator const &it) const { return m_ptr < it.m_ptr; }
-				bool operator>(bidirectional_iterator const &it) const { return m_ptr > it.m_ptr; }
-				bool operator>=(bidirectional_iterator const &it) const { return m_ptr >= it.m_ptr; }
-				bool operator<=(bidirectional_iterator const &it) const { return m_ptr <= it.m_ptr; }
 				bool operator!=(bidirectional_iterator const &it) const { return m_ptr != it.m_ptr; }
 				bool operator==(bidirectional_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
@@ -219,6 +211,7 @@ namespace ft {
 				typedef std::ptrdiff_t					difference_type;
 				typedef typename T::value_type			value_type;
 				typedef T*								pointer;
+				typedef const T*						const_pointer;
 				typedef T&								reference;
 				typedef const T&						const_reference;
 				typedef typename T::pointer				data_pointer;
@@ -241,9 +234,11 @@ namespace ft {
 				~reverse_iterator() {}
 
 				/* Accesses operators */
-				iterator_type base() const { return m_ptr; }
-				data_const_reference operator*() const { return *m_ptr; }
-				data_const_pointer operator->() const { return m_ptr; }
+				pointer				base()				{ return m_ptr; }
+				const_pointer		base() const		{ return m_ptr; }
+				data_reference		operator*() const	{ return m_ptr->data; }
+				data_pointer		operator->() 		{ return &m_ptr->data; }
+				data_const_pointer	operator->() const 	{ return &m_ptr->data; }
 
 				/* Increment / Decrement (which is inverted with reverse iterator) */
 				reverse_iterator &operator++() {
@@ -268,10 +263,6 @@ namespace ft {
 				}
 
 				/* Comparison operators */
-				bool operator<(reverse_iterator const &it) const { return m_ptr > it.m_ptr; }
-				bool operator>(reverse_iterator const &it) const { return m_ptr < it.m_ptr; }
-				bool operator>=(reverse_iterator const &it) const { return m_ptr <= it.m_ptr; }
-				bool operator<=(reverse_iterator const &it) const { return m_ptr >= it.m_ptr; }
 				bool operator!=(reverse_iterator const &it) const { return m_ptr != it.m_ptr; }
 				bool operator==(reverse_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:
@@ -310,7 +301,7 @@ namespace ft {
 				}
 		};
 
-			template<typename T>
+		template<typename T>
 		class const_reverse_iterator {
 			public:
 				typedef T								iterator_type;
@@ -319,6 +310,7 @@ namespace ft {
 				typedef std::ptrdiff_t					difference_type;
 				typedef typename T::value_type			value_type;
 				typedef T*								pointer;
+				typedef const T*						const_pointer;
 				typedef T&								reference;
 				typedef const T&						const_reference;
 				typedef typename T::pointer				data_pointer;
@@ -330,9 +322,9 @@ namespace ft {
 				const_reverse_iterator() : m_ptr( NULL ) { }
 				const_reverse_iterator(pointer p) : m_ptr( p ) { }
 				const_reverse_iterator(const_reverse_iterator const &it) : m_ptr( it.m_ptr ) { }
-				const_reverse_iterator(reverse_iterator<T> const &it) : m_ptr( it.operator->() ) {}
-				const_reverse_iterator(bidirectional_iterator<T> const &it) : m_ptr( it.operator->() ) {}
-				const_reverse_iterator(const_bidirectional_iterator<T> const &it) : m_ptr( it.operator->() ) {}
+				const_reverse_iterator(reverse_iterator<T> const &it) : m_ptr( (pointer)it.base() ) {}
+				const_reverse_iterator(bidirectional_iterator<T> const &it) : m_ptr( it.base() ) {}
+				const_reverse_iterator(const_bidirectional_iterator<T> const &it) : m_ptr( it.base() ) {}
 				const_reverse_iterator &operator=(const_reverse_iterator const &it) {
 					if ( &it == this )
 						return *this;
@@ -342,9 +334,9 @@ namespace ft {
 				~const_reverse_iterator() {}
 
 				/* Accesses operators */
-				iterator_type base() const { return m_ptr; }
-				data_const_reference operator*() const { return *m_ptr; }
-				data_pointer operator->() const { return m_ptr; }
+				const_pointer			base() const		{ return m_ptr; }
+				data_const_reference	operator*() const	{ return m_ptr->data; }
+				data_const_pointer		operator->() const	{ return &m_ptr->data; }
 
 				/* Increment / Decrement (which is inverted with reverse iterator) */
 				const_reverse_iterator &operator++() {
@@ -370,10 +362,6 @@ namespace ft {
 				}
 
 				/* Comparison operators */
-				bool operator<(const_reverse_iterator const &it) const { return m_ptr > it.m_ptr; }
-				bool operator>(const_reverse_iterator const &it) const { return m_ptr < it.m_ptr; }
-				bool operator>=(const_reverse_iterator const &it) const { return m_ptr <= it.m_ptr; }
-				bool operator<=(const_reverse_iterator const &it) const { return m_ptr >= it.m_ptr; }
 				bool operator!=(const_reverse_iterator const &it) const { return m_ptr != it.m_ptr; }
 				bool operator==(const_reverse_iterator const &it) const { return m_ptr == it.m_ptr; }
 			private:

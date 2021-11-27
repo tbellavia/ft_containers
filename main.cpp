@@ -554,7 +554,7 @@ void test_vector_reverse_iterator() {
 		ft::vector<int>		f_vec;
 		std::vector<int>	s_vec;
 
-		for ( int i = 0 ; i < 5 ; i++ ){
+		for ( int i = 0 ; i < 50 ; i++ ){
 			f_vec.push_back(i);
 			s_vec.push_back(i);
 		}
@@ -1911,6 +1911,132 @@ void test_map_range_constructor(){
 	}
 }
 
+void test_map_iterator(){
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	// Lower
+	{
+		ft::map<int, int>::const_iterator 	ft_cbegin;
+		ft::map<int, int>::const_iterator 	ft_cend;
+		std::map<int, int>::const_iterator	std_cbegin;
+		std::map<int, int>::const_iterator	std_cend;
+		ft::map<int, int>					ft_map;
+		std::map<int, int>					std_map;
+
+		ft_cbegin = ft_map.begin();
+		ft_cend = ft_map.end();
+		std_cbegin = std_map.begin();
+		std_cend = std_map.end();
+
+		_assert_equal(ft_cbegin == ft_cend, "test map iterator (empty) - const iterator");
+		_assert_equal(ft_map.begin() == ft_map.end(), "test map iterator (empty) - iterator");
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		ft_cbegin = ft_map.begin();
+		ft_cend = ft_map.end();
+		std_cbegin = std_map.begin();
+		std_cend = std_map.end();
+
+		_assert_each_equal_pair(ft_cbegin, ft_cend, std_cbegin, std_cend, "test map iterator (full) - const iterator");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map iterator (full) - iterator");
+	}
+	// Greater
+	{
+		ft::map<int, int, Greater<int>>::const_iterator 	ft_cbegin;
+		ft::map<int, int, Greater<int>>::const_iterator 	ft_cend;
+		std::map<int, int, Greater<int>>::const_iterator	std_cbegin;
+		std::map<int, int, Greater<int>>::const_iterator	std_cend;
+		ft::map<int, int, Greater<int>>						ft_map;
+		std::map<int, int, Greater<int>>					std_map;
+
+		ft_cbegin = ft_map.begin();
+		ft_cend = ft_map.end();
+		std_cbegin = std_map.begin();
+		std_cend = std_map.end();
+
+		_assert_equal(ft_cbegin == ft_cend, "test map iterator (empty) - const iterator");
+		_assert_equal(ft_map.begin() == ft_map.end(), "test map iterator (empty) - iterator");
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		ft_cbegin = ft_map.begin();
+		ft_cend = ft_map.end();
+		std_cbegin = std_map.begin();
+		std_cend = std_map.end();
+
+		_assert_each_equal_pair(ft_cbegin, ft_cend, std_cbegin, std_cend, "test map iterator (full) - const iterator");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map iterator (full) - iterator");
+	}
+}
+
+void test_map_reverse_iterator(){
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	// Lower
+	{
+		ft::map<int, int>::const_reverse_iterator 	ft_cbegin;
+		ft::map<int, int>::const_reverse_iterator 	ft_cend;
+		std::map<int, int>::const_reverse_iterator	std_cbegin;
+		std::map<int, int>::const_reverse_iterator	std_cend;
+		ft::map<int, int>							ft_map;
+		std::map<int, int>							std_map;
+
+		ft_cbegin = ft_map.rbegin();
+		ft_cend = ft_map.rend();
+		std_cbegin = std_map.rbegin();
+		std_cend = std_map.rend();
+
+		_assert_equal(ft_cbegin == ft_cend, "test map reverse iterator (empty) - const iterator");
+		_assert_equal(ft_map.rbegin() == ft_map.rend(), "test map reverse iterator (empty) - iterator");
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		ft_cbegin = ft_map.rbegin();
+		ft_cend = ft_map.rend();
+		std_cbegin = std_map.rbegin();
+		std_cend = std_map.rend();
+
+		_assert_each_equal_pair(ft_cbegin, ft_cend, std_cbegin, std_cend, "test map reverse iterator (full) - const iterator");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map reverse iterator (full) - iterator");
+	}
+	// Greater
+	{
+		ft::map<int, int, Greater<int>>::const_reverse_iterator 	ft_cbegin;
+		ft::map<int, int, Greater<int>>::const_reverse_iterator 	ft_cend;
+		std::map<int, int, Greater<int>>::const_reverse_iterator	std_cbegin;
+		std::map<int, int, Greater<int>>::const_reverse_iterator	std_cend;
+		ft::map<int, int, Greater<int>>								ft_map;
+		std::map<int, int, Greater<int>>							std_map;
+
+		ft_cbegin = ft_map.rbegin();
+		ft_cend = ft_map.rend();
+		std_cbegin = std_map.rbegin();
+		std_cend = std_map.rend();
+
+		_assert_equal(ft_cbegin == ft_cend, "test map reverse iterator (empty) - const iterator");
+		_assert_equal(ft_map.rbegin() == ft_map.rend(), "test map reverse iterator (empty) - iterator");
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+
+		ft_cbegin = ft_map.rbegin();
+		ft_cend = ft_map.rend();
+		std_cbegin = std_map.rbegin();
+		std_cend = std_map.rend();
+
+		_assert_each_equal_pair(ft_cbegin, ft_cend, std_cbegin, std_cend, "test map reverse iterator (full) - const iterator");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map reverse iterator (full) - iterator");
+	}
+}
+
 void test_vector() {
 	print_header("Vector");
 	test_vector_max_size();
@@ -1983,10 +2109,12 @@ void test_map(){
 	print_subheader("Observers");
 	test_map_key_comp();
 	test_map_val_comp();
+	test_map_iterator();
+	test_map_reverse_iterator();
 }
 
 int	main(void){
-	// test_vector();
-	// test_stack();
+	test_vector();
+	test_stack();
 	test_map();
 }
