@@ -220,7 +220,7 @@ namespace ft
 				static rb_node *create_node( allocator_type alloc = allocator_type() ){
 					rb_node *node = alloc.allocate( 1 );
 
-					alloc.construct( node );
+					alloc.construct( node, rb_node() );
 					return node;
 				}
 
@@ -234,7 +234,7 @@ namespace ft
 				static rb_node *create_node( const value_type &data, rb_node *parent, allocator_type alloc = allocator_type() ){
 					rb_node *node = alloc.allocate( 1 );
 
-					alloc.construct( node, data, parent );
+					alloc.construct( node, rb_node( data, parent ) );
 					return node;
 				}
 

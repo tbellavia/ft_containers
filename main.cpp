@@ -3,6 +3,7 @@
 #include <vector>
 #include <stack>
 #include <map>
+#include <stdio.h>
 #include "vector.hpp"
 #include "stack.hpp"
 #include "map.hpp"
@@ -977,8 +978,8 @@ void test_map_insert_hint(){
 		std::map<int, int>	std_map;
 
 		_assert_equal(
-			ft_map.insert(ft_map.begin(), {1, 0})->first, 
-			std_map.insert(std_map.begin(), {1, 0})->first, "test map insert hint (empty map to the begin) - iterator");
+			ft_map.insert(ft_map.begin(), ft::make_pair(1, 0))->first, 
+			std_map.insert(std_map.begin(), std::make_pair(1, 0))->first, "test map insert hint (empty map to the begin) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (empty map to the begin) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (empty map to the begin) - items");
 	}
@@ -989,8 +990,8 @@ void test_map_insert_hint(){
 		std::map<int, int>	std_map;
 
 		_assert_equal(
-			ft_map.insert(ft_map.end(), {1, 0})->first, 
-			std_map.insert(std_map.end(), {1, 0})->first, "test map insert hint (empty map to the end) - iterator");
+			ft_map.insert(ft_map.end(), ft::make_pair(1, 0))->first, 
+			std_map.insert(std_map.end(), std::make_pair(1, 0))->first, "test map insert hint (empty map to the end) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (empty map to the end) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (empty map to the end) - items");
 	}
@@ -1000,11 +1001,11 @@ void test_map_insert_hint(){
 		ft::map<int, int>	ft_map;
 		std::map<int, int>	std_map;
 
-		ft_map.insert({0, 0});
-		std_map.insert({0, 0});
+		ft_map.insert(ft::make_pair(0, 0));
+		std_map.insert(std::make_pair(0, 0));
 		_assert_equal(
-			ft_map.insert(ft_map.begin(), {1, 0})->first, 
-			std_map.insert(std_map.begin(), {1, 0})->first, "test map insert hint (size one to the begin) - iterator");
+			ft_map.insert(ft_map.begin(), ft::make_pair(1, 0))->first, 
+			std_map.insert(std_map.begin(), std::make_pair(1, 0))->first, "test map insert hint (size one to the begin) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (size one to the begin) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (size one to the begin) - items");
 	}
@@ -1013,11 +1014,11 @@ void test_map_insert_hint(){
 		ft::map<int, int>	ft_map;
 		std::map<int, int>	std_map;
 
-		ft_map.insert({0, 0});
-		std_map.insert({0, 0});
+		ft_map.insert(ft::make_pair(0, 0));
+		std_map.insert(std::make_pair(0, 0));
 		_assert_equal(
-			ft_map.insert(ft_map.end(), {1, 0})->first, 
-			std_map.insert(std_map.end(), {1, 0})->first, "test map insert hint (size one to the end) - iterator");
+			ft_map.insert(ft_map.end(), ft::make_pair(1, 0))->first, 
+			std_map.insert(std_map.end(), std::make_pair(1, 0))->first, "test map insert hint (size one to the end) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (size one to the end) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (size one to the end) - items");
 	}
@@ -1034,82 +1035,82 @@ void test_map_insert_hint(){
 
 		// Test on begin
 		_assert_equal(
-			ft_map.insert(ft_map.begin(), {16, 0})->first, 
-			std_map.insert(std_map.begin(), {16, 0})->first, "test map insert hint (non empty map to the begin) - iterator");
+			ft_map.insert(ft_map.begin(), ft::make_pair(16, 0))->first, 
+			std_map.insert(std_map.begin(), std::make_pair(16, 0))->first, "test map insert hint (non empty map to the begin) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map to the begin) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map to the begin) - items");
 
 		// Test on begin min element
 		_assert_equal(
-			ft_map.insert(ft_map.begin(), {-1, 0})->first, 
-			std_map.insert(std_map.begin(), {-1, 0})->first, "test map insert hint (non empty map to the begin with min item) - iterator");
+			ft_map.insert(ft_map.begin(), ft::make_pair(-1, 0))->first, 
+			std_map.insert(std_map.begin(), std::make_pair(-1, 0))->first, "test map insert hint (non empty map to the begin with min item) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map to the begin with min item) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map to the begin with min item) - items");
 
 		// Test on begin max element
 		_assert_equal(
-			ft_map.insert(ft_map.begin(), {40, 0})->first, 
-			std_map.insert(std_map.begin(), {40, 0})->first, "test map insert hint (non empty map to the begin with max item) - iterator");
+			ft_map.insert(ft_map.begin(), ft::make_pair(40, 0))->first, 
+			std_map.insert(std_map.begin(), std::make_pair(40, 0))->first, "test map insert hint (non empty map to the begin with max item) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map to the begin with max item) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map to the begin with max item) - items");
 
 		// Test on end
 		_assert_equal(
-			ft_map.insert(ft_map.end(), {26, 0})->first, 
-			std_map.insert(std_map.end(), {26, 0})->first, "test map insert hint (non empty map to the end) - iterator");
+			ft_map.insert(ft_map.end(), ft::make_pair(26, 0))->first, 
+			std_map.insert(std_map.end(), std::make_pair(26, 0))->first, "test map insert hint (non empty map to the end) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map to the end) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map to the end) - items");
 
 		// Test on end min element
 		_assert_equal(
-			ft_map.insert(ft_map.end(), {-2, 0})->first, 
-			std_map.insert(std_map.end(), {-2, 0})->first, "test map insert hint (non empty map to the end with min item) - iterator");
+			ft_map.insert(ft_map.end(), ft::make_pair(-2, 0))->first, 
+			std_map.insert(std_map.end(), std::make_pair(-2, 0))->first, "test map insert hint (non empty map to the end with min item) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map to the end with min item) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map to the end with min item) - items");
 
 		// Test on end max element
 		_assert_equal(
-			ft_map.insert(ft_map.end(), {41, 0})->first, 
-			std_map.insert(std_map.end(), {41, 0})->first, "test map insert hint (non empty map to the end with max item) - iterator");
+			ft_map.insert(ft_map.end(), ft::make_pair(41, 0))->first, 
+			std_map.insert(std_map.end(), std::make_pair(41, 0))->first, "test map insert hint (non empty map to the end with max item) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map to the end with max item) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map to the end with max item) - items");
 
 		// Test on root
 		_assert_equal(
-			ft_map.insert(ft_map.find(keys[0]), {14, 0})->first, 
-			std_map.insert(std_map.find(keys[0]), {14, 0})->first, "test map insert hint (non empty map on the root) - iterator");
+			ft_map.insert(ft_map.find(keys[0]), ft::make_pair(14, 0))->first, 
+			std_map.insert(std_map.find(keys[0]), std::make_pair(14, 0))->first, "test map insert hint (non empty map on the root) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map on the root) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map on the root) - items");
 
 		// Test on root min element
 		_assert_equal(
-			ft_map.insert(ft_map.find(keys[0]), {-3, 0})->first, 
-			std_map.insert(std_map.find(keys[0]), {-3, 0})->first, "test map insert hint (non empty map on the root with min item) - iterator");
+			ft_map.insert(ft_map.find(keys[0]), ft::make_pair(-3, 0))->first, 
+			std_map.insert(std_map.find(keys[0]), std::make_pair(-3, 0))->first, "test map insert hint (non empty map on the root with min item) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map on the root with min item) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map on the root with min item) - items");
 
 		// Test on root max element
 		_assert_equal(
-			ft_map.insert(ft_map.find(keys[0]), {42, 0})->first, 
-			std_map.insert(std_map.find(keys[0]), {42, 0})->first, "test map insert hint (non empty map on the root with max item) - iterator");
+			ft_map.insert(ft_map.find(keys[0]), ft::make_pair(42, 0))->first, 
+			std_map.insert(std_map.find(keys[0]), std::make_pair(42, 0))->first, "test map insert hint (non empty map on the root with max item) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map on the root with max item) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map on the root with max item) - items");
 
 		// Test with item that already exist
 		_assert_equal(
-			ft_map.insert(ft_map.find(keys[3]), {keys[3], 0})->first, 
-			std_map.insert(std_map.find(keys[3]), {keys[3], 0})->first, "test map insert hint (non empty map with existent item) - iterator");
+			ft_map.insert(ft_map.find(keys[3]), ft::make_pair(keys[3], 0))->first, 
+			std_map.insert(std_map.find(keys[3]), std::make_pair(keys[3], 0))->first, "test map insert hint (non empty map with existent item) - iterator");
 		_assert_equal(
-			ft_map.insert(ft_map.find(keys[3]), {keys[3], 0}) == ft_map.find(keys[3]), "test map insert hint (non empty map with existent item) - iterator");
+			ft_map.insert(ft_map.find(keys[3]), ft::make_pair(keys[3], 0)) == ft_map.find(keys[3]), "test map insert hint (non empty map with existent item) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map with existent item) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map with existent item) - items");
 
 		// Test with item that already exist and point to this node
 		_assert_equal(
-			ft_map.insert(ft_map.find(keys[0]), {keys[0], 0})->first, 
-			std_map.insert(std_map.find(keys[0]), {keys[0], 0})->first, "test map insert hint (non empty map with existent item that point to this node) - iterator");
+			ft_map.insert(ft_map.find(keys[0]), ft::make_pair(keys[0], 0))->first, 
+			std_map.insert(std_map.find(keys[0]), std::make_pair(keys[0], 0))->first, "test map insert hint (non empty map with existent item that point to this node) - iterator");
 		_assert_equal(
-			ft_map.insert(ft_map.find(keys[0]), {keys[0], 0}) == ft_map.find(keys[0]), "test map insert hint (non empty map with existent item that point to this node) - iterator");
+			ft_map.insert(ft_map.find(keys[0]), ft::make_pair(keys[0], 0)) == ft_map.find(keys[0]), "test map insert hint (non empty map with existent item that point to this node) - iterator");
 		_assert_equal(ft_map.size(), std_map.size(), "test map insert hint (non empty map with existent item that point to this node) - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map insert hint (non empty map with existent item that point to this node) - items");
 	}
@@ -1118,8 +1119,8 @@ void test_map_insert_hint(){
 void test_map_insert_range() {
 	// Test empty range
 	{
-		ft_pair_t	ft_pairs[1] = {{'a', 0}};
-		std_pair_t	std_pairs[1] = {{'a', 0}};
+		ft_pair_t	ft_pairs[1] = {ft::make_pair('a', 0)};
+		std_pair_t	std_pairs[1] = {std::make_pair('a', 0)};
 		ft_map_t	ft_map;
 		std_map_t	std_map;
 
@@ -1130,8 +1131,8 @@ void test_map_insert_range() {
 	}
 	// Test non empty range
 	{
-		ft_pair_t	ft_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
-		std_pair_t	std_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
+		ft_pair_t	ft_pairs[10] = {ft::make_pair('a', 0), ft::make_pair('b', 0), ft::make_pair('z', 0), ft::make_pair('t', 0), ft::make_pair('o', 0), ft::make_pair('n', 0), ft::make_pair('y', 0), ft::make_pair('m', 0), ft::make_pair('v', 0), ft::make_pair('-', 0)};
+		std_pair_t	std_pairs[10] = {std::make_pair('a', 0), std::make_pair('b', 0), std::make_pair('z', 0), std::make_pair('t', 0), std::make_pair('o', 0), std::make_pair('n', 0), std::make_pair('y', 0), std::make_pair('m', 0), std::make_pair('v', 0), std::make_pair('-', 0)};
 		ft_map_t	ft_map;
 		std_map_t	std_map;
 
@@ -1142,8 +1143,8 @@ void test_map_insert_range() {
 	}
 	// Test range with repetitive keys
 	{
-		ft_pair_t	ft_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'a', 0}, {'o', 0}, {'n', 0}, {'b', 0}, {'m', 0}, {'v', 0}, {'z', 0}};
-		std_pair_t	std_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'a', 0}, {'o', 0}, {'n', 0}, {'b', 0}, {'m', 0}, {'v', 0}, {'z', 0}};
+		ft_pair_t	ft_pairs[10] = {ft::make_pair('a', 0), ft::make_pair('b', 0), ft::make_pair('z', 0), ft::make_pair('a', 0), ft::make_pair('o', 0), ft::make_pair('n', 0), ft::make_pair('b', 0), ft::make_pair('m', 0), ft::make_pair('v', 0), ft::make_pair('z', 0)};
+		std_pair_t	std_pairs[10] = {std::make_pair('a', 0), std::make_pair('b', 0), std::make_pair('z', 0), std::make_pair('a', 0), std::make_pair('o', 0), std::make_pair('n', 0), std::make_pair('b', 0), std::make_pair('m', 0), std::make_pair('v', 0), std::make_pair('z', 0)};
 		ft_map_t	ft_map;
 		std_map_t	std_map;
 
@@ -1154,8 +1155,8 @@ void test_map_insert_range() {
 	}
 	// Test three case with same map
 	{
-		ft_pair_t	ft_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
-		std_pair_t	std_pairs[10] = {{'a', 0}, {'b', 0}, {'z', 0}, {'t', 0}, {'o', 0}, {'n', 0}, {'y', 0}, {'m', 0}, {'v', 0}, {'-', 0}};
+		ft_pair_t	ft_pairs[10] = {ft::make_pair('a', 0), ft::make_pair('b', 0), ft::make_pair('z', 0), ft::make_pair('t', 0), ft::make_pair('o', 0), ft::make_pair('n', 0), ft::make_pair('y', 0), ft::make_pair('m', 0), ft::make_pair('v', 0), ft::make_pair('-', 0)};
+		std_pair_t	std_pairs[10] = {std::make_pair('a', 0), std::make_pair('b', 0), std::make_pair('z', 0), std::make_pair('t', 0), std::make_pair('o', 0), std::make_pair('n', 0), std::make_pair('y', 0), std::make_pair('m', 0), std::make_pair('v', 0), std::make_pair('-', 0)};
 		ft_map_t	ft_map;
 		std_map_t	std_map;
 
@@ -1424,8 +1425,8 @@ void test_map_erase_range(){
 	// Test with reverse order
 	{
 		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
-		ft::map<int, int, Greater<int>> ft_map;
-		std::map<int, int, Greater<int>> std_map;
+		ft::map<int, int, Greater<int> > ft_map;
+		std::map<int, int, Greater<int> > std_map;
 
 		for ( int index = 0 ; index < 13 ; index++ ){
 			ft_map.insert(ft::make_pair(keys[index], 0));
@@ -1438,8 +1439,8 @@ void test_map_erase_range(){
 	}
 	{
 		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
-		ft::map<int, int, Greater<int>> ft_map;
-		std::map<int, int, Greater<int>> std_map;
+		ft::map<int, int, Greater<int> > ft_map;
+		std::map<int, int, Greater<int> > std_map;
 
 		for ( int index = 0 ; index < 13 ; index++ ){
 			ft_map.insert(ft::make_pair(keys[index], 0));
@@ -1673,8 +1674,8 @@ void test_map_key_comp(){
 	}
 	// Greater
 	{
-		ft::map<int, int, Greater<int>>		ft_map;
-		std::map<int, int, Greater<int>>	std_map;
+		ft::map<int, int, Greater<int> >		ft_map;
+		std::map<int, int, Greater<int> >	std_map;
 
 		_assert_equal(ft_map.key_comp()(1, 2), std_map.key_comp()(1, 2), "test key comp (greater) - result");
 		_assert_equal(ft_map.key_comp()(2, 1), std_map.key_comp()(2, 1), "test key comp (greater) - result");
@@ -1688,18 +1689,18 @@ void test_map_val_comp(){
 		ft::map<int, int>	ft_map;
 		std::map<int, int>	std_map;
 
-		_assert_equal(ft_map.value_comp()({1, 0}, {2, 0}), std_map.value_comp()({1, 0}, {2, 0}), "test value comp (lower) - result");
-		_assert_equal(ft_map.value_comp()({2, 0}, {1, 0}), std_map.value_comp()({2, 0}, {1, 0}), "test value comp (lower) - result");
-		_assert_equal(ft_map.value_comp()({2, 0}, {2, 0}), std_map.value_comp()({2, 0}, {2, 0}), "test value comp (lower) - result");
+		_assert_equal(ft_map.value_comp()(ft::make_pair(1, 0), ft::make_pair(2, 0)), std_map.value_comp()(std::make_pair(1, 0), std::make_pair(2, 0)), "test value comp (lower) - result");
+		_assert_equal(ft_map.value_comp()(ft::make_pair(2, 0), ft::make_pair(1, 0)), std_map.value_comp()(std::make_pair(2, 0), std::make_pair(1, 0)), "test value comp (lower) - result");
+		_assert_equal(ft_map.value_comp()(ft::make_pair(2, 0), ft::make_pair(2, 0)), std_map.value_comp()(std::make_pair(2, 0), std::make_pair(2, 0)), "test value comp (lower) - result");
 	}
 	// Greater
 	{
-		ft::map<int, int, Greater<int>>		ft_map;
-		std::map<int, int, Greater<int>>	std_map;
+		ft::map<int, int, Greater<int> >	ft_map;
+		std::map<int, int, Greater<int> >	std_map;
 
-		_assert_equal(ft_map.value_comp()({1, 0}, {2, 0}), std_map.value_comp()({1, 0}, {2, 0}), "test value comp (greater) - result");
-		_assert_equal(ft_map.value_comp()({2, 0}, {1, 0}), std_map.value_comp()({2, 0}, {1, 0}), "test value comp (greater) - result");
-		_assert_equal(ft_map.value_comp()({2, 0}, {2, 0}), std_map.value_comp()({2, 0}, {2, 0}), "test value comp (greater) - result");
+		_assert_equal(ft_map.value_comp()(ft::make_pair(1, 0), ft::make_pair(2, 0)), std_map.value_comp()(std::make_pair(1, 0), std::make_pair(2, 0)), "test value comp (greater) - result");
+		_assert_equal(ft_map.value_comp()(ft::make_pair(2, 0), ft::make_pair(1, 0)), std_map.value_comp()(std::make_pair(2, 0), std::make_pair(1, 0)), "test value comp (greater) - result");
+		_assert_equal(ft_map.value_comp()(ft::make_pair(2, 0), ft::make_pair(2, 0)), std_map.value_comp()(std::make_pair(2, 0), std::make_pair(2, 0)), "test value comp (greater) - result");
 	}
 }
 
@@ -1718,10 +1719,10 @@ void test_map_copy_constructor(){
 	}
 	// Greater empty
 	{
-		ft::map<int, int, Greater<int>>		ft_map;
-		ft::map<int, int, Greater<int>>		ft_cpy_map(ft_map);
-		std::map<int, int, Greater<int>>	std_map;
-		std::map<int, int, Greater<int>>	std_cpy_map(std_map);
+		ft::map<int, int, Greater<int> >		ft_map;
+		ft::map<int, int, Greater<int> >		ft_cpy_map(ft_map);
+		std::map<int, int, Greater<int> >	std_map;
+		std::map<int, int, Greater<int> >	std_cpy_map(std_map);
 
 		_assert_equal(ft_map.size(), ft_cpy_map.size(), "test map copy constructor (original / copy) - size");
 		_assert_equal(ft_map.size(), std_map.size(), "test map copy constructor (copy / standard) - size");
@@ -1749,15 +1750,15 @@ void test_map_copy_constructor(){
 	// Greater fill
 	{
 		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
-		ft::map<int, int, Greater<int>>		ft_map;
-		std::map<int, int, Greater<int>>	std_map;
+		ft::map<int, int, Greater<int> >		ft_map;
+		std::map<int, int, Greater<int> >	std_map;
 
 		for ( int index = 0 ; index < 13 ; index++ ){
 			ft_map.insert(ft::make_pair(keys[index], 0));
 			std_map.insert(std::make_pair(keys[index], 0));
 		}
-		ft::map<int, int, Greater<int>>		ft_cpy_map(ft_map);
-		std::map<int, int, Greater<int>>	std_cpy_map(std_map);
+		ft::map<int, int, Greater<int> >		ft_cpy_map(ft_map);
+		std::map<int, int, Greater<int> >	std_cpy_map(std_map);
 
 		_assert_equal(ft_map.size(), ft_cpy_map.size(), "test map copy constructor (original / copy) - size");
 		_assert_equal(ft_map.size(), std_map.size(), "test map copy constructor (copy / standard) - size");
@@ -1783,10 +1784,10 @@ void test_map_assignment_operator(){
 	}
 	// Greater empty
 	{
-		ft::map<int, int, Greater<int>>		ft_map;
-		ft::map<int, int, Greater<int>>		ft_assign_map;
-		std::map<int, int, Greater<int>>	std_map;
-		std::map<int, int, Greater<int>>	std_assign_map;
+		ft::map<int, int, Greater<int> >		ft_map;
+		ft::map<int, int, Greater<int> >		ft_assign_map;
+		std::map<int, int, Greater<int> >	std_map;
+		std::map<int, int, Greater<int> >	std_assign_map;
 
 		std_assign_map = std_map;
 		ft_assign_map = ft_map;
@@ -1818,10 +1819,10 @@ void test_map_assignment_operator(){
 	// Greater fill
 	{
 		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
-		ft::map<int, int, Greater<int>>		ft_map;
-		std::map<int, int, Greater<int>>	std_map;
-		ft::map<int, int, Greater<int>>		ft_assign_map;
-		std::map<int, int, Greater<int>>	std_assign_map;
+		ft::map<int, int, Greater<int> >		ft_map;
+		std::map<int, int, Greater<int> >	std_map;
+		ft::map<int, int, Greater<int> >		ft_assign_map;
+		std::map<int, int, Greater<int> >	std_assign_map;
 
 		for ( int index = 0 ; index < 13 ; index++ ){
 			ft_map.insert(ft::make_pair(keys[index], 0));
@@ -1843,13 +1844,13 @@ void test_map_max_size(){
 	_assert_equal(ft::map<char, int>().max_size(), std::map<char, int>().max_size(), "test map max size (char, int) - result");
 	_assert_equal(ft::map<std::string, int>().max_size(), std::map<std::string, int>().max_size(), "test map max size (std::string, int) - result");
 	_assert_equal(ft::map<std::string, std::string>().max_size(), std::map<std::string, std::string>().max_size(), "test map max size (std::string, std::string) - result");
-	_assert_equal(ft::map<ft::pair<int, int>,ft::pair<int, int>>().max_size(), std::map<ft::pair<int, int>,ft::pair<int, int>>().max_size(), "test map max size (ft::pair<int, int>, ft::pair<int, int>) - result");
-	_assert_equal(ft::map<std::pair<int, int>,std::pair<int, int>>().max_size(), std::map<std::pair<int, int>,std::pair<int, int>>().max_size(), "test map max size (std::pair<int, int>, std::pair<int, int>) - result");
+	_assert_equal(ft::map<ft::pair<int, int>,ft::pair<int, int> >().max_size(), std::map<ft::pair<int, int>,ft::pair<int, int> >().max_size(), "test map max size (ft::pair<int, int>, ft::pair<int, int>) - result");
+	_assert_equal(ft::map<std::pair<int, int>,std::pair<int, int> >().max_size(), std::map<std::pair<int, int>,std::pair<int, int> >().max_size(), "test map max size (std::pair<int, int>, std::pair<int, int>) - result");
 }
 
 void test_map_default_constructor(){
 	_assert_equal(ft::map<int, int>().empty(), std::map<int, int>().empty(), "test map default constructor - size");
-	_assert_equal(ft::map<int, int, Greater<int>>().empty(), std::map<int, int, Greater<int>>().empty(), "test map default constructor - size");
+	_assert_equal(ft::map<int, int, Greater<int> >().empty(), std::map<int, int, Greater<int> >().empty(), "test map default constructor - size");
 }
 
 void test_map_range_constructor(){
@@ -1865,10 +1866,10 @@ void test_map_range_constructor(){
 	}
 	// Greater empty (begin - end)
 	{
-		ft::map<int, int, Greater<int>>		ft_map;
-		ft::map<int, int, Greater<int>>		ft_range_map(ft_map.begin(), ft_map.end());
-		std::map<int, int, Greater<int>>	std_map;
-		std::map<int, int, Greater<int>>	std_range_map(std_map.begin(), std_map.end());
+		ft::map<int, int, Greater<int> >		ft_map;
+		ft::map<int, int, Greater<int> >		ft_range_map(ft_map.begin(), ft_map.end());
+		std::map<int, int, Greater<int> >	std_map;
+		std::map<int, int, Greater<int> >	std_range_map(std_map.begin(), std_map.end());
 
 		_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (empty) - size");
 		TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (empty) - items");
@@ -1912,8 +1913,8 @@ void test_map_range_constructor(){
 	// Greater full
 	{
 		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
-		ft::map<int, int, Greater<int>>		ft_map;
-		std::map<int, int, Greater<int>>	std_map;
+		ft::map<int, int, Greater<int> >		ft_map;
+		std::map<int, int, Greater<int> >	std_map;
 
 		for ( int index = 0 ; index < 13 ; index++ ){
 			ft_map.insert(ft::make_pair(keys[index], 0));
@@ -1922,24 +1923,24 @@ void test_map_range_constructor(){
 
 		// Begin - end
 		{
-			ft::map<int, int, Greater<int>>		ft_range_map(ft_map.begin(), ft_map.end());
-			std::map<int, int, Greater<int>>	std_range_map(std_map.begin(), std_map.end());
+			ft::map<int, int, Greater<int> >		ft_range_map(ft_map.begin(), ft_map.end());
+			std::map<int, int, Greater<int> >	std_range_map(std_map.begin(), std_map.end());
 
 			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - begin / end) - size");
 			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - begin / end) - items");
 		}
 		// Begin - find
 		{
-			ft::map<int, int, Greater<int>>		ft_range_map(ft_map.begin(), ft_map.find(13));
-			std::map<int, int, Greater<int>>	std_range_map(std_map.begin(), std_map.find(13));
+			ft::map<int, int, Greater<int> >		ft_range_map(ft_map.begin(), ft_map.find(13));
+			std::map<int, int, Greater<int> >	std_range_map(std_map.begin(), std_map.find(13));
 
 			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - begin / middle) - size");
 			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - begin / middle) - items");
 		}
 		// Find - end
 		{
-			ft::map<int, int, Greater<int>>		ft_range_map(ft_map.find(13), ft_map.end());
-			std::map<int, int, Greater<int>>	std_range_map(std_map.find(13), std_map.end());
+			ft::map<int, int, Greater<int> >		ft_range_map(ft_map.find(13), ft_map.end());
+			std::map<int, int, Greater<int> >	std_range_map(std_map.find(13), std_map.end());
 
 			_assert_equal(ft_range_map.size(), std_range_map.size(), "test map range constructor (full - middle / end) - size");
 			TEST_EACH_EQUAL_PAIR(ft_range_map, std_range_map, "test map range constructor (full - middle / end) - items");
@@ -1980,12 +1981,12 @@ void test_map_iterator(){
 	}
 	// Greater
 	{
-		ft::map<int, int, Greater<int>>::const_iterator 	ft_cbegin;
-		ft::map<int, int, Greater<int>>::const_iterator 	ft_cend;
-		std::map<int, int, Greater<int>>::const_iterator	std_cbegin;
-		std::map<int, int, Greater<int>>::const_iterator	std_cend;
-		ft::map<int, int, Greater<int>>						ft_map;
-		std::map<int, int, Greater<int>>					std_map;
+		ft::map<int, int, Greater<int> >::const_iterator 	ft_cbegin;
+		ft::map<int, int, Greater<int> >::const_iterator 	ft_cend;
+		std::map<int, int, Greater<int> >::const_iterator	std_cbegin;
+		std::map<int, int, Greater<int> >::const_iterator	std_cend;
+		ft::map<int, int, Greater<int> >						ft_map;
+		std::map<int, int, Greater<int> >					std_map;
 
 		ft_cbegin = ft_map.begin();
 		ft_cend = ft_map.end();
@@ -2043,12 +2044,12 @@ void test_map_reverse_iterator(){
 	}
 	// Greater
 	{
-		ft::map<int, int, Greater<int>>::const_reverse_iterator 	ft_cbegin;
-		ft::map<int, int, Greater<int>>::const_reverse_iterator 	ft_cend;
-		std::map<int, int, Greater<int>>::const_reverse_iterator	std_cbegin;
-		std::map<int, int, Greater<int>>::const_reverse_iterator	std_cend;
-		ft::map<int, int, Greater<int>>								ft_map;
-		std::map<int, int, Greater<int>>							std_map;
+		ft::map<int, int, Greater<int> >::const_reverse_iterator 	ft_cbegin;
+		ft::map<int, int, Greater<int> >::const_reverse_iterator 	ft_cend;
+		std::map<int, int, Greater<int> >::const_reverse_iterator	std_cbegin;
+		std::map<int, int, Greater<int> >::const_reverse_iterator	std_cend;
+		ft::map<int, int, Greater<int> >								ft_map;
+		std::map<int, int, Greater<int> >							std_map;
 
 		ft_cbegin = ft_map.rbegin();
 		ft_cend = ft_map.rend();
@@ -2143,10 +2144,10 @@ void test_map_swap(){
 	}
 	// Full / Full greater
 	{
-		ft::map<int, int, Greater<int>>		ft_a;
-		ft::map<int, int, Greater<int>>		ft_b;
-		std::map<int, int, Greater<int>>	std_a;
-		std::map<int, int, Greater<int>>	std_b;
+		ft::map<int, int, Greater<int> >		ft_a;
+		ft::map<int, int, Greater<int> >		ft_b;
+		std::map<int, int, Greater<int> >	std_a;
+		std::map<int, int, Greater<int> >	std_b;
 
 		for ( int index = 0 ; index < 13 ; index++ ){
 			ft_a.insert(ft::make_pair(keys[index], 0));
@@ -2259,7 +2260,7 @@ void test_map(){
 }
 
 int	main(void){
-	test_vector();
+	// test_vector();
 	// test_stack();
-	// test_map();
+	test_map();
 }
