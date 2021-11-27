@@ -641,11 +641,11 @@ namespace ft {
 			 * 
 			 */
 			iterator begin() {
-				return iterator( &m_items[0] );
+				return iterator( m_items );
 			}
 
 			const_iterator begin() const {
-				return const_iterator( &m_items[0] );
+				return const_iterator( m_items );
 			}
 
 			/**
@@ -656,10 +656,14 @@ namespace ft {
 			 * Notice that unlike member vector::back, which returns a reference to this same element, this function returns a reverse random access iterator.
 			 */
 			reverse_iterator rbegin() {
+				if ( m_items == NULL )
+					return reverse_iterator( NULL );
 				return reverse_iterator( this->end() - 1 );
 			}
 
 			const_reverse_iterator rbegin() const {
+				if ( m_items == NULL )
+					return const_reverse_iterator( NULL );
 				return const_reverse_iterator( this->end() - 1 );
 			}
 
@@ -679,18 +683,26 @@ namespace ft {
 			 * 
 			 */
 			iterator end() {
+				if ( m_items == NULL )
+					return begin();
 				return iterator( &m_items[m_size] );
 			}
 
 			const_iterator end() const {
+				if ( m_items == NULL )
+					return begin();
 				return const_iterator( &m_items[m_size] );
 			}
 
 			reverse_iterator rend() {
+				if ( m_items == NULL )
+					return rbegin();
 				return reverse_iterator( this->begin() - 1 );
 			}
 
 			const_reverse_iterator rend() const {
+				if ( m_items == NULL )
+					return rbegin();
 				return const_reverse_iterator( this->begin() - 1 );
 			}
 

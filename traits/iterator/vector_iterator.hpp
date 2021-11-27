@@ -155,9 +155,9 @@ namespace ft {
 
 				/* Increment / Decrement (which is inverted with reverse iterator) */
 				reverse_iterator &operator++() { m_ptr--; return *this; };
-				reverse_iterator operator++(int) { reverse_iterator tmp = *this; --(*this); return tmp; }
+				reverse_iterator operator++(int) { reverse_iterator tmp = *this; ++(*this); return tmp; }
 				reverse_iterator &operator--() { m_ptr++; return *this; }
-				reverse_iterator operator--(int) { reverse_iterator tmp = *this; ++(*this); return tmp; }
+				reverse_iterator operator--(int) { reverse_iterator tmp = *this; --(*this); return tmp; }
 
 				/* Arithmetic */
 				reverse_iterator &operator+=(difference_type offset) { m_ptr -= offset; return *this; }
@@ -181,7 +181,7 @@ namespace ft {
 				pointer	m_ptr;
 		};
 
-			template<typename T>
+		template<typename T>
 		class const_reverse_iterator {
 			public:
 				typedef T								iterator_type;
@@ -216,9 +216,9 @@ namespace ft {
 
 				/* Increment / Decrement (which is inverted with reverse iterator) */
 				const_reverse_iterator &operator++() { m_ptr--; return *this; };
-				const_reverse_iterator operator++(int) { const_reverse_iterator tmp = *this; --(*this); return tmp; }
+				const_reverse_iterator operator++(int) { const_reverse_iterator tmp = *this; ++(*this); return tmp; }
 				const_reverse_iterator &operator--() { m_ptr++; return *this; }
-				const_reverse_iterator operator--(int) { const_reverse_iterator tmp = *this; ++(*this); return tmp; }
+				const_reverse_iterator operator--(int) { const_reverse_iterator tmp = *this; --(*this); return tmp; }
 
 				/* Arithmetic */
 				const_reverse_iterator &operator+=(difference_type offset) { m_ptr -= offset; return *this; }

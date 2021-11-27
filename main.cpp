@@ -554,24 +554,26 @@ void test_vector_reverse_iterator() {
 		ft::vector<int>		f_vec;
 		std::vector<int>	s_vec;
 
-		for ( int i = 0 ; i < 50 ; i++ ){
+		for ( int i = 0 ; i < 5 ; i++ ){
 			f_vec.push_back(i);
 			s_vec.push_back(i);
 		}
-		_assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse iterator - items");
+
+		_assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse iterator - items full");
 
 		ft::vector<int>::const_reverse_iterator f_crit_begin = f_vec.rbegin();
 		ft::vector<int>::const_reverse_iterator f_crit_end = f_vec.rend();
 		std::vector<int>::const_reverse_iterator s_crit_begin = s_vec.rbegin();
 		std::vector<int>::const_reverse_iterator s_crit_end = s_vec.rend();
 
-		_assert_each_equal(f_crit_begin, f_crit_end, s_crit_begin, s_crit_end, "test const reverse iterator - items");
+		_assert_each_equal(f_crit_begin, f_crit_end, s_crit_begin, s_crit_end, "test const reverse iterator - items full");
 	}
 	{
 		ft::vector<int>		f_vec;
 		std::vector<int>	s_vec;
 
-		_assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse vector - empty vector");
+		_assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse vector - items empty");
+		_assert_equal(f_vec.rbegin() == f_vec.rend(), "test reverse iterator - items empty");
 	}
 }
 
