@@ -232,14 +232,41 @@ void test_vector_pop_back(){
 }
 
 void test_vector_clear(){
-	std::vector<int>	s_vec;
-	ft::vector<int>		f_vec;
+	{
+		std::vector<int>	s_vec;
+		ft::vector<int>		f_vec;
 
-	s_vec.resize(20, 10);
-	f_vec.resize(20, 10);
+		s_vec.clear();
+		f_vec.clear();
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector clear (empty) - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector clear (empty) - capacity");
+		_assert_equal(f_vec.begin() == f_vec.end(), "test vector clear (empty) - iterator");
+	}
+	{
+		std::vector<int>	s_vec;
+		ft::vector<int>		f_vec;
 
-	_assert_equal(s_vec.size(), f_vec.size(), "test vector clear size");
-	_assert_equal(s_vec.capacity(), f_vec.capacity(), "test vector clear capacity");
+		s_vec.resize(20, 10);
+		f_vec.resize(20, 10);
+
+		s_vec.clear();
+		f_vec.clear();
+
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector clear (full) - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector clear (full) - capacity");
+		_assert_equal(f_vec.begin() == f_vec.end(), "test vector clear (full) - iterator");
+	}
+	{
+		std::vector<int>	s_vec(100, 10);
+		ft::vector<int>		f_vec(100, 10);
+
+		s_vec.clear();
+		f_vec.clear();
+
+		_assert_equal(f_vec.size(), s_vec.size(), "test vector clear (full) - size");
+		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector clear (full) - capacity");
+		_assert_equal(f_vec.begin() == f_vec.end(), "test vector clear (full) - iterator");
+	}
 }
 
 void test_vector_assign(){
@@ -575,6 +602,15 @@ void test_vector_reverse_iterator() {
 		_assert_each_equal(f_vec.rbegin(), f_vec.rend(), s_vec.rbegin(), s_vec.rend(), "test reverse vector - items empty");
 		_assert_equal(f_vec.rbegin() == f_vec.rend(), "test reverse iterator - items empty");
 	}
+}
+
+void test_vector_default_constructor(){
+	ft::vector<int>		f_vec;
+	std::vector<int>	s_vec;
+
+	_assert_equal(f_vec.size(), s_vec.size(), "test vector default constructor - size");
+	_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector default constructor - capacity");
+	_assert_equal(f_vec.begin() == f_vec.end(), "test vector default constructor - iterator");
 }
 
 void test_vector_fill_constructor() {
@@ -2037,25 +2073,133 @@ void test_map_reverse_iterator(){
 	}
 }
 
+void test_map_swap(){
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	// Empty / Empty
+	{
+		ft::map<int, int>	ft_a;
+		ft::map<int, int>	ft_b;
+		std::map<int, int>	std_a;
+		std::map<int, int>	std_b;
+
+		ft_a.swap(ft_b);
+		std_a.swap(std_b);
+		// Iterators
+		_assert_equal(ft_a.begin() == ft_a.end(), "test map swap - iterator");
+		_assert_equal(ft_b.begin() == ft_b.end(), "test map swap - iterator");
+		_assert_equal(ft_a.rbegin() == ft_a.rend(), "test map swap - reverse iterator");
+		_assert_equal(ft_b.rbegin() == ft_b.rend(), "test map swap - reverse iterator");
+
+		// Size
+		_assert_equal(ft_a.size(), std_a.size(), "test map swap - size");
+		_assert_equal(ft_b.size(), std_b.size(), "test map swap - size");
+	}
+	// Empty / Full
+	{
+		ft::map<int, int>	ft_a;
+		ft::map<int, int>	ft_b;
+		std::map<int, int>	std_a;
+		std::map<int, int>	std_b;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_a.insert(ft::make_pair(keys[index], 0));
+			std_a.insert(std::make_pair(keys[index], 0));
+		}
+		ft_a.swap(ft_b);
+		std_a.swap(std_b);
+
+		// Iterator
+		_assert_equal(ft_a.begin() == ft_a.end(), "test map swap (empty / full) - iterator");
+
+		// Size
+		_assert_equal(ft_a.size(), std_a.size(), "test map swap (empty / full) - size");
+		_assert_equal(ft_b.size(), std_b.size(), "test map swap (empty / full) - size");
+
+		// Content
+		TEST_EACH_EQUAL_PAIR(ft_a, std_a, "test map swap (empty / full) - items");
+		TEST_EACH_EQUAL_PAIR(ft_b, std_b, "test map swap (empty / full) - items");
+	}
+	// Full / Full
+	{
+		ft::map<int, int>	ft_a;
+		ft::map<int, int>	ft_b;
+		std::map<int, int>	std_a;
+		std::map<int, int>	std_b;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_a.insert(ft::make_pair(keys[index], 0));
+			std_a.insert(std::make_pair(keys[index], 0));
+		}
+		ft_a.swap(ft_b);
+		std_a.swap(std_b);
+
+		// Size
+		_assert_equal(ft_a.size(), std_a.size(), "test map swap (full / full) - size");
+		_assert_equal(ft_b.size(), std_b.size(), "test map swap (full / full) - size");
+
+		// Content
+		TEST_EACH_EQUAL_PAIR(ft_a, std_a, "test map swap (full / full) - items");
+		TEST_EACH_EQUAL_PAIR(ft_b, std_b, "test map swap (full / full) - items");
+	}
+	// Full / Full greater
+	{
+		ft::map<int, int, Greater<int>>		ft_a;
+		ft::map<int, int, Greater<int>>		ft_b;
+		std::map<int, int, Greater<int>>	std_a;
+		std::map<int, int, Greater<int>>	std_b;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_a.insert(ft::make_pair(keys[index], 0));
+			std_a.insert(std::make_pair(keys[index], 0));
+		}
+		ft_a.swap(ft_b);
+		std_a.swap(std_b);
+
+		// Size
+		_assert_equal(ft_a.size(), std_a.size(), "test map swap (greater - full / full) - size");
+		_assert_equal(ft_b.size(), std_b.size(), "test map swap (greater - full / full) - size");
+
+		// Content
+		TEST_EACH_EQUAL_PAIR(ft_a, std_a, "test map swap (greater - full / full) - items");
+		TEST_EACH_EQUAL_PAIR(ft_b, std_b, "test map swap (greater - full / full) - items");
+	}
+}
+
 void test_vector() {
 	print_header("Vector");
-	test_vector_max_size();
-	test_vector_capacity();
-	test_vector_resize();
-	test_vector_iterator();
-	test_vector_pop_back();
-	test_vector_clear();
-	test_vector_assign();
-	test_vector_insert();
-	test_vector_erase();
-	test_vector_access();
-	test_vector_at();
-	test_vector_reverse_iterator();
+	
+	// Constructors
+	print_subheader("Constructors");
+	test_vector_default_constructor();
 	test_vector_fill_constructor();
 	test_vector_range_constructor();
 	test_vector_copy_constructor();
-	test_vector_swap();
 	test_vector_assignation_operator();
+
+	// Iterators
+	print_subheader("Iterators");
+	test_vector_iterator();
+	test_vector_reverse_iterator();
+
+	// Capacity
+	print_subheader("Capacity");
+	test_vector_max_size();
+	test_vector_capacity();
+	test_vector_resize();
+
+	// Element access
+	print_subheader("Element access");
+	test_vector_access();
+	test_vector_at();
+
+	// Modifiers
+	print_subheader("Modifiers");
+	test_vector_assign();
+	test_vector_pop_back();
+	test_vector_insert();
+	test_vector_erase();
+	test_vector_swap();
+	test_vector_clear();
 }
 
 void test_stack() {
@@ -2082,6 +2226,8 @@ void test_map(){
 	test_map_max_size();
 
 	// Iterators
+	test_map_iterator();
+	test_map_reverse_iterator();
 
 	// Element access
 	print_subheader("Element access");
@@ -2096,6 +2242,7 @@ void test_map(){
 	test_map_erase_key();
 	test_map_erase_range();
 	test_map_clear();
+	test_map_swap();
 
 	// Operations
 	print_subheader("Operations");
@@ -2109,12 +2256,10 @@ void test_map(){
 	print_subheader("Observers");
 	test_map_key_comp();
 	test_map_val_comp();
-	test_map_iterator();
-	test_map_reverse_iterator();
 }
 
 int	main(void){
 	test_vector();
-	test_stack();
-	test_map();
+	// test_stack();
+	// test_map();
 }
