@@ -81,7 +81,7 @@ namespace ft
 		 * 
 		 */
 		private:
-			enum rb_color { BLACK = 1, RED, SENTINEL };
+			enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL };
 			/**
 			 * Internal struct representing a binary tree node.
 			 * 
@@ -111,7 +111,7 @@ namespace ft
 				 * 
 				 */
 				rb_node() 
-					: data( value_type() ), parent( NULL ), left( NULL ), right( NULL ), color( RED ) { }
+					: data( value_type() ), parent( NULL ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
 
 				/**
 				 * Data constructor
@@ -123,7 +123,7 @@ namespace ft
 				 * 
 				 */
 				rb_node( const value_type &__data )
-					: data( __data ), parent( NULL ), left( NULL ), right( NULL ), color( RED ) { }
+					: data( __data ), parent( NULL ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
 
 				/**
 				 * Data-Parent constructor
@@ -136,7 +136,7 @@ namespace ft
 				 * 
 				 */
 				rb_node( const value_type &__data, rb_node *__parent )
-					: data( __data ), parent( __parent ), left( NULL ), right( NULL ), color( RED ) { }
+					: data( __data ), parent( __parent ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
 
 				/**
 				 * Get the grand parent
@@ -179,7 +179,7 @@ namespace ft
 				}
 
 				bool is_sentinel() const {
-					return color == SENTINEL;
+					return color == RB_COLOR_SENTINEL;
 				}
 
 				bool is_left() const {
@@ -241,7 +241,7 @@ namespace ft
 				static rb_node *create_sentinel_node( allocator_type alloc = allocator_type() ){
 					rb_node *node = rb_node::create_node( alloc );
 
-					node->color = SENTINEL;
+					node->color = RB_COLOR_SENTINEL;
 					return node;
 				}
 
@@ -384,8 +384,10 @@ namespace ft
 					return ft::pair<iterator, bool>( iterator( m_root ), true );
 				}
 				ret = insert_recursive_(m_root, val);
-				if ( ret.second )
+				if ( ret.second ){
 					m_size++;
+					this->insert_fix_tree_(ret.first.base());
+				}
 				return ret;
 			}
 
@@ -1097,6 +1099,114 @@ namespace ft
 
 			bool is_equal_val_(const value_type &a, const value_type &b){
 				return !m_comp(a.first, b.first) && !m_comp(b.first, a.first);
+			}
+
+			/**
+			 * Red black tree utils
+			 */
+
+			void __insert_case_1__(rb_node *node){
+				if ( node->parent == NULL )
+					node->color = RB_COLOR_BLACK;
+			}
+
+			void __insert_case_2__(rb_node *node){
+				(void)node;
+				return ; // Uncessary call
+			}
+
+			void __insert_case_3__(rb_node *node){
+				node->parent->color = RB_COLOR_BLACK;
+				node->uncle()->color = RB_COLOR_BLACK;
+				
+
+				rb_node *gp = node->grand_parent();
+				gp->color = RB_COLOR_RED;
+				insert_fix_tree_(gp);
+			}
+
+			void __insert_case_4__(rb_node *node){
+				rb_node *p = node->parent;
+				rb_node *gp = node->grand_parent();
+
+				if ( gp != NULL ){
+					if ( gp->left != NULL ){
+						if ( node == gp->left->right ){
+							rotate_left_(p);
+							node = node->left;
+						}
+					} else {
+						if ( node == gp->right->left ){
+							rotate_right_(p);
+							node = node->right;
+						}
+					}
+
+					__insert_case_5__(node);
+				}
+			}
+
+			void __insert_case_5__(rb_node *node){
+				rb_node *p = node->parent;
+				rb_node *gp = node->grand_parent();
+
+				if ( node->is_left() ){
+					rotate_right_(gp);
+				} else {
+					rotate_left_(gp);
+				}
+
+				p->color = RB_COLOR_BLACK;
+				gp->color = RB_COLOR_RED;
+			}
+
+			void __replace_sentinels__(){
+				rb_node *leftmost = m_root;
+				rb_node *rightmost = m_root;
+
+				// Leftmost
+				rb_node *lp = m_left_sentinel->parent;
+
+				if ( lp != NULL ){
+					lp->left = NULL;
+				}
+
+				while ( leftmost->left != NULL )
+					leftmost = leftmost->left;
+
+				leftmost->set_left(m_left_sentinel);
+
+				// Rightmost
+				rb_node *rp = m_right_sentinel->parent;
+
+				if ( rp != NULL ){
+					rp->right = NULL;
+				}
+
+				while ( rightmost->right != NULL )
+					rightmost = rightmost->right;
+
+				rightmost->set_right(m_right_sentinel);
+			}
+
+			void insert_fix_tree_(rb_node *node){
+				rb_node *uncle = node->uncle();
+
+				if ( node->parent == NULL ){
+					__insert_case_1__(node);
+				}
+				else {
+					if ( node->parent->color == RB_COLOR_BLACK ){
+					__insert_case_2__(node);
+					}
+					else if ( uncle != NULL && uncle->color == RB_COLOR_RED ){
+						__insert_case_3__(node);
+					}
+					else {
+						__insert_case_4__(node);
+					}
+					__replace_sentinels__();
+				}
 			}
 
 			void rotate_left_(rb_node *x){

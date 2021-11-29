@@ -4,6 +4,7 @@
 #include <stack>
 #include <map>
 #include <stdio.h>
+#include <cstdlib>
 #include "vector.hpp"
 #include "stack.hpp"
 #include "map.hpp"
@@ -968,7 +969,23 @@ void test_map_insert() {
 	_assert_equal(ft_ret.second, std_ret.second, "test map insert - return boolean");
 	_assert_equal(ft_map.size(), std_map.size(), "test map insert - size");
 	_assert_each_equal_pair(ft_map.begin(), ft_map.end(), std_map.begin(), std_map.end(), "test map insert - items");
-	// ft_map.debug_print_btree_structure();
+}
+
+void test_map_insert_randomized(){
+	srand(time(NULL));
+	ft::map<int, int>	f_map;
+	std::map<int, int>	s_map;
+
+	int iterations = rand() % 20;
+
+	for ( int i = 0 ; i < iterations ; ++i ){
+		int key = rand() % 10000;
+
+		f_map.insert(ft::make_pair(key, 0));
+		s_map.insert(std::make_pair(key, 0));
+	}
+	_assert_equal(f_map.size(), s_map.size(), "test map insert randomized - size");
+	TEST_EACH_EQUAL_PAIR(f_map, s_map, "test map insert randomized - items");
 }
 
 void test_map_insert_hint(){
@@ -2212,51 +2229,78 @@ void test_stack() {
 	test_stack_pop();
 }
 
+void test_map_insert_rebalance(){
+	srand(time(NULL));
+	int keys[15] = {559, 8396, 4170, 7174, 9058, 4099, 2912, 7699, 6147, 5085, 2102, 376, 3302, 1646, 3293};
+	ft::map<int, int> m;
+
+	std::cout << "Values : ";
+	for ( int index = 0 ; index < 15 ; index++ ){
+		// int key = rand() % 10000;
+		int key = keys[index];
+
+		std::cout << key << " ";
+
+		m.insert( ft::make_pair( key , 0 ) );
+	}
+	std::cout << std::endl;
+
+	std::cout << "Map    : ";
+	for ( ft::map<int, int>::iterator it = m.begin() ; it != m.end() ; ++it ){
+		std::cout << it->first << " ";
+	}
+	std::cout << std::endl;
+	m.debug_print_btree_structure();
+}
+
 void test_map(){
-	print_header("Map");
-	// Constructors
-	print_subheader("Constructors");
-	test_map_default_constructor();
-	test_map_copy_constructor();
-	test_map_range_constructor();
-	test_map_assignment_operator();
+	test_map_insert_rebalance();
+	// print_header("Map");
+	// // Constructors
+	// print_subheader("Constructors");
+	// test_map_default_constructor();
+	// test_map_copy_constructor();
+	// test_map_range_constructor();
+	// test_map_assignment_operator();
 
-	// Capacity
-	print_subheader("Capacity");
-	test_map_empty();
-	test_map_max_size();
+	// // Capacity
+	// print_subheader("Capacity");
+	// test_map_empty();
+	// test_map_max_size();
 
-	// Iterators
-	test_map_iterator();
-	test_map_reverse_iterator();
+	// // Iterators
+	// test_map_iterator();
+	// test_map_reverse_iterator();
 
-	// Element access
-	print_subheader("Element access");
-	test_map_bracket_operator();
+	// // Element access
+	// print_subheader("Element access");
+	// test_map_bracket_operator();
 
-	// Modifiers
-	print_subheader("Modifiers");
-	test_map_insert();
-	test_map_insert_hint();
-	test_map_insert_range();
-	test_map_erase_it();
-	test_map_erase_key();
-	test_map_erase_range();
-	test_map_clear();
-	test_map_swap();
+	// // Modifiers
+	// print_subheader("Modifiers");
+	// test_map_insert();
+	// test_map_insert_hint();
+	// test_map_insert_range();
+	// test_map_erase_it();
+	// test_map_erase_key();
+	// test_map_erase_range();
+	// test_map_clear();
+	// test_map_swap();
 
-	// Operations
-	print_subheader("Operations");
-	test_map_find();
-	test_map_count();
-	test_map_lower_bound();
-	test_map_upper_bound();
-	test_map_equal_range();
+	// // Operations
+	// print_subheader("Operations");
+	// test_map_find();
+	// test_map_count();
+	// test_map_lower_bound();
+	// test_map_upper_bound();
+	// test_map_equal_range();
 
-	// Observers
-	print_subheader("Observers");
-	test_map_key_comp();
-	test_map_val_comp();
+	// // Observers
+	// print_subheader("Observers");
+	// test_map_key_comp();
+	// test_map_val_comp();
+
+	// test_map_insert_randomized();
 }
 
 int	main(void){
