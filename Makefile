@@ -1,5 +1,5 @@
-CLANG = clang++
-CFLAGS = -Wall -Werror -Wextra # -fsanitize=address # -std=c++98
+CXX = c++
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -g # -fsanitize=address
 
 SRCS = main.cpp
 HEADERS = vector.hpp stack.hpp map.hpp
@@ -9,7 +9,7 @@ NAME = ft_containers
 all: $(NAME)
 
 $(NAME): $(SRCS) $(HEADERS)
-	$(CLANG) $(CFLAGS) -o $(NAME) $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $(NAME) $(SRCS)
 
 re: fclean all
 

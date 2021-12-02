@@ -386,7 +386,7 @@ namespace ft
 				ret = insert_recursive_(m_root, val);
 				if ( ret.second ){
 					m_size++;
-					this->insert_fix_tree_(ret.first.base());
+					this->rb_insert_fix_tree_(ret.first.base());
 				}
 				return ret;
 			}
@@ -1105,62 +1105,59 @@ namespace ft
 			 * Red black tree utils
 			 */
 
-			void __insert_case_1__(rb_node *node){
+			void rb_insert_case_1_(rb_node *node){
 				if ( node->parent == NULL )
 					node->color = RB_COLOR_BLACK;
 			}
 
-			void __insert_case_2__(rb_node *node){
+			void rb_insert_case_2_(rb_node *node){
 				(void)node;
 				return ; // Uncessary call
 			}
 
-			void __insert_case_3__(rb_node *node){
+			void rb_insert_case_3_(rb_node *node){
 				node->parent->color = RB_COLOR_BLACK;
 				node->uncle()->color = RB_COLOR_BLACK;
 				
 
 				rb_node *gp = node->grand_parent();
 				gp->color = RB_COLOR_RED;
-				insert_fix_tree_(gp);
+				rb_insert_fix_tree_(gp);
 			}
 
-			void __insert_case_4__(rb_node *node){
+			void rb_insert_case_4_(rb_node *node){
 				rb_node *p = node->parent;
 				rb_node *gp = node->grand_parent();
 
 				if ( gp != NULL ){
-					if ( gp->left != NULL ){
-						if ( node == gp->left->right ){
-							rotate_left_(p);
-							node = node->left;
-						}
-					} else {
-						if ( node == gp->right->left ){
-							rotate_right_(p);
-							node = node->right;
-						}
+					if ( gp->left != NULL && node == gp->left->right ){
+						rb_rotate_left_(p);
+						node = node->left;
+					}
+					else if ( gp->right != NULL && node == gp->right->left ){
+						rb_rotate_right_(p);
+						node = node->right;
 					}
 
-					__insert_case_5__(node);
+					rb_insert_case_5_(node);
 				}
 			}
 
-			void __insert_case_5__(rb_node *node){
+			void rb_insert_case_5_(rb_node *node){
 				rb_node *p = node->parent;
 				rb_node *gp = node->grand_parent();
 
 				if ( node->is_left() ){
-					rotate_right_(gp);
+					rb_rotate_right_(gp);
 				} else {
-					rotate_left_(gp);
+					rb_rotate_left_(gp);
 				}
 
 				p->color = RB_COLOR_BLACK;
 				gp->color = RB_COLOR_RED;
 			}
 
-			void __replace_sentinels__(){
+			void rb_replace_sentinels_(){
 				rb_node *leftmost = m_root;
 				rb_node *rightmost = m_root;
 
@@ -1189,27 +1186,27 @@ namespace ft
 				rightmost->set_right(m_right_sentinel);
 			}
 
-			void insert_fix_tree_(rb_node *node){
+			void rb_insert_fix_tree_(rb_node *node){
 				rb_node *uncle = node->uncle();
 
 				if ( node->parent == NULL ){
-					__insert_case_1__(node);
+					rb_insert_case_1_(node);
 				}
 				else {
 					if ( node->parent->color == RB_COLOR_BLACK ){
-					__insert_case_2__(node);
+					rb_insert_case_2_(node);
 					}
 					else if ( uncle != NULL && uncle->color == RB_COLOR_RED ){
-						__insert_case_3__(node);
+						rb_insert_case_3_(node);
 					}
 					else {
-						__insert_case_4__(node);
+						rb_insert_case_4_(node);
 					}
-					__replace_sentinels__();
+					rb_replace_sentinels_();
 				}
 			}
 
-			void rotate_left_(rb_node *x){
+			void rb_rotate_left_(rb_node *x){
 				rb_node *y = x->right;
 				x->right = y->left;
 
@@ -1229,7 +1226,7 @@ namespace ft
 				x->parent = y;
 			}
 
-			void rotate_right_(rb_node *y){
+			void rb_rotate_right_(rb_node *y){
 				rb_node *x = y->left;
 				y->left = x->right;
 
