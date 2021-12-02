@@ -2229,53 +2229,90 @@ void test_stack() {
 	test_stack_pop();
 }
 
+void map_repl(){
+	ft::map<int, int>	m;
+	int					key;
+	std::string			cmd;
+
+	while ( true ){
+		std::cout << ">> ";
+		std::cin >> cmd >> key;
+
+		if ( cmd == "add" ){
+			m.insert(ft::make_pair(key, 0));
+		}
+		if ( cmd == "del" ){
+			m.erase(key);
+		}
+		m.debug_print_btree_structure();
+		std::cout << "==================================" << std::endl;
+	}
+}
+
+void map_erase_rebalance(){
+	int keys[12] = {14, 10, 30, 6, 13, 15, 35, 8, 32, 100, 1000, 33};
+	ft::map<int, int> m;
+
+	for ( int index = 0 ; index < 12 ; index++ ){
+		m.insert(ft::make_pair(keys[index], 0));
+	}
+	m.debug_print_btree_structure();
+	std::cout << "====================" << std::endl;
+	m.erase(30);
+	std::cout << "====================" << std::endl;
+	m.debug_print_btree_structure();
+}
+
 void test_map(){
-	print_header("Map");
-	// Constructors
-	print_subheader("Constructors");
-	test_map_default_constructor();
-	test_map_copy_constructor();
-	test_map_range_constructor();
-	test_map_assignment_operator();
+	// map_repl();
+	map_erase_rebalance();
 
-	// Capacity
-	print_subheader("Capacity");
-	test_map_empty();
-	test_map_max_size();
+	// print_header("Map");
+	// // Constructors
+	// print_subheader("Constructors");
+	// test_map_default_constructor();
+	// test_map_copy_constructor();
+	// test_map_range_constructor();
+	// test_map_assignment_operator();
 
-	// Iterators
-	print_subheader("Iterators");
-	test_map_iterator();
-	test_map_reverse_iterator();
+	// // Capacity
+	// print_subheader("Capacity");
+	// test_map_empty();
+	// test_map_max_size();
 
-	// Element access
-	print_subheader("Element access");
-	test_map_bracket_operator();
+	// // Iterators
+	// print_subheader("Iterators");
+	// test_map_iterator();
+	// test_map_reverse_iterator();
 
-	// Modifiers
-	print_subheader("Modifiers");
-	test_map_insert();
-	test_map_insert_hint();
-	test_map_insert_range();
-	test_map_insert_randomized();
-	test_map_erase_it();
-	test_map_erase_key();
-	test_map_erase_range();
-	test_map_clear();
-	test_map_swap();
+	// // Element access
+	// print_subheader("Element access");
+	// test_map_bracket_operator();
 
-	// Operations
-	print_subheader("Operations");
-	test_map_find();
-	test_map_count();
-	test_map_lower_bound();
-	test_map_upper_bound();
-	test_map_equal_range();
+	// // Modifiers
+	// print_subheader("Modifiers");
+	// test_map_insert();
+	// test_map_insert_hint();
+	// test_map_insert_range();
+	// test_map_insert_randomized();
+	// test_map_erase_it();
+	// test_map_erase_key();
+	// test_map_erase_range();
+	// test_map_clear();
+	// test_map_swap();
 
-	// Observers
-	print_subheader("Observers");
-	test_map_key_comp();
-	test_map_val_comp();
+	// // Operations
+	// print_subheader("Operations");
+	// test_map_find();
+	// test_map_count();
+	// test_map_lower_bound();
+	// test_map_upper_bound();
+	// test_map_equal_range();
+
+	// // Observers
+	// print_subheader("Observers");
+	// test_map_key_comp();
+	// test_map_val_comp();
 }
 
 int	main(void){

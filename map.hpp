@@ -516,19 +516,22 @@ namespace ft
 			void erase(iterator position){
 				if ( position != this->end() ){
 					rb_node *target = position.base();
+					rb_node *successor;
+					int		prev_color = target->color;
 					
 					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
 						// Go to the right subtree, then find the min (go to leftmost)
 						if ( target->left->is_sentinel() && target->right->is_sentinel() ){
 							m_root = NULL;
+							successor = NULL;
 						} else {
-							detach_node_(target);
+							successor = detach_node_(target);
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
 						// Case 2, target has one child
-						rb_node *successor = (target->right != NULL) ? target->right : target->left;
+						successor = (target->right != NULL) ? target->right : target->left;
 
 						if ( target->is_left() ){
 							target->parent->set_left(successor);
@@ -543,9 +546,12 @@ namespace ft
 						} else {
 							target->parent->right = NULL;
 						}
+						successor = NULL;
 					}
 					rb_node::destroy_node( target );
 					m_size--;
+					if ( prev_color == RB_COLOR_BLACK )
+						this->rb_erase_fix_(successor);
 				}
 			}
 
@@ -1045,9 +1051,9 @@ namespace ft
 				return NULL;
 			}
 
-			void detach_node_(rb_node *target){
-				rb_node *rightmost;
-				rb_node *successor = target->right;
+			rb_node *detach_node_(rb_node *target){
+				rb_node	*rightmost;
+				rb_node	*successor = target->right;
 
 				// If the min node is a sentinel node, then take the left child
 				// and set the sentinel node to the rightmost subtree.
@@ -1073,12 +1079,15 @@ namespace ft
 						// If successor node has a child, then set the successor parent
 						// set this node as his new left child, otherwise, it is set to NULL.
 						if ( successor->right != NULL ){
+							// Successor has child
 							successor->parent->set_left(successor->right);
 						} else {
+							// Successor is a leaf
 							successor->parent->left = NULL;
 						}
 						successor->assign( target );
 					}
+
 				}
 				// Set the parent to point to the new successor, otherwise root is set to NULL.
 				if ( target->parent != NULL ){
@@ -1091,6 +1100,78 @@ namespace ft
 				else {
 					m_root = successor;
 				}
+				return successor;
+			}
+
+			void rb_erase_fix_(rb_node *x){
+				rb_node *s;
+
+				while ( x != m_root && x->color == RB_COLOR_BLACK ){
+					if ( x->is_left() ){
+						s = x->parent->right;
+						
+						if (s->color == RB_COLOR_RED){
+							// Case 3.1
+							s->color = RB_COLOR_BLACK;
+							x->parent->color = RB_COLOR_RED;
+							rb_rotate_left_(x->parent);
+							s = x->parent->right;
+						}
+
+						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+							// Case 3.2
+							s->color = RB_COLOR_RED;
+							x = x->parent;
+						}
+						else {
+							if ( s->right->color == RB_COLOR_BLACK ){
+								// Case 3.3
+								s->left->color = RB_COLOR_BLACK;
+								s->color = RB_COLOR_RED;
+								rb_rotate_right_(s);
+								s = x->parent->right;
+							}
+							// Case 3.4
+							s->color = x->parent->color;
+							x->parent->color = RB_COLOR_BLACK;
+							x->right->color = RB_COLOR_BLACK;
+							rb_rotate_left_(x->parent);
+							x = m_root;
+						}
+					} else {
+						s = x->parent->left;
+						
+						if (s->color == RB_COLOR_RED){
+							// Case 3.1
+							s->color = RB_COLOR_BLACK;
+							x->parent->color = RB_COLOR_RED;
+							rb_rotate_right_(x->parent);
+							s = x->parent->left;
+						}
+
+						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+							// Case 3.2
+							s->color = RB_COLOR_RED;
+							x = x->parent;
+						}
+						else {
+							if ( s->left->color == RB_COLOR_BLACK ){
+								// Case 3.3
+								s->right->color = RB_COLOR_BLACK;
+								s->color = RB_COLOR_RED;
+								rb_rotate_left_(s);
+								s = x->parent->left;
+							}
+							// Case 3.4
+							s->color = x->parent->color;
+							x->parent->color = RB_COLOR_BLACK;
+							x->left->color = RB_COLOR_BLACK;
+							rb_rotate_right_(x->parent);
+							x = m_root;
+						}
+					}
+				}
+				x->color = RB_COLOR_BLACK;
 			}
 
 			bool is_equal_key_(const key_type &a, const key_type &b){
