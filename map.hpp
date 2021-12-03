@@ -1054,6 +1054,7 @@ namespace ft
 			rb_node *detach_node_(rb_node *target){
 				rb_node	*rightmost;
 				rb_node	*successor = target->right;
+				rb_node *to_fix;
 
 				// If the min node is a sentinel node, then take the left child
 				// and set the sentinel node to the rightmost subtree.
@@ -1067,11 +1068,13 @@ namespace ft
 						rightmost = rightmost->right;
 					}
 					rightmost->set_right(m_right_sentinel);
+					to_fix = rightmost;
 				} else {
 					// Find the left most child
 					while ( successor->left != NULL && !successor->left->is_sentinel() ){
 						successor = successor->left;
 					}
+					to_fix = successor->right;
 					if ( successor->parent == target ){
 						successor->parent = target->parent;
 						successor->set_left(target->left);
@@ -1087,7 +1090,6 @@ namespace ft
 						}
 						successor->assign( target );
 					}
-
 				}
 				// Set the parent to point to the new successor, otherwise root is set to NULL.
 				if ( target->parent != NULL ){
@@ -1100,13 +1102,13 @@ namespace ft
 				else {
 					m_root = successor;
 				}
-				return successor;
+				return to_fix;
 			}
 
 			void rb_erase_fix_(rb_node *x){
 				rb_node *s;
 
-				while ( x != m_root && x->color == RB_COLOR_BLACK ){
+				while ( x != NULL && x != m_root && x->color == RB_COLOR_BLACK ){
 					if ( x->is_left() ){
 						s = x->parent->right;
 						
@@ -1171,7 +1173,8 @@ namespace ft
 						}
 					}
 				}
-				x->color = RB_COLOR_BLACK;
+				if ( x != NULL )
+					x->color = RB_COLOR_BLACK;
 			}
 
 			bool is_equal_key_(const key_type &a, const key_type &b){
