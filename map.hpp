@@ -527,6 +527,8 @@ namespace ft
 							successor = NULL;
 						} else {
 							successor = detach_node_(target);
+							if ( successor )
+								prev_color = successor->color;
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
@@ -580,7 +582,11 @@ namespace ft
 			 */
 			void erase(iterator first, iterator last){
 				while ( first != last ){
+					key_type to_delete = first->first;
 					this->erase((*first++).first);
+					std::cout << "Delete : " << to_delete << std::endl;
+					debug_print_btree_structure();
+					std::cout << "==================================================================" << std::endl;
 				}
 			}
 
@@ -1119,26 +1125,30 @@ namespace ft
 							rb_rotate_left_(x->parent);
 							s = x->parent->right;
 						}
-
-						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
-							// Case 3.2
-							s->color = RB_COLOR_RED;
-							x = x->parent;
-						}
-						else {
-							if ( s->right->color == RB_COLOR_BLACK ){
-								// Case 3.3
-								s->left->color = RB_COLOR_BLACK;
+						
+						if ( s->left != NULL && s->right != NULL ){
+							if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+								// Case 3.2
 								s->color = RB_COLOR_RED;
-								rb_rotate_right_(s);
-								s = x->parent->right;
+								x = x->parent;
 							}
-							// Case 3.4
-							s->color = x->parent->color;
-							x->parent->color = RB_COLOR_BLACK;
-							x->right->color = RB_COLOR_BLACK;
-							rb_rotate_left_(x->parent);
-							x = m_root;
+							else {
+								if ( s->right->color == RB_COLOR_BLACK ){
+									// Case 3.3
+									s->left->color = RB_COLOR_BLACK;
+									s->color = RB_COLOR_RED;
+									rb_rotate_right_(s);
+									s = x->parent->right;
+								}
+								// Case 3.4
+								s->color = x->parent->color;
+								x->parent->color = RB_COLOR_BLACK;
+								x->right->color = RB_COLOR_BLACK;
+								rb_rotate_left_(x->parent);
+								x = m_root;
+							}
+						} else {
+							break;
 						}
 					} else {
 						s = x->parent->left;
@@ -1151,30 +1161,35 @@ namespace ft
 							s = x->parent->left;
 						}
 
-						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
-							// Case 3.2
-							s->color = RB_COLOR_RED;
-							x = x->parent;
-						}
-						else {
-							if ( s->left->color == RB_COLOR_BLACK ){
-								// Case 3.3
-								s->right->color = RB_COLOR_BLACK;
+						if ( s->left != NULL && s->right != NULL ){
+							if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+								// Case 3.2
 								s->color = RB_COLOR_RED;
-								rb_rotate_left_(s);
-								s = x->parent->left;
+								x = x->parent;
 							}
-							// Case 3.4
-							s->color = x->parent->color;
-							x->parent->color = RB_COLOR_BLACK;
-							x->left->color = RB_COLOR_BLACK;
-							rb_rotate_right_(x->parent);
-							x = m_root;
+							else {
+								if ( s->left->color == RB_COLOR_BLACK ){
+									// Case 3.3
+									s->right->color = RB_COLOR_BLACK;
+									s->color = RB_COLOR_RED;
+									rb_rotate_left_(s);
+									s = x->parent->left;
+								}
+								// Case 3.4
+								s->color = x->parent->color;
+								x->parent->color = RB_COLOR_BLACK;
+								x->left->color = RB_COLOR_BLACK;
+								rb_rotate_right_(x->parent);
+								x = m_root;
+							}
+						} else {
+							break;
 						}
 					}
 				}
-				if ( x != NULL )
+				if ( x != NULL && !x->is_sentinel() ){
 					x->color = RB_COLOR_BLACK;
+				}
 			}
 
 			bool is_equal_key_(const key_type &a, const key_type &b){
