@@ -527,8 +527,10 @@ namespace ft
 							successor = NULL;
 						} else {
 							successor = detach_node_(target);
-							if ( successor )
+							if ( successor ){
 								prev_color = successor->color;
+							}
+							successor = successor->right;
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
@@ -1060,7 +1062,6 @@ namespace ft
 			rb_node *detach_node_(rb_node *target){
 				rb_node	*rightmost;
 				rb_node	*successor = target->right;
-				rb_node *to_fix;
 
 				// If the min node is a sentinel node, then take the left child
 				// and set the sentinel node to the rightmost subtree.
@@ -1074,13 +1075,11 @@ namespace ft
 						rightmost = rightmost->right;
 					}
 					rightmost->set_right(m_right_sentinel);
-					to_fix = rightmost;
 				} else {
 					// Find the left most child
 					while ( successor->left != NULL && !successor->left->is_sentinel() ){
 						successor = successor->left;
 					}
-					to_fix = successor->right;
 					if ( successor->parent == target ){
 						successor->parent = target->parent;
 						successor->set_left(target->left);
@@ -1108,7 +1107,7 @@ namespace ft
 				else {
 					m_root = successor;
 				}
-				return to_fix;
+				return successor;
 			}
 
 			void rb_erase_fix_(rb_node *x){

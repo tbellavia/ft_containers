@@ -1424,48 +1424,48 @@ void test_map_erase_range(){
 		_assert_equal(ft_map.size(), std_map.size(), "test map erase by range - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range - items");
 	}
-	// {
-	// 	ft::map<int, int> ft_map;
-	// 	std::map<int, int> std_map;
+	{
+		ft::map<int, int> ft_map;
+		std::map<int, int> std_map;
 
-	// 	for ( int index = 0 ; index < 13 ; index++ ){
-	// 		ft_map.insert(ft::make_pair(keys[index], 0));
-	// 		std_map.insert(std::make_pair(keys[index], 0));
-	// 	}
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
 
-	// 	ft_map.erase(ft_map.begin(), ft_map.find(15));
-	// 	std_map.erase(std_map.begin(), std_map.find(15));
-	// 	_assert_equal(ft_map.size(), std_map.size(), "test map erase by range - size");
-	// 	TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range - items");
-	// }
-	// // Test with reverse order
-	// {
-	// 	ft::map<int, int, Greater<int> > ft_map;
-	// 	std::map<int, int, Greater<int> > std_map;
+		ft_map.erase(ft_map.begin(), ft_map.find(15));
+		std_map.erase(std_map.begin(), std_map.find(15));
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by range - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range - items");
+	}
+	// Test with reverse order
+	{
+		ft::map<int, int, Greater<int> > ft_map;
+		std::map<int, int, Greater<int> > std_map;
 
-	// 	for ( int index = 0 ; index < 13 ; index++ ){
-	// 		ft_map.insert(ft::make_pair(keys[index], 0));
-	// 		std_map.insert(std::make_pair(keys[index], 0));
-	// 	}
-	// 	ft_map.erase(ft_map.begin(), ft_map.end());
-	// 	std_map.erase(std_map.begin(), std_map.end());
-	// 	_assert_equal(ft_map.size(), std_map.size(), "test map erase by range (ascending order) - size");
-	// 	TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range (ascending order) - items");
-	// }
-	// {
-	// 	ft::map<int, int, Greater<int> > ft_map;
-	// 	std::map<int, int, Greater<int> > std_map;
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
+		ft_map.erase(ft_map.begin(), ft_map.end());
+		std_map.erase(std_map.begin(), std_map.end());
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by range (ascending order) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range (ascending order) - items");
+	}
+	{
+		ft::map<int, int, Greater<int> > ft_map;
+		std::map<int, int, Greater<int> > std_map;
 
-	// 	for ( int index = 0 ; index < 13 ; index++ ){
-	// 		ft_map.insert(ft::make_pair(keys[index], 0));
-	// 		std_map.insert(std::make_pair(keys[index], 0));
-	// 	}
+		for ( int index = 0 ; index < 13 ; index++ ){
+			ft_map.insert(ft::make_pair(keys[index], 0));
+			std_map.insert(std::make_pair(keys[index], 0));
+		}
 
-	// 	ft_map.erase(ft_map.begin(), ft_map.find(15));
-	// 	std_map.erase(std_map.begin(), std_map.find(15));
-	// 	_assert_equal(ft_map.size(), std_map.size(), "test map erase by range (ascending order) - size");
-	// 	TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range (ascending order) - items");
-	// }
+		ft_map.erase(ft_map.begin(), ft_map.find(15));
+		std_map.erase(std_map.begin(), std_map.find(15));
+		_assert_equal(ft_map.size(), std_map.size(), "test map erase by range (ascending order) - size");
+		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range (ascending order) - items");
+	}
 }
 
 void test_map_clear(){
@@ -2256,13 +2256,15 @@ void map_erase_rebalance(){
 	m.debug_print_btree_structure();
 	std::cout << "====================" << std::endl;
 	m.erase(30);
-	std::cout << "====================" << std::endl;
+	// m.debug_print_btree_structure();
+	// std::cout << "====================" << std::endl;
+	// m.erase(32);
 	m.debug_print_btree_structure();
 }
 
 void test_map(){
 	// map_repl();
-	// map_erase_rebalance();
+	map_erase_rebalance();
 
 	// print_header("Map");
 	// // Constructors
@@ -2294,7 +2296,7 @@ void test_map(){
 	// test_map_insert_randomized();
 	// test_map_erase_it();
 	// test_map_erase_key();
-	test_map_erase_range();
+	// test_map_erase_range();
 	// test_map_clear();
 	// test_map_swap();
 
