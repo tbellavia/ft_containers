@@ -529,7 +529,8 @@ namespace ft
 							ft::pair<rb_node*,int> ret = detach_node_(target);
 							successor = ret.first;
 							prev_color = ret.second;
-							std::cout << "Successor : " << "(" << successor->data.first << "," << (std::string[3]){ "B", "R", "S" }[prev_color - 1] << ")" << std::endl;
+							if ( successor )
+								std::cout << "Successor : " << "(" << successor->data.first << "," << (std::string[3]){ "B", "R", "S" }[prev_color - 1] << ")" << std::endl;
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
@@ -1074,10 +1075,9 @@ namespace ft
 					while ( rightmost->right != NULL ){
 						rightmost = rightmost->right;
 					}
-					std::cout << "Bite" << std::endl;
 					// Not sure ?
 					ret.first = successor;
-					ret.second = successor->color;
+					ret.second = target->color;
 					rightmost->set_right(m_right_sentinel);
 				} else {
 					// Find the left most child
