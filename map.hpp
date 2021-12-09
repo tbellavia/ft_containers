@@ -1119,7 +1119,7 @@ namespace ft
 			void rb_erase_fix_(rb_node *x){
 				rb_node *s;
 
-				while ( x != NULL && x != m_root && x->color == RB_COLOR_BLACK ){
+				while ( x != m_root && x->color == RB_COLOR_BLACK ){
 					if ( x->is_left() ){
 						s = x->parent->right;
 						
@@ -1131,29 +1131,25 @@ namespace ft
 							s = x->parent->right;
 						}
 						
-						if ( s->left != NULL && s->right != NULL ){
-							if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
-								// Case 3.2
+						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+							// Case 3.2
+							s->color = RB_COLOR_RED;
+							x = x->parent;
+						}
+						else {
+							if ( s->right->color == RB_COLOR_BLACK ){
+								// Case 3.3
+								s->left->color = RB_COLOR_BLACK;
 								s->color = RB_COLOR_RED;
-								x = x->parent;
+								rb_rotate_right_(s);
+								s = x->parent->right;
 							}
-							else {
-								if ( s->right->color == RB_COLOR_BLACK ){
-									// Case 3.3
-									s->left->color = RB_COLOR_BLACK;
-									s->color = RB_COLOR_RED;
-									rb_rotate_right_(s);
-									s = x->parent->right;
-								}
-								// Case 3.4
-								s->color = x->parent->color;
-								x->parent->color = RB_COLOR_BLACK;
-								x->right->color = RB_COLOR_BLACK;
-								rb_rotate_left_(x->parent);
-								x = m_root;
-							}
-						} else {
-							break;
+							// Case 3.4
+							s->color = x->parent->color;
+							x->parent->color = RB_COLOR_BLACK;
+							x->right->color = RB_COLOR_BLACK;
+							rb_rotate_left_(x->parent);
+							x = m_root;
 						}
 					} else {
 						s = x->parent->left;
@@ -1166,33 +1162,29 @@ namespace ft
 							s = x->parent->left;
 						}
 
-						if ( s->left != NULL && s->right != NULL ){
-							if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
-								// Case 3.2
+						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+							// Case 3.2
+							s->color = RB_COLOR_RED;
+							x = x->parent;
+						}
+						else {
+							if ( s->left->color == RB_COLOR_BLACK ){
+								// Case 3.3
+								s->right->color = RB_COLOR_BLACK;
 								s->color = RB_COLOR_RED;
-								x = x->parent;
+								rb_rotate_left_(s);
+								s = x->parent->left;
 							}
-							else {
-								if ( s->left->color == RB_COLOR_BLACK ){
-									// Case 3.3
-									s->right->color = RB_COLOR_BLACK;
-									s->color = RB_COLOR_RED;
-									rb_rotate_left_(s);
-									s = x->parent->left;
-								}
-								// Case 3.4
-								s->color = x->parent->color;
-								x->parent->color = RB_COLOR_BLACK;
-								x->left->color = RB_COLOR_BLACK;
-								rb_rotate_right_(x->parent);
-								x = m_root;
-							}
-						} else {
-							break;
+							// Case 3.4
+							s->color = x->parent->color;
+							x->parent->color = RB_COLOR_BLACK;
+							x->left->color = RB_COLOR_BLACK;
+							rb_rotate_right_(x->parent);
+							x = m_root;
 						}
 					}
 				}
-				if ( x != NULL && !x->is_sentinel() ){
+				if ( !x->is_sentinel() ){
 					x->color = RB_COLOR_BLACK;
 				}
 			}
