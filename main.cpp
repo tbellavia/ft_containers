@@ -2246,19 +2246,22 @@ void map_repl(){
 	}
 }
 
+# define SIZE 14
+
 void map_erase_rebalance(){
-	int keys[12] = {14, 10, 30, 6, 13, 15, 35, 8, 32, 100, 1000, 33};
+	
+	int keys[SIZE] = {14, 10, 30, 6, 13, 15, 35, 8, 32, 100, 1000, 150, 170, 33};
 	ft::map<int, int> m;
 
-	for ( int index = 0 ; index < 12 ; index++ ){
+	for ( int index = 0 ; index < SIZE ; index++ ){
 		m.insert(ft::make_pair(keys[index], 0));
 	}
 	m.debug_print_btree_structure();
 	std::cout << "====================" << std::endl;
 	m.erase(30);
-	// m.debug_print_btree_structure();
-	// std::cout << "====================" << std::endl;
-	// m.erase(32);
+	m.debug_print_btree_structure();
+	std::cout << "====================" << std::endl;
+	m.erase(1000);
 	m.debug_print_btree_structure();
 }
 

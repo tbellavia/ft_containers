@@ -526,11 +526,10 @@ namespace ft
 							m_root = NULL;
 							successor = NULL;
 						} else {
-							successor = detach_node_(target);
-							if ( successor ){
-								prev_color = successor->color;
-							}
-							successor = successor->right;
+							ft::pair<rb_node*,int> ret = detach_node_(target);
+							successor = ret.first;
+							prev_color = ret.second;
+							std::cout << "Successor : " << "(" << successor->data.first << "," << (std::string[3]){ "B", "R", "S" }[prev_color - 1] << ")" << std::endl;
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
@@ -1059,9 +1058,10 @@ namespace ft
 				return NULL;
 			}
 
-			rb_node *detach_node_(rb_node *target){
+			ft::pair<rb_node*, int> detach_node_(rb_node *target){
 				rb_node	*rightmost;
 				rb_node	*successor = target->right;
+				ft::pair<rb_node*, int> ret;
 
 				// If the min node is a sentinel node, then take the left child
 				// and set the sentinel node to the rightmost subtree.
@@ -1074,12 +1074,18 @@ namespace ft
 					while ( rightmost->right != NULL ){
 						rightmost = rightmost->right;
 					}
+					std::cout << "Bite" << std::endl;
+					// Not sure ?
+					ret.first = successor;
+					ret.second = successor->color;
 					rightmost->set_right(m_right_sentinel);
 				} else {
 					// Find the left most child
 					while ( successor->left != NULL && !successor->left->is_sentinel() ){
 						successor = successor->left;
 					}
+					ret.first = successor->right;
+					ret.second = successor->color;
 					if ( successor->parent == target ){
 						successor->parent = target->parent;
 						successor->set_left(target->left);
@@ -1107,7 +1113,7 @@ namespace ft
 				else {
 					m_root = successor;
 				}
-				return successor;
+				return ret;
 			}
 
 			void rb_erase_fix_(rb_node *x){
