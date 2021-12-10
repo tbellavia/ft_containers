@@ -81,7 +81,7 @@ namespace ft
 		 * 
 		 */
 		private:
-			enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL };
+			enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL, RB_COLOR_TMP_SENTINEL };
 			/**
 			 * Internal struct representing a binary tree node.
 			 * 
@@ -194,6 +194,10 @@ namespace ft
 					return this->parent->right == this;
 				}
 
+				bool is_tmp_sentinel() const {
+					return this->color == RB_COLOR_TMP_SENTINEL;
+				}
+
 				void set_left( rb_node *node ){
 					this->left = node;
 					node->parent = this;
@@ -207,9 +211,9 @@ namespace ft
 				void assign( rb_node *node ){
 					if ( node ){
 						this->parent = node->parent;
+						this->color = node->color;
 						this->set_left(node->left);
 						this->set_right(node->right);
-						this->color = node->color;
 					}
 				}
 				
@@ -242,6 +246,14 @@ namespace ft
 					rb_node *node = rb_node::create_node( alloc );
 
 					node->color = RB_COLOR_SENTINEL;
+					return node;
+				}
+
+				static rb_node *create_tmp_node( rb_node *parent, allocator_type alloc = allocator_type() ){
+					rb_node *node = rb_node::create_node( alloc );
+
+					node->color = RB_COLOR_TMP_SENTINEL;
+					node->parent = parent;
 					return node;
 				}
 
@@ -554,8 +566,12 @@ namespace ft
 					}
 					rb_node::destroy_node( target );
 					m_size--;
-					if ( prev_color == RB_COLOR_BLACK )
+					if ( prev_color == RB_COLOR_BLACK ){
 						this->rb_erase_fix_(successor);
+						if ( successor->is_tmp_sentinel() ){
+							rb_node::destroy_node( successor );
+						}
+					}
 				}
 			}
 
@@ -571,6 +587,7 @@ namespace ft
 
 				if ( it == this->end() )
 					return 0;
+				std::cout << "delete : " << it->first << std::endl;
 				this->erase( it );
 				return 1;
 			}
@@ -585,8 +602,8 @@ namespace ft
 			void erase(iterator first, iterator last){
 				while ( first != last ){
 					key_type to_delete = first->first;
-					this->erase((*first++).first);
 					std::cout << "Delete : " << to_delete << std::endl;
+					this->erase((*first++).first);
 					debug_print_btree_structure();
 					std::cout << "==================================================================" << std::endl;
 				}
@@ -1089,6 +1106,7 @@ namespace ft
 					if ( successor->parent == target ){
 						successor->parent = target->parent;
 						successor->set_left(target->left);
+						ret.first = successor;
 					} else {
 						// If successor node has a child, then set the successor parent
 						// set this node as his new left child, otherwise, it is set to NULL.
@@ -1098,9 +1116,11 @@ namespace ft
 						} else {
 							// Successor is a leaf
 							successor->parent->left = NULL;
+							ret.first = rb_node::create_tmp_node( successor->parent );
 						}
 						successor->assign( target );
 					}
+					successor->color = target->color;
 				}
 				// Set the parent to point to the new successor, otherwise root is set to NULL.
 				if ( target->parent != NULL ){
@@ -1119,7 +1139,7 @@ namespace ft
 			void rb_erase_fix_(rb_node *x){
 				rb_node *s;
 
-				while ( x != m_root && x->color == RB_COLOR_BLACK ){
+				while ( x != m_root && (x->color == RB_COLOR_BLACK || x->color == RB_COLOR_SENTINEL) ){
 					if ( x->is_left() ){
 						s = x->parent->right;
 						
@@ -1130,8 +1150,7 @@ namespace ft
 							rb_rotate_left_(x->parent);
 							s = x->parent->right;
 						}
-						
-						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+						if ( ( s->left == NULL || s->left->color == RB_COLOR_BLACK ) && ( s->right == NULL || s->right->color == RB_COLOR_BLACK) ){
 							// Case 3.2
 							s->color = RB_COLOR_RED;
 							x = x->parent;
@@ -1147,7 +1166,7 @@ namespace ft
 							// Case 3.4
 							s->color = x->parent->color;
 							x->parent->color = RB_COLOR_BLACK;
-							x->right->color = RB_COLOR_BLACK;
+							s->right->color = RB_COLOR_BLACK;
 							rb_rotate_left_(x->parent);
 							x = m_root;
 						}
@@ -1162,7 +1181,7 @@ namespace ft
 							s = x->parent->left;
 						}
 
-						if ( s->left->color == RB_COLOR_BLACK && s->right->color == RB_COLOR_BLACK ){
+						if ( ( s->left == NULL || s->left->color == RB_COLOR_BLACK ) && ( s->right == NULL || s->right->color == RB_COLOR_BLACK) ){
 							// Case 3.2
 							s->color = RB_COLOR_RED;
 							x = x->parent;
@@ -1178,7 +1197,7 @@ namespace ft
 							// Case 3.4
 							s->color = x->parent->color;
 							x->parent->color = RB_COLOR_BLACK;
-							x->left->color = RB_COLOR_BLACK;
+							s->left->color = RB_COLOR_BLACK;
 							rb_rotate_right_(x->parent);
 							x = m_root;
 						}

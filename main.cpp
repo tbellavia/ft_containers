@@ -2246,28 +2246,54 @@ void map_repl(){
 	}
 }
 
-# define SIZE 14
+# define SIZE 13
 
 void map_erase_rebalance(){
-	
-	int keys[SIZE] = {14, 10, 30, 6, 13, 15, 35, 8, 32, 100, 1000, 150, 170, 33};
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	// int keys[SIZE] = {14, 10, 30, 6, 13, 15, 35, 8, 32, 100, 1000, 150, 170, 33};
 	ft::map<int, int> m;
 
 	for ( int index = 0 ; index < SIZE ; index++ ){
 		m.insert(ft::make_pair(keys[index], 0));
 	}
+
 	m.debug_print_btree_structure();
-	std::cout << "====================" << std::endl;
-	m.erase(30);
+	std::cout << "================================" << std::endl;
+	m.erase(1);
 	m.debug_print_btree_structure();
-	std::cout << "====================" << std::endl;
-	m.erase(1000);
+	std::cout << "================================" << std::endl;
+	m.erase(3);
 	m.debug_print_btree_structure();
+	std::cout << "================================" << std::endl;
+	m.erase(4);
+	m.debug_print_btree_structure();
+	std::cout << "================================" << std::endl;
+	m.erase(5);
+	m.debug_print_btree_structure();
+
+	// m.debug_print_btree_structure();
+	// std::cout << "====================" << std::endl;
+	// m.erase(6);
+	// m.debug_print_btree_structure();
+	// std::cout << "====================" << std::endl;
+	// m.erase(14);
+	// m.debug_print_btree_structure();
+	
+	// m.debug_print_btree_structure();
+	// std::cout << "====================" << std::endl;
+	// m.erase(30);
+	// m.debug_print_btree_structure();
+	// std::cout << "====================" << std::endl;
+	// m.erase(1000);
+	// m.debug_print_btree_structure();
+	// std::cout << "====================" << std::endl;
+	// m.erase(6);
+	// m.debug_print_btree_structure();
 }
 
 void test_map(){
 	// map_repl();
-	map_erase_rebalance();
+	// map_erase_rebalance();
 
 	// print_header("Map");
 	// // Constructors
@@ -2297,9 +2323,9 @@ void test_map(){
 	// test_map_insert_hint();
 	// test_map_insert_range();
 	// test_map_insert_randomized();
-	// test_map_erase_it();
-	// test_map_erase_key();
-	// test_map_erase_range();
+	test_map_erase_it();
+	test_map_erase_key();
+	test_map_erase_range();
 	// test_map_clear();
 	// test_map_swap();
 
