@@ -1438,7 +1438,7 @@ void test_map_erase_range(){
 		_assert_equal(ft_map.size(), std_map.size(), "test map erase by range - size");
 		TEST_EACH_EQUAL_PAIR(ft_map, std_map, "test map erase by range - items");
 	}
-	// Test with reverse order
+    // Test with reverse order
 	{
 		ft::map<int, int, Greater<int> > ft_map;
 		std::map<int, int, Greater<int> > std_map;
@@ -2323,8 +2323,8 @@ void test_map(){
 	// test_map_insert_hint();
 	// test_map_insert_range();
 	// test_map_insert_randomized();
-	test_map_erase_it();
-	test_map_erase_key();
+//	test_map_erase_it();
+//	test_map_erase_key();
 	test_map_erase_range();
 	// test_map_clear();
 	// test_map_swap();

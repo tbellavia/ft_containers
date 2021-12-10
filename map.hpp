@@ -81,7 +81,7 @@ namespace ft
 		 * 
 		 */
 		private:
-			enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL, RB_COLOR_TMP_SENTINEL };
+			enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL, RB_COLOR_NULL };
 			/**
 			 * Internal struct representing a binary tree node.
 			 * 
@@ -166,7 +166,7 @@ namespace ft
 
 				/**
 				 * Get the sibling node
-				 * 
+				 * rb_node
 				 * Returns the sibling node.
 				 * 
 				 */
@@ -194,8 +194,8 @@ namespace ft
 					return this->parent->right == this;
 				}
 
-				bool is_tmp_sentinel() const {
-					return this->color == RB_COLOR_TMP_SENTINEL;
+				bool is_null_node() const {
+					return this->color == RB_COLOR_NULL;
 				}
 
 				void set_left( rb_node *node ){
@@ -203,10 +203,10 @@ namespace ft
 					node->parent = this;
 				}
 
-				void set_right( rb_node *node ){
-					this->right = node;
-					node->parent = this;
-				}
+				void set_right( rb_node *node ) {
+                    this->right = node;
+                    node->parent = this;
+                }
 
 				void assign( rb_node *node ){
 					if ( node ){
@@ -249,13 +249,20 @@ namespace ft
 					return node;
 				}
 
-				static rb_node *create_tmp_node( rb_node *parent, allocator_type alloc = allocator_type() ){
+				static rb_node *create_null_node(rb_node *parent, allocator_type alloc = allocator_type()){
 					rb_node *node = rb_node::create_node( alloc );
 
-					node->color = RB_COLOR_TMP_SENTINEL;
+					node->color = RB_COLOR_NULL;
 					node->parent = parent;
 					return node;
 				}
+
+                static rb_node *create_null_node( allocator_type alloc = allocator_type() ){
+                    rb_node *node = rb_node::create_node( alloc );
+
+                    node->color = RB_COLOR_NULL;
+                    return node;
+                }
 
 				/**
 				 * Destroy node
@@ -281,6 +288,7 @@ namespace ft
 			allocator_type						m_alloc;
 			rb_node								*m_right_sentinel;
 			rb_node								*m_left_sentinel;
+			rb_node								*m_null;
 
 		/**
 		 * Public member functions.
@@ -295,7 +303,8 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() ) 
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() ),
+                m_null( rb_node::create_null_node() )
 			{
 				
 			}
@@ -310,7 +319,8 @@ namespace ft
 			 */
 			template<class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() )
+				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() ),
+                  m_null( rb_node::create_null_node() )
 			{
 				for ( ; first != last ; ++first ){
 					insert(*first);
@@ -334,6 +344,7 @@ namespace ft
 				m_alloc = x.m_alloc;
 				m_right_sentinel = rb_node::create_sentinel_node();
 				m_left_sentinel = rb_node::create_sentinel_node();
+                m_null = rb_node::create_null_node();
 				this->insert(x.begin(), x.end());
 			}
 
@@ -363,6 +374,7 @@ namespace ft
 				clear();
 				rb_node::destroy_node(m_right_sentinel);
 				rb_node::destroy_node(m_left_sentinel);
+                rb_node::destroy_node(m_null);
 			}
 
 			/**
@@ -566,10 +578,11 @@ namespace ft
 					}
 					rb_node::destroy_node( target );
 					m_size--;
-					if ( prev_color == RB_COLOR_BLACK ){
-						this->rb_erase_fix_(successor);
-						if ( successor->is_tmp_sentinel() ){
-							rb_node::destroy_node( successor );
+					if ( m_root != NULL ){
+						if ( !m_root->left->is_sentinel() && !m_root->right->is_sentinel() ){
+							if ( prev_color == RB_COLOR_BLACK ){
+								this->rb_erase_fix_(successor);
+							}
 						}
 					}
 				}
@@ -1053,7 +1066,7 @@ namespace ft
 			}
 
 			void clear_recursive_(rb_node *current){
-				if ( current != NULL && !current->is_sentinel() ){
+				if ( current != NULL && !current->is_sentinel() && !current->is_null_node() ){
 					clear_recursive_(current->left);
 					clear_recursive_(current->right);
 					rb_node::destroy_node(current);
@@ -1116,7 +1129,8 @@ namespace ft
 						} else {
 							// Successor is a leaf
 							successor->parent->left = NULL;
-							ret.first = rb_node::create_tmp_node( successor->parent );
+                            m_null->parent = successor->parent;
+							ret.first = m_null;
 						}
 						successor->assign( target );
 					}
@@ -1166,7 +1180,8 @@ namespace ft
 							// Case 3.4
 							s->color = x->parent->color;
 							x->parent->color = RB_COLOR_BLACK;
-							s->right->color = RB_COLOR_BLACK;
+							if ( !s->right->is_sentinel() )
+								s->right->color = RB_COLOR_BLACK;
 							rb_rotate_left_(x->parent);
 							x = m_root;
 						}
@@ -1197,7 +1212,8 @@ namespace ft
 							// Case 3.4
 							s->color = x->parent->color;
 							x->parent->color = RB_COLOR_BLACK;
-							s->left->color = RB_COLOR_BLACK;
+							if ( !s->left->is_sentinel() )
+								s->left->color = RB_COLOR_BLACK;
 							rb_rotate_right_(x->parent);
 							x = m_root;
 						}
