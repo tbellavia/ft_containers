@@ -2292,7 +2292,7 @@ void map_erase_rebalance(){
 }
 
 void test_map(){
-	// map_repl();
+	map_repl();
 	// map_erase_rebalance();
 
 	// print_header("Map");
@@ -2323,9 +2323,9 @@ void test_map(){
 	// test_map_insert_hint();
 	// test_map_insert_range();
 	// test_map_insert_randomized();
-//	test_map_erase_it();
-//	test_map_erase_key();
-	test_map_erase_range();
+	// test_map_erase_it();
+	// test_map_erase_key();
+	// test_map_erase_range();
 	// test_map_clear();
 	// test_map_swap();
 

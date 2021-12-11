@@ -542,6 +542,7 @@ namespace ft
 					rb_node *target = position.base();
 					rb_node *successor;
 					int		prev_color = target->color;
+					bool is_root = target == m_root;
 					
 					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
@@ -551,8 +552,13 @@ namespace ft
 							successor = NULL;
 						} else {
 							ft::pair<rb_node*,int> ret = detach_node_(target);
-							successor = ret.first;
+
 							prev_color = ret.second;
+							if ( !is_root ){
+								successor = ret.first;
+							} else {
+								successor = m_root;
+							}
 							// if ( successor )
 							// 	std::cout << "Successor : " << "(" << successor->data.first << "," << (std::string[3]){ "B", "R", "S" }[prev_color - 1] << ")" << std::endl;
 						}
@@ -602,7 +608,9 @@ namespace ft
 
 				if ( it == this->end() )
 					return 0;
-				std::cout << "delete : " << it->first << std::endl;
+				// std::cout << "delete : " << it->first << std::endl;
+				// debug_print_btree_structure();
+				// std::cout << "==================================================================" << std::endl;
 				this->erase( it );
 				return 1;
 			}
@@ -616,11 +624,7 @@ namespace ft
 			 */
 			void erase(iterator first, iterator last){
 				while ( first != last ){
-					// key_type to_delete = first->first;
-					// std::cout << "Delete : " << to_delete << std::endl;
 					this->erase((*first++).first);
-					// debug_print_btree_structure();
-					// std::cout << "==================================================================" << std::endl;
 				}
 			}
 
