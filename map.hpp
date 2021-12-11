@@ -553,8 +553,8 @@ namespace ft
 							ft::pair<rb_node*,int> ret = detach_node_(target);
 							successor = ret.first;
 							prev_color = ret.second;
-							if ( successor )
-								std::cout << "Successor : " << "(" << successor->data.first << "," << (std::string[3]){ "B", "R", "S" }[prev_color - 1] << ")" << std::endl;
+							// if ( successor )
+							// 	std::cout << "Successor : " << "(" << successor->data.first << "," << (std::string[3]){ "B", "R", "S" }[prev_color - 1] << ")" << std::endl;
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
@@ -566,6 +566,8 @@ namespace ft
 						} else {
 							target->parent->set_right(successor);
 						}
+						if ( successor->is_sentinel() )
+							successor = target->parent;
 					}
 					else {
 						// Case 1, target has no children
@@ -614,11 +616,11 @@ namespace ft
 			 */
 			void erase(iterator first, iterator last){
 				while ( first != last ){
-					key_type to_delete = first->first;
-					std::cout << "Delete : " << to_delete << std::endl;
+					// key_type to_delete = first->first;
+					// std::cout << "Delete : " << to_delete << std::endl;
 					this->erase((*first++).first);
-					debug_print_btree_structure();
-					std::cout << "==================================================================" << std::endl;
+					// debug_print_btree_structure();
+					// std::cout << "==================================================================" << std::endl;
 				}
 			}
 
