@@ -303,8 +303,13 @@ namespace ft
 			 * Constructs an empty container, with no elements.
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() ),
-                m_null( rb_node::create_null_node() )
+				:   m_root( NULL ),
+                    m_size( 0 ),
+                    m_comp( comp ),
+                    m_alloc( alloc ),
+                    m_right_sentinel( rb_node::create_sentinel_node() ),
+                    m_left_sentinel( rb_node::create_sentinel_node() ),
+                    m_null( rb_node::create_null_node() )
 			{
 				
 			}
@@ -319,8 +324,13 @@ namespace ft
 			 */
 			template<class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-				: m_root( NULL ), m_size( 0 ), m_comp( comp ), m_alloc( alloc ), m_right_sentinel( rb_node::create_sentinel_node() ), m_left_sentinel( rb_node::create_sentinel_node() ),
-                  m_null( rb_node::create_null_node() )
+				:   m_root( NULL ),
+                    m_size( 0 ),
+                    m_comp( comp ),
+                    m_alloc( alloc ),
+                    m_right_sentinel( rb_node::create_sentinel_node() ),
+                    m_left_sentinel( rb_node::create_sentinel_node() ),
+                    m_null( rb_node::create_null_node() )
 			{
 				for ( ; first != last ; ++first ){
 					insert(*first);
@@ -539,10 +549,10 @@ namespace ft
 			 */
 			void erase(iterator position){
 				if ( position != this->end() ){
-					rb_node *target = position.base();
-					rb_node *successor;
-					int		prev_color = target->color;
-					bool is_root = target == m_root;
+					rb_node     *target = position.base();
+					rb_node     *successor;
+					int         prev_color = target->color;
+					bool        is_root = target == m_root;
 					
 					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
@@ -554,13 +564,7 @@ namespace ft
 							ft::pair<rb_node*,int> ret = detach_node_(target);
 
 							prev_color = ret.second;
-							if ( !is_root ){
-								successor = ret.first;
-							} else {
-								successor = m_root;
-							}
-							// if ( successor )
-							// 	std::cout << "Successor : " << "(" << successor->data.first << "," << (std::string[3]){ "B", "R", "S" }[prev_color - 1] << ")" << std::endl;
+                            successor = (!is_root) ? ret.first : m_root;
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
@@ -586,12 +590,9 @@ namespace ft
 					}
 					rb_node::destroy_node( target );
 					m_size--;
-					if ( m_root != NULL ){
-						if ( !m_root->left->is_sentinel() && !m_root->right->is_sentinel() ){
-							if ( prev_color == RB_COLOR_BLACK ){
-								this->rb_erase_fix_(successor);
-							}
-						}
+					if ( m_root != NULL && !m_root->left->is_sentinel() && !m_root->right->is_sentinel() &&
+                        prev_color == RB_COLOR_BLACK ){
+                            this->rb_erase_fix_(successor);
 					}
 				}
 			}
@@ -608,9 +609,6 @@ namespace ft
 
 				if ( it == this->end() )
 					return 0;
-				// std::cout << "delete : " << it->first << std::endl;
-				// debug_print_btree_structure();
-				// std::cout << "==================================================================" << std::endl;
 				this->erase( it );
 				return 1;
 			}
@@ -1017,26 +1015,12 @@ namespace ft
 				}
 			}
 
-			key_type &get_node_key_(rb_node *node){
-				if ( node == NULL ){
-					return key_type();
-				}
-				return node->data.first;
-			}
-
-			mapped_type &get_node_value_(rb_node *node){
-				if ( node == NULL ){
-					return mapped_type();
-				}
-				return node->data.second;
-			}
-
 			/**
 			 * 
 			 * Insert recursive
 			 * 
 			 * Insert a node recursively. It returns a pair with an iterator
-			 * pointing to the node newly insrted.
+			 * pointing to the node newly inserted.
 			 * 
 			 */
 			ft::pair<iterator, bool> insert_recursive_(rb_node *current, const value_type &val){
@@ -1077,22 +1061,6 @@ namespace ft
 					clear_recursive_(current->right);
 					rb_node::destroy_node(current);
 				}
-			}
-
-			rb_node *find_recursive_(const key_type &k){
-				rb_node *current = m_root;
-
-				while ( current != NULL && !current->is_sentinel() ){
-					if ( k == current->data.first ){
-						return current;
-					}
-					if ( m_comp(k, current->data.first) ){
-						current = current->left;
-					} else {
-						current = current->right;
-					}
-				}
-				return NULL;
 			}
 
 			ft::pair<rb_node*, int> detach_node_(rb_node *target){
