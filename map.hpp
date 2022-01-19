@@ -8,6 +8,211 @@
 
 namespace ft
 {
+	enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL, RB_COLOR_NULL };
+	/**
+	 * Internal struct representing a binary tree node.
+	 * 
+	 */
+	template<class T, class Alloc = std::allocator<T> >
+	struct rb_node {
+		typedef T												value_type;
+		typedef typename ft::rb_node<T>							node_type;
+		typedef Alloc											allocator_type;
+		typedef typename std::allocator<node_type>				node_allocator_type;
+		typedef typename node_allocator_type::reference			reference;
+		typedef typename node_allocator_type::const_reference	const_reference;
+		typedef typename node_allocator_type::pointer			pointer;
+		typedef typename node_allocator_type::const_pointer		const_pointer;
+
+		// typedef Alloc											allocator_type;
+		typedef typename std::size_t							size_type;
+
+		value_type	data;
+		pointer		parent;
+		pointer		left;
+		pointer		right;
+		int			color;
+
+		/**
+		 * Default constructor
+		 * 
+		 * Constructs a new empty node with default value_type() and all
+		 * pointers to NULL.
+		 * 
+		 * Color is always set to RED as it will always be inserted as a RED
+		 * node.
+		 * 
+		 */
+		rb_node() 
+			: data( value_type() ), parent( NULL ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
+
+		/**
+		 * Data constructor
+		 * 
+		 * Constructs a new node with data and all pointers to NULL.
+		 * 
+		 * Color is always set to RED as it will always be inserted as a RED
+		 * node.
+		 * 
+		 */
+		rb_node( const value_type &__data )
+			: data( __data ), parent( NULL ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
+
+		/**
+		 * Data-Parent constructor
+		 * 
+		 * Constructs a new node with data and a parent, right and left 
+		 * pointers are set to NULL.
+		 * 
+		 * Color is always set to RED as it will always be inserted as a RED
+		 * node.
+		 * 
+		 */
+		rb_node( const value_type &__data, pointer __parent )
+			: data( __data ), parent( __parent ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
+
+		/**
+		 * Get the grand parent
+		 * 
+		 * Returns the grand parent of the current node.
+		 * 
+		 */
+		pointer grand_parent() {
+			if ( this->parent == NULL )
+				return NULL;
+			return this->parent->parent;
+		}
+
+		/**
+		 * Get uncle node
+		 * 
+		 * Returns the uncle node of the current node.
+		 * 
+		 */
+		pointer uncle() {
+			pointer gp = this->grand_parent();
+
+			if ( gp == NULL )
+				return NULL;
+			return this->parent->sibling();
+		}
+
+		/**
+		 * Get the sibling node
+		 * rb_node
+		 * Returns the sibling node.
+		 * 
+		 */
+		pointer sibling() {
+			if ( this->parent == NULL )
+				return NULL;
+			if ( this == this->parent->left )
+				return this->parent->right;
+			return this->parent->left;
+		}
+
+		bool is_sentinel() const {
+			return color == RB_COLOR_SENTINEL;
+		}
+
+		bool is_left() const {
+			if ( this->parent == NULL )
+				return false;
+			return this->parent->left == this;
+		}
+
+		bool is_right() const {
+			if ( this->parent == NULL )
+				return false;
+			return this->parent->right == this;
+		}
+
+		bool is_null_node() const {
+			return this->color == RB_COLOR_NULL;
+		}
+
+		void set_left( pointer node ){
+			this->left = node;
+			node->parent = this;
+		}
+
+		void set_right( pointer node ) {
+			this->right = node;
+			node->parent = this;
+		}
+
+		void assign( pointer node ){
+			if ( node ){
+				this->parent = node->parent;
+				this->color = node->color;
+				this->set_left(node->left);
+				this->set_right(node->right);
+			}
+		}
+		
+		size_type max_size() const {
+			return node_allocator_type().max_size();
+		}
+
+		static pointer create_node( node_allocator_type alloc = node_allocator_type() ){
+			pointer node = alloc.allocate( 1 );
+
+			alloc.construct( node, rb_node() );
+			return node;
+		}
+
+		static pointer create_node( const value_type &data, node_allocator_type alloc = node_allocator_type() ){
+			pointer node = alloc.allocate( 1 );
+
+			alloc.construct( node, data );
+			return node;
+		}
+
+		static pointer create_node( const value_type &data, pointer parent, node_allocator_type alloc = node_allocator_type() ){
+			pointer node = alloc.allocate( 1 );
+
+			alloc.construct( node, rb_node( data, parent ) );
+			return node;
+		}
+
+		static pointer create_sentinel_node( node_allocator_type alloc = node_allocator_type() ){
+			pointer node = rb_node::create_node( alloc );
+
+			node->color = RB_COLOR_SENTINEL;
+			return node;
+		}
+
+		static pointer create_null_node(pointer parent, node_allocator_type alloc = node_allocator_type()){
+			pointer node = rb_node::create_node( alloc );
+
+			node->color = RB_COLOR_NULL;
+			node->parent = parent;
+			return node;
+		}
+
+		static pointer create_null_node( node_allocator_type alloc = node_allocator_type() ){
+			pointer node = rb_node::create_node( alloc );
+
+			node->color = RB_COLOR_NULL;
+			return node;
+		}
+
+		/**
+		 * Destroy node
+		 * 
+		 * Call the delete operator of the node and deallocate memory.
+		 */
+		static void destroy_node( pointer node, node_allocator_type alloc = node_allocator_type() ){
+			if ( node != NULL ){
+				alloc.destroy( node );
+				alloc.deallocate( node, 1 );
+				node = NULL;
+			}
+		}
+	};
+
+
+
 	/**
 	 * 
 	 * Map
@@ -41,27 +246,22 @@ namespace ft
 		class Alloc = std::allocator<ft::pair<const Key, T> >	// map::allocator_type
 	>
 	class map {
-		private:
-			/**
-			 * Forward declarations
-			 */
-			struct	rb_node;
 		public:
-			typedef Key													key_type;
-			typedef T													mapped_type;
-			typedef ft::pair<const key_type, mapped_type>				value_type;
-			typedef Compare												key_compare;
-			typedef Alloc												allocator_type;
-			typedef typename allocator_type::reference					reference;
-			typedef typename allocator_type::const_reference			const_reference;
-			typedef typename allocator_type::pointer					pointer;
-			typedef typename allocator_type::const_pointer				const_pointer;
-			typedef std::ptrdiff_t										difference_type;
-			typedef std::size_t											size_type;
-			typedef ft::map_::bidirectional_iterator<rb_node>			iterator;
-			typedef ft::map_::const_bidirectional_iterator<rb_node>		const_iterator;
-			typedef ft::map_::reverse_iterator<rb_node>					reverse_iterator;
-			typedef ft::map_::const_reverse_iterator<rb_node>			const_reverse_iterator;
+			typedef Key																		key_type;
+			typedef T																		mapped_type;
+			typedef ft::pair<const key_type, mapped_type>									value_type;
+			typedef Compare																	key_compare;
+			typedef Alloc																	allocator_type;
+			typedef typename allocator_type::reference										reference;
+			typedef typename allocator_type::const_reference								const_reference;
+			typedef typename allocator_type::pointer										pointer;
+			typedef typename allocator_type::const_pointer									const_pointer;
+			typedef std::ptrdiff_t															difference_type;
+			typedef std::size_t																size_type;
+			typedef typename ft::map_::bidirectional_iterator<rb_node<value_type> >			iterator;
+			typedef typename ft::map_::const_bidirectional_iterator<rb_node<value_type> >	const_iterator;
+			typedef typename ft::map_::reverse_iterator<rb_node<value_type> >				reverse_iterator;
+			typedef typename ft::map_::const_reverse_iterator<rb_node<value_type> >			const_reverse_iterator;
 
 			class value_compare : std::binary_function<value_type, value_type, bool> {
 				friend class map;
@@ -76,219 +276,22 @@ namespace ft
 						return m_comp(x.first, y.first);
 					}
 			};
-		/**
-		 * Private declarations.
-		 * 
-		 */
-		private:
-			enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL, RB_COLOR_NULL };
-			/**
-			 * Internal struct representing a binary tree node.
-			 * 
-			 */
-			struct rb_node {
-				typedef ft::pair<const key_type, mapped_type>		value_type;
-				typedef typename allocator_type::reference			reference;
-				typedef typename allocator_type::const_reference	const_reference;
-				typedef typename allocator_type::pointer			pointer;
-				typedef typename allocator_type::const_pointer		const_pointer;
-				typedef std::allocator<rb_node>						allocator_type;
-
-				value_type	data;
-				rb_node		*parent;
-				rb_node		*left;
-				rb_node		*right;
-				int			color;
-
-				/**
-				 * Default constructor
-				 * 
-				 * Constructs a new empty node with default value_type() and all
-				 * pointers to NULL.
-				 * 
-				 * Color is always set to RED as it will always be inserted as a RED
-				 * node.
-				 * 
-				 */
-				rb_node() 
-					: data( value_type() ), parent( NULL ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
-
-				/**
-				 * Data constructor
-				 * 
-				 * Constructs a new node with data and all pointers to NULL.
-				 * 
-				 * Color is always set to RED as it will always be inserted as a RED
-				 * node.
-				 * 
-				 */
-				rb_node( const value_type &__data )
-					: data( __data ), parent( NULL ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
-
-				/**
-				 * Data-Parent constructor
-				 * 
-				 * Constructs a new node with data and a parent, right and left 
-				 * pointers are set to NULL.
-				 * 
-				 * Color is always set to RED as it will always be inserted as a RED
-				 * node.
-				 * 
-				 */
-				rb_node( const value_type &__data, rb_node *__parent )
-					: data( __data ), parent( __parent ), left( NULL ), right( NULL ), color( RB_COLOR_RED ) { }
-
-				/**
-				 * Get the grand parent
-				 * 
-				 * Returns the grand parent of the current node.
-				 * 
-				 */
-				rb_node *grand_parent() {
-					if ( this->parent == NULL )
-						return NULL;
-					return this->parent->parent;
-				}
-
-				/**
-				 * Get uncle node
-				 * 
-				 * Returns the uncle node of the current node.
-				 * 
-				 */
-				rb_node *uncle() {
-					rb_node *gp = this->grand_parent();
-
-					if ( gp == NULL )
-						return NULL;
-					return this->parent->sibling();
-				}
-
-				/**
-				 * Get the sibling node
-				 * rb_node
-				 * Returns the sibling node.
-				 * 
-				 */
-				rb_node *sibling() {
-					if ( this->parent == NULL )
-						return NULL;
-					if ( this == this->parent->left )
-						return this->parent->right;
-					return this->parent->left;
-				}
-
-				bool is_sentinel() const {
-					return color == RB_COLOR_SENTINEL;
-				}
-
-				bool is_left() const {
-					if ( this->parent == NULL )
-						return false;
-					return this->parent->left == this;
-				}
-
-				bool is_right() const {
-					if ( this->parent == NULL )
-						return false;
-					return this->parent->right == this;
-				}
-
-				bool is_null_node() const {
-					return this->color == RB_COLOR_NULL;
-				}
-
-				void set_left( rb_node *node ){
-					this->left = node;
-					node->parent = this;
-				}
-
-				void set_right( rb_node *node ) {
-                    this->right = node;
-                    node->parent = this;
-                }
-
-				void assign( rb_node *node ){
-					if ( node ){
-						this->parent = node->parent;
-						this->color = node->color;
-						this->set_left(node->left);
-						this->set_right(node->right);
-					}
-				}
-				
-				size_type max_size() const {
-					return allocator_type().max_size();
-				}
-
-				static rb_node *create_node( allocator_type alloc = allocator_type() ){
-					rb_node *node = alloc.allocate( 1 );
-
-					alloc.construct( node, rb_node() );
-					return node;
-				}
-
-				static rb_node *create_node( const value_type &data, allocator_type alloc = allocator_type() ){
-					rb_node *node = alloc.allocate( 1 );
-
-					alloc.construct( node, data );
-					return node;
-				}
-
-				static rb_node *create_node( const value_type &data, rb_node *parent, allocator_type alloc = allocator_type() ){
-					rb_node *node = alloc.allocate( 1 );
-
-					alloc.construct( node, rb_node( data, parent ) );
-					return node;
-				}
-
-				static rb_node *create_sentinel_node( allocator_type alloc = allocator_type() ){
-					rb_node *node = rb_node::create_node( alloc );
-
-					node->color = RB_COLOR_SENTINEL;
-					return node;
-				}
-
-				static rb_node *create_null_node(rb_node *parent, allocator_type alloc = allocator_type()){
-					rb_node *node = rb_node::create_node( alloc );
-
-					node->color = RB_COLOR_NULL;
-					node->parent = parent;
-					return node;
-				}
-
-                static rb_node *create_null_node( allocator_type alloc = allocator_type() ){
-                    rb_node *node = rb_node::create_node( alloc );
-
-                    node->color = RB_COLOR_NULL;
-                    return node;
-                }
-
-				/**
-				 * Destroy node
-				 * 
-				 * Call the delete operator of the node and deallocate memory.
-				 */
-				static void destroy_node( rb_node *node, allocator_type alloc = allocator_type() ){
-					if ( node != NULL ){
-						alloc.destroy( node );
-						alloc.deallocate( node, 1 );
-						node = NULL;
-					}
-				}
-			};
 		
+		private:
+			typedef rb_node<value_type>			node_type;
+			typedef typename node_type::pointer	node_pointer;
+
 		/**
 		 * Member variables
 		 */
 		private:
-			rb_node								*m_root;
+			node_pointer						m_root;
 			size_type							m_size;
 			key_compare							m_comp;
 			allocator_type						m_alloc;
-			rb_node								*m_right_sentinel;
-			rb_node								*m_left_sentinel;
-			rb_node								*m_null;
+			node_pointer						m_right_sentinel;
+			node_pointer						m_left_sentinel;
+			node_pointer						m_null;
 
 		/**
 		 * Public member functions.
@@ -307,9 +310,9 @@ namespace ft
                     m_size( 0 ),
                     m_comp( comp ),
                     m_alloc( alloc ),
-                    m_right_sentinel( rb_node::create_sentinel_node() ),
-                    m_left_sentinel( rb_node::create_sentinel_node() ),
-                    m_null( rb_node::create_null_node() )
+                    m_right_sentinel( node_type::create_sentinel_node() ),
+                    m_left_sentinel( node_type::create_sentinel_node() ),
+                    m_null( node_type::create_null_node() )
 			{
 				
 			}
@@ -328,9 +331,9 @@ namespace ft
                     m_size( 0 ),
                     m_comp( comp ),
                     m_alloc( alloc ),
-                    m_right_sentinel( rb_node::create_sentinel_node() ),
-                    m_left_sentinel( rb_node::create_sentinel_node() ),
-                    m_null( rb_node::create_null_node() )
+                    m_right_sentinel( node_type::create_sentinel_node() ),
+                    m_left_sentinel( node_type::create_sentinel_node() ),
+                    m_null( node_type::create_null_node() )
 			{
 				for ( ; first != last ; ++first ){
 					insert(*first);
@@ -352,9 +355,9 @@ namespace ft
 				m_size = 0;
 				m_comp = x.m_comp;
 				m_alloc = x.m_alloc;
-				m_right_sentinel = rb_node::create_sentinel_node();
-				m_left_sentinel = rb_node::create_sentinel_node();
-                m_null = rb_node::create_null_node();
+				m_right_sentinel = node_type::create_sentinel_node();
+				m_left_sentinel = node_type::create_sentinel_node();
+                m_null = node_type::create_null_node();
 				this->insert(x.begin(), x.end());
 			}
 
@@ -382,9 +385,9 @@ namespace ft
 
 			~map() {
 				clear();
-				rb_node::destroy_node(m_right_sentinel);
-				rb_node::destroy_node(m_left_sentinel);
-                rb_node::destroy_node(m_null);
+				node_type::destroy_node(m_right_sentinel);
+				node_type::destroy_node(m_left_sentinel);
+                node_type::destroy_node(m_null);
 			}
 
 			/**
@@ -412,7 +415,7 @@ namespace ft
 
 				if ( m_root == NULL ){
 					m_size++;
-					m_root = rb_node::create_node( val );
+					m_root = node_type::create_node( val );
 					m_root->set_right(m_right_sentinel);
 					m_root->set_left(m_left_sentinel);
 					return ft::pair<iterator, bool>( iterator( m_root ), true );
@@ -549,8 +552,8 @@ namespace ft
 			 */
 			void erase(iterator position){
 				if ( position != this->end() ){
-					rb_node     *target = position.base();
-					rb_node     *successor;
+					node_pointer target = position.base();
+					node_pointer successor;
 					int         prev_color = target->color;
 					bool        is_root = target == m_root;
 					
@@ -561,7 +564,7 @@ namespace ft
 							m_root = NULL;
 							successor = NULL;
 						} else {
-							ft::pair<rb_node*,int> ret = detach_node_(target);
+							ft::pair<node_pointer, int> ret = detach_node_(target);
 
 							prev_color = ret.second;
                             successor = (!is_root) ? ret.first : m_root;
@@ -588,7 +591,7 @@ namespace ft
 						}
 						successor = NULL;
 					}
-					rb_node::destroy_node( target );
+					node_type::destroy_node( target );
 					m_size--;
 					if ( m_root != NULL && !m_root->left->is_sentinel() && !m_root->right->is_sentinel() &&
                         prev_color == RB_COLOR_BLACK ){
@@ -641,12 +644,12 @@ namespace ft
 			 * 
 			 */
 			void swap(map &x){
-				rb_node			*tmp_root = x.m_root;
+				node_pointer	tmp_root = x.m_root;
 				size_type		tmp_size = x.m_size;
 				key_compare		tmp_comp = x.m_comp;
 				allocator_type	tmp_alloc = x.m_alloc;
-				rb_node			*tmp_right_sentinel = x.m_right_sentinel;
-				rb_node			*tmp_left_sentinel = x.m_left_sentinel;
+				node_pointer	tmp_right_sentinel = x.m_right_sentinel;
+				node_pointer	tmp_left_sentinel = x.m_left_sentinel;
 
 				x.m_root = this->m_root;
 				x.m_size = this->m_size;
@@ -695,7 +698,7 @@ namespace ft
 			 * allocate storage at any point before that size is reached.
 			 */
 			size_type max_size() const {
-				return ( rb_node().max_size() );
+				return ( node_type().max_size() );
 			}
 
 			/**
@@ -837,8 +840,8 @@ namespace ft
 			 * to that element, whereas upper_bound returns an iterator pointing to the next element.
 			 */
 			iterator upper_bound(const key_type &k){
-				rb_node *y = NULL;
-				rb_node *x = m_root;
+				node_pointer y = NULL;
+				node_pointer x = m_root;
 
 				while ( x != NULL && !x->is_sentinel() ){
 					if ( m_comp(k, x->data.first) ){
@@ -852,8 +855,8 @@ namespace ft
 			}
 
 			const_iterator upper_bound(const key_type &k) const {
-				rb_node *y = NULL;
-				rb_node *x = m_root;
+				node_pointer y = NULL;
+				node_pointer x = m_root;
 
 				while ( x != NULL && !x->is_sentinel() ){
 					if ( m_comp(k, x->data.first) ){
@@ -878,8 +881,8 @@ namespace ft
 			 * A similar member function, upper_bound, has the same behavior as lower_bound, except in the case that the map contains an element with a key equivalent to k: In this case, lower_bound returns an iterator pointing to that element, whereas upper_bound returns an iterator pointing to the next element.
 			 */
 			iterator lower_bound(const key_type &k){
-				rb_node *y = NULL;
-				rb_node *x = m_root;
+				node_pointer y = NULL;
+				node_pointer x = m_root;
 
 				while ( x != NULL && !x->is_sentinel() ){
 					if ( !m_comp(x->data.first, k) ){
@@ -893,8 +896,8 @@ namespace ft
 			}
 
 			const_iterator lower_bound(const key_type &k) const {
-				rb_node *y = NULL;
-				rb_node *x = m_root;
+				node_pointer y = NULL;
+				node_pointer x = m_root;
 
 				while ( x != NULL && !x->is_sentinel() ){
 					if ( !m_comp(x->data.first, k) ){
@@ -1004,7 +1007,7 @@ namespace ft
 		 * 
 		 */
 		private:
-			void debug_print_btree_structure_(rb_node *current, int space){
+			void debug_print_btree_structure_(node_pointer current, int space){
 				if ( current != NULL ){
 					space += 10;
 					debug_print_btree_structure_(current->right, space);
@@ -1023,16 +1026,16 @@ namespace ft
 			 * pointing to the node newly inserted.
 			 * 
 			 */
-			ft::pair<iterator, bool> insert_recursive_(rb_node *current, const value_type &val){
+			ft::pair<iterator, bool> insert_recursive_(node_pointer current, const value_type &val){
 				if ( this->is_equal_key_(val.first, current->data.first) ){
 					return ft::pair<iterator, bool>( iterator( current ), false );
 				}
 				if ( m_comp( val.first, current->data.first ) ){
 					if ( current->left == NULL ){
-						return ft::pair<iterator, bool>( iterator( current->left = rb_node::create_node( val, current ) ), true );
+						return ft::pair<iterator, bool>( iterator( current->left = node_type::create_node( val, current ) ), true );
 					} 
 					else if ( current->left->is_sentinel() ){
-						rb_node *node = rb_node::create_node( val, current );
+						node_pointer node = node_type::create_node( val, current );
 
 						current->left = node;
 						node->set_left(m_left_sentinel);
@@ -1042,9 +1045,9 @@ namespace ft
 					}
 				} else {
 					if ( current->right == NULL ){
-						return ft::pair<iterator, bool>( iterator( current->right = rb_node::create_node( val, current ) ), true );
+						return ft::pair<iterator, bool>( iterator( current->right = node_type::create_node( val, current ) ), true );
 					} else if ( current->right->is_sentinel() ){
-						rb_node *node = rb_node::create_node( val, current );
+						node_pointer node = node_type::create_node( val, current );
 
 						current->right = node;
 						node->set_right(m_right_sentinel);
@@ -1055,18 +1058,18 @@ namespace ft
 				}
 			}
 
-			void clear_recursive_(rb_node *current){
+			void clear_recursive_(node_pointer current){
 				if ( current != NULL && !current->is_sentinel() && !current->is_null_node() ){
 					clear_recursive_(current->left);
 					clear_recursive_(current->right);
-					rb_node::destroy_node(current);
+					node_type::destroy_node(current);
 				}
 			}
 
-			ft::pair<rb_node*, int> detach_node_(rb_node *target){
-				rb_node	*rightmost;
-				rb_node	*successor = target->right;
-				ft::pair<rb_node*, int> ret;
+			ft::pair<node_pointer, int> detach_node_(node_pointer target){
+				node_pointer rightmost;
+				node_pointer successor = target->right;
+				ft::pair<node_pointer, int> ret;
 
 				// If the min node is a sentinel node, then take the left child
 				// and set the sentinel node to the rightmost subtree.
@@ -1124,8 +1127,8 @@ namespace ft
 				return ret;
 			}
 
-			void rb_erase_fix_(rb_node *x){
-				rb_node *s;
+			void rb_erase_fix_(node_pointer x){
+				node_pointer s;
 
 				while ( x != m_root && (x->color == RB_COLOR_BLACK || x->color == RB_COLOR_SENTINEL) ){
 					if ( x->is_left() ){
@@ -1210,29 +1213,29 @@ namespace ft
 			 * Red black tree utils
 			 */
 
-			void rb_insert_case_1_(rb_node *node){
+			void rb_insert_case_1_(node_pointer node){
 				if ( node->parent == NULL )
 					node->color = RB_COLOR_BLACK;
 			}
 
-			void rb_insert_case_2_(rb_node *node){
+			void rb_insert_case_2_(node_pointer node){
 				(void)node;
 				return ; // Uncessary call
 			}
 
-			void rb_insert_case_3_(rb_node *node){
+			void rb_insert_case_3_(node_pointer node){
 				node->parent->color = RB_COLOR_BLACK;
 				node->uncle()->color = RB_COLOR_BLACK;
 				
 
-				rb_node *gp = node->grand_parent();
+				node_pointer gp = node->grand_parent();
 				gp->color = RB_COLOR_RED;
 				rb_insert_fix_tree_(gp);
 			}
 
-			void rb_insert_case_4_(rb_node *node){
-				rb_node *p = node->parent;
-				rb_node *gp = node->grand_parent();
+			void rb_insert_case_4_(node_pointer node){
+				node_pointer p = node->parent;
+				node_pointer gp = node->grand_parent();
 
 				if ( gp != NULL ){
 					if ( gp->left != NULL && node == gp->left->right ){
@@ -1248,9 +1251,9 @@ namespace ft
 				}
 			}
 
-			void rb_insert_case_5_(rb_node *node){
-				rb_node *p = node->parent;
-				rb_node *gp = node->grand_parent();
+			void rb_insert_case_5_(node_pointer node){
+				node_pointer p = node->parent;
+				node_pointer gp = node->grand_parent();
 
 				if ( node->is_left() ){
 					rb_rotate_right_(gp);
@@ -1263,11 +1266,11 @@ namespace ft
 			}
 
 			void rb_replace_sentinels_(){
-				rb_node *leftmost = m_root;
-				rb_node *rightmost = m_root;
+				node_pointer leftmost = m_root;
+				node_pointer rightmost = m_root;
 
 				// Leftmost
-				rb_node *lp = m_left_sentinel->parent;
+				node_pointer lp = m_left_sentinel->parent;
 
 				if ( lp != NULL ){
 					lp->left = NULL;
@@ -1279,7 +1282,7 @@ namespace ft
 				leftmost->set_left(m_left_sentinel);
 
 				// Rightmost
-				rb_node *rp = m_right_sentinel->parent;
+				node_pointer rp = m_right_sentinel->parent;
 
 				if ( rp != NULL ){
 					rp->right = NULL;
@@ -1291,8 +1294,8 @@ namespace ft
 				rightmost->set_right(m_right_sentinel);
 			}
 
-			void rb_insert_fix_tree_(rb_node *node){
-				rb_node *uncle = node->uncle();
+			void rb_insert_fix_tree_(node_pointer node){
+				node_pointer uncle = node->uncle();
 
 				if ( node->parent == NULL ){
 					rb_insert_case_1_(node);
@@ -1311,8 +1314,8 @@ namespace ft
 				}
 			}
 
-			void rb_rotate_left_(rb_node *x){
-				rb_node *y = x->right;
+			void rb_rotate_left_(node_pointer x){
+				node_pointer y = x->right;
 				x->right = y->left;
 
 				if ( y->left != NULL ){
@@ -1331,8 +1334,8 @@ namespace ft
 				x->parent = y;
 			}
 
-			void rb_rotate_right_(rb_node *y){
-				rb_node *x = y->left;
+			void rb_rotate_right_(node_pointer y){
+				node_pointer x = y->left;
 				y->left = x->right;
 
 				if ( x->right != NULL ){

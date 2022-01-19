@@ -18,10 +18,10 @@ namespace ft {
 				typedef const T*						const_pointer;
 				typedef T&								reference;
 				typedef const T&						const_reference;
-				typedef typename T::pointer				data_pointer;
-				typedef typename T::const_pointer		data_const_pointer;
-				typedef typename T::reference			data_reference;
-				typedef typename T::const_reference		data_const_reference;
+				typedef typename T::allocator_type::pointer				data_pointer;
+				typedef typename T::allocator_type::const_pointer		data_const_pointer;
+				typedef typename T::allocator_type::reference			data_reference;
+				typedef typename T::allocator_type::const_reference		data_const_reference;
 
 				/* Constructors */
 				const_bidirectional_iterator() : m_ptr( NULL ) { }
@@ -115,10 +115,10 @@ namespace ft {
 				typedef const T*						const_pointer;
 				typedef T&								reference;
 				typedef const T&						const_reference;
-				typedef typename T::pointer				data_pointer;
-				typedef typename T::const_pointer		data_const_pointer;
-				typedef typename T::reference			data_reference;
-				typedef typename T::const_reference		data_const_reference;
+				typedef typename T::allocator_type::pointer				data_pointer;
+				typedef typename T::allocator_type::const_pointer		data_const_pointer;
+				typedef typename T::allocator_type::reference			data_reference;
+				typedef typename T::allocator_type::const_reference		data_const_reference;
 
 				/* Constructors */
 				bidirectional_iterator() : m_ptr( NULL ) { }
@@ -214,10 +214,10 @@ namespace ft {
 				typedef const T*						const_pointer;
 				typedef T&								reference;
 				typedef const T&						const_reference;
-				typedef typename T::pointer				data_pointer;
-				typedef typename T::const_pointer		data_const_pointer;
-				typedef typename T::reference			data_reference;
-				typedef typename T::const_reference		data_const_reference;
+				typedef typename T::allocator_type::pointer				data_pointer;
+				typedef typename T::allocator_type::const_pointer		data_const_pointer;
+				typedef typename T::allocator_type::reference			data_reference;
+				typedef typename T::allocator_type::const_reference		data_const_reference;
 
 				/* Constructors */
 				reverse_iterator() : m_ptr( NULL ) { }
@@ -313,10 +313,10 @@ namespace ft {
 				typedef const T*						const_pointer;
 				typedef T&								reference;
 				typedef const T&						const_reference;
-				typedef typename T::pointer				data_pointer;
-				typedef typename T::const_pointer		data_const_pointer;
-				typedef typename T::reference			data_reference;
-				typedef typename T::const_reference		data_const_reference;
+				typedef typename T::allocator_type::pointer				data_pointer;
+				typedef typename T::allocator_type::const_pointer		data_const_pointer;
+				typedef typename T::allocator_type::reference			data_reference;
+				typedef typename T::allocator_type::const_reference		data_const_reference;
 
 				/* Constructors */
 				const_reverse_iterator() : m_ptr( NULL ) { }

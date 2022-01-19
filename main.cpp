@@ -2276,7 +2276,7 @@ void test_map(){
 }
 
 int	main(void){
-	// test_vector();
-	// test_stack();
+	test_vector();
+	test_stack();
 	test_map();
 }
