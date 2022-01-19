@@ -12,31 +12,31 @@ namespace ft {
 	 * 
 	 */
 	template<typename T>
-	struct ft::iterator_traits<ft::vector_::const_random_access_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::vector_::const_random_access_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<ft::vector_::random_access_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::vector_::random_access_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<ft::vector_::const_reverse_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::vector_::const_reverse_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<ft::vector_::reverse_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::vector_::reverse_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<ft::map_::const_bidirectional_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::map_::const_bidirectional_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<ft::map_::bidirectional_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::map_::bidirectional_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<ft::map_::const_reverse_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::map_::const_reverse_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<ft::map_::reverse_iterator<T> > : ft::true_type {};
+	struct iterator_traits<ft::map_::reverse_iterator<T> > : ft::true_type {};
 
 	template<typename T>
-	struct ft::iterator_traits<T*> : ft::true_type {};
+	struct iterator_traits<T*> : ft::true_type {};
 }
 
 #endif
