@@ -4,10 +4,26 @@
 # include <functional>
 # include <memory>
 # include "utility/pair.hpp"
-# include "traits/iterator/map_iterator.hpp"
 
 namespace ft
 {
+	/**
+	 * Forward declarations
+	 * 
+	 */
+	template<class T>
+	struct rb_iterator;
+
+	template<class T>
+	struct rb_const_iterator;
+
+	template<class T>
+	struct rb_reverse_iterator;
+
+	template<class T>
+	struct rb_const_reverse_iterator;
+
+
 	enum rb_color { RB_COLOR_BLACK = 1, RB_COLOR_RED, RB_COLOR_SENTINEL, RB_COLOR_NULL };
 	/**
 	 * Internal struct representing a binary tree node.
@@ -212,7 +228,6 @@ namespace ft
 	};
 
 
-
 	/**
 	 * 
 	 * Map
@@ -258,10 +273,10 @@ namespace ft
 			typedef typename allocator_type::const_pointer									const_pointer;
 			typedef std::ptrdiff_t															difference_type;
 			typedef std::size_t																size_type;
-			typedef typename ft::map_::bidirectional_iterator<rb_node<value_type> >			iterator;
-			typedef typename ft::map_::const_bidirectional_iterator<rb_node<value_type> >	const_iterator;
-			typedef typename ft::map_::reverse_iterator<rb_node<value_type> >				reverse_iterator;
-			typedef typename ft::map_::const_reverse_iterator<rb_node<value_type> >			const_reverse_iterator;
+			typedef rb_iterator<value_type>									iterator;
+			typedef rb_const_iterator<value_type>							const_iterator;
+			typedef rb_reverse_iterator<value_type>							reverse_iterator;
+			typedef rb_const_reverse_iterator<value_type>					const_reverse_iterator;
 
 			class value_compare : std::binary_function<value_type, value_type, bool> {
 				friend class map;
@@ -423,7 +438,7 @@ namespace ft
 				ret = insert_recursive_(m_root, val);
 				if ( ret.second ){
 					m_size++;
-					this->rb_insert_fix_tree_(ret.first.base());
+					this->rb_insert_fix_tree_(ret.first.m_ptr);
 				}
 				return ret;
 			}
@@ -477,7 +492,7 @@ namespace ft
 							break;
 					}
 				}
-				result = insert_recursive_(curr.base(), val);
+				result = insert_recursive_(curr.m_ptr, val);
 				if ( result.second )
 					m_size++;
 				return result.first;
@@ -552,7 +567,7 @@ namespace ft
 			 */
 			void erase(iterator position){
 				if ( position != this->end() ){
-					node_pointer target = position.base();
+					node_pointer target = position.m_ptr;
 					node_pointer successor;
 					int         prev_color = target->color;
 					bool        is_root = target == m_root;
@@ -1353,6 +1368,267 @@ namespace ft
 				x->right = y;
 				y->parent = x;
 			}
+	};
+
+	template<class T>
+	rb_node<T> *_rb_tree_decrement(rb_node<T> *ptr){
+		if ( ptr->left != NULL ){
+			ptr = ptr->left;
+			while ( ptr->right != NULL )
+				ptr = ptr->right;
+		} else {
+			rb_node<T> *y = ptr->parent;
+			while ( ptr == y->left ){
+				ptr = y;
+				y = y->parent;
+			}
+			if ( ptr->left != y )
+				ptr = y;
+		}
+		return ptr;
+	}
+
+	template<class T>
+	rb_node<T> *_rb_tree_increment(rb_node<T> *ptr){
+		if ( ptr->right != NULL ){
+			ptr = ptr->right;
+			while ( ptr->left != NULL )
+				ptr = ptr->left;
+		} else {
+			rb_node<T> *y = ptr->parent;
+			while ( ptr == y->right ){
+				ptr = y;
+				y = y->parent;
+			}
+			if ( ptr->right != y )
+				ptr = y;
+		}
+		return ptr;
+	}
+
+	template<class T>
+	struct rb_iterator;
+
+	template<class T>
+	struct rb_const_iterator {
+		typedef T								value_type;
+		typedef const T&						reference;
+		typedef const T*						pointer;
+
+		typedef rb_iterator<T>						iterator;
+		
+		typedef std::bidirectional_iterator_tag iterator_category;
+		typedef ptrdiff_t						difference_type;
+
+		typedef rb_const_iterator<T>				_self;
+		typedef rb_node<T>*						_base_ptr;
+		typedef const rb_node<T>*				_link_type;
+
+		/* Constructors */
+		rb_const_iterator() : m_ptr( NULL ) { }
+		rb_const_iterator(_base_ptr ptr) : m_ptr(ptr) { }
+		rb_const_iterator(const iterator &it) : m_ptr( it.m_ptr ) { }
+
+		~rb_const_iterator() {}
+
+		/* Accesses operators */
+		reference	operator*() const {
+			return m_ptr->data;
+		}
+		pointer		operator->() const { return &m_ptr->data; }
+
+		/* Increment / Decrement */
+		_self &operator++() {
+			m_ptr = _rb_tree_increment(m_ptr);
+			return *this; 
+		}
+
+		_self operator++(int) { 
+			_self tmp = *this; 
+			m_ptr = _rb_tree_increment(m_ptr); 
+			return tmp; 
+		}
+
+		_self &operator--() {
+			m_ptr = _rb_tree_decrement(m_ptr);
+			return *this;
+		}
+		_self operator--(int) {
+			_self tmp = *this;
+			m_ptr = _rb_tree_decrement(m_ptr);
+			return tmp;
+		}
+
+		/* Comparison operators */
+		bool operator!=(_self const &it) const { return m_ptr != it.m_ptr; }
+		bool operator==(_self const &it) const { return m_ptr == it.m_ptr; }
+		
+		_base_ptr m_ptr;
+	};
+
+	template<class T>
+	struct rb_iterator {
+		typedef T								value_type;
+		typedef T&								reference;
+		typedef T*								pointer;
+		
+		typedef std::bidirectional_iterator_tag iterator_category;
+		typedef ptrdiff_t						difference_type;
+
+		typedef rb_iterator<T>						_self;
+		typedef rb_node<T>*						_base_ptr;
+		typedef rb_node<T>*						_link_type;
+
+		/* Constructors */
+		rb_iterator() : m_ptr( NULL ) { }
+		rb_iterator(_base_ptr ptr) : m_ptr(ptr) { }
+
+		~rb_iterator() {}
+
+		/* Accesses operators */
+		reference	operator*() const 
+		{ return m_ptr->data; }
+
+		pointer		operator->() const 
+		{ return &m_ptr->data; }
+
+		/* Increment / Decrement */
+		_self &operator++() {
+			m_ptr = _rb_tree_increment(m_ptr);
+			return *this; 
+		}
+
+		_self operator++(int) { 
+			_self tmp = *this; 
+			m_ptr = _rb_tree_increment(m_ptr); 
+			return tmp; 
+		}
+
+		_self &operator--() {
+			m_ptr = _rb_tree_decrement(m_ptr);
+			return *this;
+		}
+		_self operator--(int) {
+			_self tmp = *this;
+			m_ptr = _rb_tree_decrement(m_ptr);
+			return tmp;
+		}
+
+		/* Comparison operators */
+		bool operator!=(_self const &it) const { return m_ptr != it.m_ptr; }
+		bool operator==(_self const &it) const { return m_ptr == it.m_ptr; }
+		
+		_base_ptr m_ptr;
+	};
+
+	template<typename T>
+	struct rb_reverse_iterator {
+		typedef T								value_type;
+		typedef T&								reference;
+		typedef T*								pointer;
+		
+		typedef std::bidirectional_iterator_tag iterator_category;
+		typedef ptrdiff_t						difference_type;
+
+		typedef rb_reverse_iterator<T>				_self;
+		typedef rb_node<T>*						_base_ptr;
+		typedef const rb_node<T>*				_link_type;
+
+		/* Constructors */
+		rb_reverse_iterator() : m_ptr( NULL ) { }
+		rb_reverse_iterator(_base_ptr ptr) : m_ptr(ptr) { }
+		~rb_reverse_iterator() {}
+
+		/* Accesses operators */
+		reference	operator*() const 
+		{ return m_ptr->data; }
+
+		pointer		operator->() const 
+		{ return &m_ptr->data; }
+
+		/* Increment / Decrement */
+		_self &operator++() {
+			m_ptr = _rb_tree_decrement(m_ptr);
+			return *this; 
+		}
+
+		_self operator++(int) { 
+			_self tmp = *this; 
+			m_ptr = _rb_tree_decrement(m_ptr); 
+			return tmp; 
+		}
+
+		_self &operator--() {
+			m_ptr = _rb_tree_increment(m_ptr);
+			return *this;
+		}
+		_self operator--(int) {
+			_self tmp = *this;
+			m_ptr = _rb_tree_increment(m_ptr);
+			return tmp;
+		}
+
+		/* Comparison operators */
+		bool operator!=(_self const &it) const { return m_ptr != it.m_ptr; }
+		bool operator==(_self const &it) const { return m_ptr == it.m_ptr; }
+		
+		_base_ptr m_ptr;
+	};
+
+	template<typename T>
+	struct rb_const_reverse_iterator {
+		typedef T								value_type;
+		typedef const T&						reference;
+		typedef const T*						pointer;
+
+		typedef rb_reverse_iterator<T>				iterator;
+		
+		typedef std::bidirectional_iterator_tag iterator_category;
+		typedef ptrdiff_t						difference_type;
+
+		typedef rb_const_reverse_iterator<T>		_self;
+		typedef rb_node<T>*						_base_ptr;
+		typedef const rb_node<T>*				_link_type;
+
+		/* Constructors */
+		rb_const_reverse_iterator() : m_ptr( NULL ) { }
+		rb_const_reverse_iterator(_base_ptr ptr) : m_ptr(ptr) { }
+		rb_const_reverse_iterator(const iterator &it) : m_ptr( it.m_ptr ) { }
+		~rb_const_reverse_iterator() {}
+
+		/* Accesses operators */
+		reference	operator*() const {
+			return m_ptr->data;
+		}
+		pointer		operator->() const { return &m_ptr->data; }
+
+		/* Increment / Decrement */
+		_self &operator++() {
+			m_ptr = _rb_tree_decrement(m_ptr);
+			return *this; 
+		}
+
+		_self operator++(int) { 
+			_self tmp = *this; 
+			m_ptr = _rb_tree_decrement(m_ptr); 
+			return tmp; 
+		}
+
+		_self &operator--() {
+			m_ptr = _rb_tree_increment(m_ptr);
+			return *this;
+		}
+		_self operator--(int) {
+			_self tmp = *this;
+			m_ptr = _rb_tree_increment(m_ptr);
+			return tmp;
+		}
+
+		/* Comparison operators */
+		bool operator!=(_self const &it) const { return m_ptr != it.m_ptr; }
+		bool operator==(_self const &it) const { return m_ptr == it.m_ptr; }
+		
+		_base_ptr m_ptr;
 	};
 }
 
