@@ -100,7 +100,7 @@ namespace ft {
 			 * 
 			 */
 			template<class InputIterator>
-			vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<iterator_traits<InputIterator>::value, InputIterator>::type = NULL ) : 
+			vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<ft::is_iterator<InputIterator>::value, InputIterator>::type = NULL ) : 
 				m_alloc( alloc ),
 				m_items( NULL )
 			{
@@ -434,7 +434,7 @@ namespace ft {
 			 * 
 			 */
 			template<class InputIterator>
-			void assign( InputIterator first, InputIterator last, typename ft::enable_if<iterator_traits<InputIterator>::value, InputIterator>::type = NULL){
+			void assign( InputIterator first, InputIterator last, typename ft::enable_if<ft::is_iterator<InputIterator>::value, InputIterator>::type = NULL){
 				clear();
 				for ( InputIterator it = first ; it != last ; it++ ){
 					push_back( *it );
@@ -565,7 +565,7 @@ namespace ft {
 			}
 
 			template<class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::iterator_traits<InputIterator>::value, InputIterator>::type = NULL ){
+			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::is_iterator<InputIterator>::value, InputIterator>::type = NULL ){
 				ptrdiff_t distance = get_distance(position);
 				ptrdiff_t n = last - first;
 				iterator it;

@@ -37,7 +37,7 @@ namespace ft {
 	 * 
 	 */
 	template<typename T>
-	struct iterator_traits : ft::false_type { };
+	struct is_iterator : ft::false_type { };
 }
 
 #endif /* TRAITS_HPP */
