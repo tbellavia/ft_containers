@@ -2275,8 +2275,41 @@ void test_map(){
 	test_map_val_comp();
 }
 
+#define TEST_TYPE(type) {               \
+    TEST_TYPE_AUX(type);                \
+    TEST_TYPE_AUX(const type);          \
+    TEST_TYPE_AUX(volatile type);       \
+    TEST_TYPE_AUX(const volatile type); }
+#define TEST_TYPE_AUX(type) std::cout << #type << ": " << ft::is_integral<type>::value << std::endl
+
 int	main(void){
-	test_vector();
-	test_stack();
-	test_map();
+    TEST_TYPE(short)
+    TEST_TYPE(short int)
+    TEST_TYPE(signed short)
+    TEST_TYPE(signed short int)
+    TEST_TYPE(unsigned short)
+    TEST_TYPE(unsigned short int)
+    TEST_TYPE(unsigned short int)
+    TEST_TYPE(int)
+    TEST_TYPE(signed)
+    TEST_TYPE(signed int)
+    TEST_TYPE(unsigned)
+    TEST_TYPE(unsigned int)
+    TEST_TYPE(unsigned int)
+    TEST_TYPE(long)
+    TEST_TYPE(long int)
+    TEST_TYPE(signed long)
+    TEST_TYPE(signed long int)
+    TEST_TYPE(unsigned long)
+    TEST_TYPE(unsigned long int)
+    TEST_TYPE(long long)
+    TEST_TYPE(long long int)
+    TEST_TYPE(signed long long)
+    TEST_TYPE(signed long long int)
+    TEST_TYPE(unsigned long long)
+    TEST_TYPE(unsigned long long int)
+
+//	test_vector();
+//	test_stack();
+//	test_map();
 }
