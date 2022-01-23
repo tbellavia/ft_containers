@@ -1,19 +1,23 @@
 CXX = c++
 CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -g # -fsanitize=address
 
-SRCS = main.cpp
+#SRCS = main.cpp
+SRCS = test.cpp
 HEADERS = vector.hpp stack.hpp map.hpp
 
-NAME = ft_containers
+STL_NAME = stl_containers
+FT_NAME = ft_containers
 
-all: $(NAME)
+all: $(STL_NAME)
 
-$(NAME): $(SRCS) $(HEADERS)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(SRCS)
+$(STL_NAME) $(FT_NAME): $(SRCS) $(HEADERS)
+	$(CXX) $(CXXFLAGS) -o $(STL_NAME) $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $(FT_NAME) -DFT $(SRCS)
 
 re: fclean all
 
 clean: fclean
 
 fclean:
-	rm -f $(NAME)
+	rm -f $(STL_NAME)
+	rm -f $(FT_NAME)

@@ -442,7 +442,6 @@ void test_vector_insert(){
 		_assert_each_equal(f_vec.begin(), f_vec.end(), s_vec.begin(), s_vec.end(), "test vector insert items");
 		_assert_equal(f_vec.capacity(), s_vec.capacity(), "test vector insert capacity");
 		_assert_equal(f_vec.size(), s_vec.size(), "test vector insert size");
-		
 	}
 }
 
@@ -766,7 +765,7 @@ void test_vector_swap(){
 	}
 }
 
-void test_vector_assignation_operator(){
+void test_vector_assignment_operator(){
 
 	// Empty, Full
 	{
@@ -2189,7 +2188,7 @@ void test_vector() {
 	test_vector_fill_constructor();
 	test_vector_range_constructor();
 	test_vector_copy_constructor();
-	test_vector_assignation_operator();
+    test_vector_assignment_operator();
 
 	// Iterators
 	print_subheader("Iterators");
