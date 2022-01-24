@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cstdio>
+#include <deque>
 
 #ifdef FT
     #include "vector.hpp"
@@ -412,7 +413,6 @@ void test_vector_max_size(){
     LOG("max size", ft::vector<bool>().max_size());
     LOG("max size", ft::vector<char>().max_size());
     LOG("max size", ft::vector<std::string>().max_size());
-//    LOG("max size", ft::vector<ft::pair<int, int> >().max_size());
     LOG("max size", ft::vector<Dummy>().max_size());
 }
 
@@ -839,6 +839,134 @@ void test_vector(){
     test_vector_clear();
 }
 
+/* Test stack */
+
+void test_stack_push() {
+    {
+        ft::stack<int> stack;
+
+        for ( int i = 0 ; i < 5 ; i++ ){
+            stack.push(i);
+            LOG("item", stack.top());
+            LOG("size", stack.size());
+        }
+    }
+    {
+        ft::stack<int, std::deque<int> > stack;
+
+        for ( int i = 0 ; i < 5 ; i++ ){
+            stack.push(i);
+            LOG("(deque) item", stack.top());
+            LOG("(deque) size", stack.size());
+        }
+    }
+}
+
+void test_stack_empty() {
+    {
+        ft::stack<int> stack;
+
+        LOG("size", stack.size());
+        LOG("empty", stack.empty());
+    }
+    {
+        ft::stack<int, std::deque<int> > stack;
+
+        LOG("(deque) size", stack.size());
+        LOG("(deque) empty", stack.empty());
+    }
+}
+
+void test_stack_size() {
+    {
+        ft::stack<int> stack;
+
+        LOG("size", stack.size());
+        for ( int i = 0 ; i < 5 ; i++ ){
+            stack.push(i);
+            LOG("size", stack.size());
+        }
+
+        LOG("size", stack.size());
+
+        for ( int i = 0 ; i < 5 ; i++ ){
+            stack.pop();
+            LOG("size", stack.size());
+        }
+    }
+    {
+        ft::stack<int, std::deque<int> > stack;
+
+        LOG("(deque) size", stack.size());
+        for ( int i = 0 ; i < 5 ; i++ ){
+            stack.push(i);
+            LOG("(deque) size", stack.size());
+        }
+
+        LOG("(deque) size", stack.size());
+
+        for ( int i = 0 ; i < 5 ; i++ ){
+            stack.pop();
+            LOG("(deque) size", stack.size());
+        }
+    }
+}
+
+void test_stack_top() {
+    {
+        ft::stack<int> stack;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            stack.push(i);
+            LOG("size", stack.top());
+        }
+    }
+    {
+        ft::stack<int, std::deque<int> > stack;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            stack.push(i);
+            LOG("(deque) size", stack.top());
+        }
+    }
+}
+
+void test_stack_pop() {
+    {
+        ft::stack<int> stack;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            stack.push(i);
+        }
+
+        while ( !stack.empty() ){
+            stack.pop();
+        }
+        LOG("size", stack.size());
+    }
+    {
+        ft::stack<int, std::deque<int> > stack;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            stack.push(i);
+        }
+
+        while ( !stack.empty() ){
+            stack.pop();
+        }
+        LOG("(deque) size", stack.size());
+    }
+}
+
+void test_stack(){
+    test_stack_push();
+	test_stack_empty();
+	test_stack_size();
+	test_stack_top();
+	test_stack_pop();
+}
+
 int     main(){
     test_vector();
+    test_stack();
 }
