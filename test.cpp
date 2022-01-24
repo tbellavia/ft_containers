@@ -17,6 +17,13 @@
     namespace ft = std;
 #endif
 
+// Define greater operator
+template<typename T>
+struct Greater : public std::binary_function<T, T, bool>
+{
+    bool operator()(const T& lhs, const T& rhs) const { return lhs > rhs; }
+};
+
 // Define dummy object for testing purpose
 struct Dummy {
     int m_x;
@@ -46,6 +53,12 @@ struct Dummy {
 
 std::ostream &operator<<(std::ostream &os, const Dummy &x){
     os << "Dummy<x=" << x.m_x << ">";
+    return os;
+}
+
+template<class A, class B>
+std::ostream &operator<<(std::ostream &os, const ft::pair<A, B> &p){
+    os << "(" << p.first << " : " << p.second << ")";
     return os;
 }
 
@@ -818,27 +831,6 @@ void test_vector_clear(){
     }
 }
 
-void test_vector(){
-    test_vector_default_constructor();
-    test_vector_fill_constructor();
-    test_vector_range_constructor();
-    test_vector_copy_constructor();
-    test_vector_assignment_operator();
-    test_vector_iterator();
-    test_vector_reverse_iterator();
-    test_vector_max_size();
-    test_vector_capacity();
-    test_vector_resize();
-    test_vector_access();
-    test_vector_at();
-    test_vector_assign();
-    test_vector_pop_back();
-    test_vector_insert();
-    test_vector_erase();
-    test_vector_swap();
-    test_vector_clear();
-}
-
 /* Test stack */
 
 void test_stack_push() {
@@ -958,6 +950,27 @@ void test_stack_pop() {
     }
 }
 
+void test_vector(){
+    test_vector_default_constructor();
+    test_vector_fill_constructor();
+    test_vector_range_constructor();
+    test_vector_copy_constructor();
+    test_vector_assignment_operator();
+    test_vector_iterator();
+    test_vector_reverse_iterator();
+    test_vector_max_size();
+    test_vector_capacity();
+    test_vector_resize();
+    test_vector_access();
+    test_vector_at();
+    test_vector_assign();
+    test_vector_pop_back();
+    test_vector_insert();
+    test_vector_erase();
+    test_vector_swap();
+    test_vector_clear();
+}
+
 void test_stack(){
     test_stack_push();
 	test_stack_empty();
@@ -966,7 +979,287 @@ void test_stack(){
 	test_stack_pop();
 }
 
+void test_map_default_constructor(){
+    {
+        ft::map<int, int> vec;
+
+        LOG("empty", vec.empty());
+        LOG("size", vec.size());
+    }
+    {
+        ft::map<int, int, Greater<int> > vec;
+
+        LOG("empty", vec.empty());
+        LOG("size", vec.size());
+    }
+}
+
+void test_map_copy_constructor(){
+    // Lower empty
+    {
+        ft::map<int, int>	map;
+        ft::map<int, int>	copy_map(map);
+
+        LOG("size", map.size());
+        LOG("copy size", copy_map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+        LOG_EACH("copy iterator", copy_map.begin(), copy_map.end());
+    }
+    // Greater empty
+    {
+        ft::map<int, int, Greater<int> > map;
+        ft::map<int, int, Greater<int> > copy_map(map);
+
+        LOG("size", map.size());
+        LOG("copy size", copy_map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+        LOG_EACH("copy iterator", copy_map.begin(), copy_map.end());
+    }
+    // Lower fill
+    {
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+        ft::map<int, int> map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+        ft::map<int, int> copy_map(map);
+
+        LOG("size", map.size());
+        LOG("copy size", copy_map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+        LOG_EACH("copy iterator", copy_map.begin(), copy_map.end());
+    }
+    // Greater fill
+    {
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+        ft::map<int, int, Greater<int> >		map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+        ft::map<int, int, Greater<int> >		copy_map(map);
+
+        LOG("size", map.size());
+        LOG("copy size", copy_map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+        LOG_EACH("copy iterator", copy_map.begin(), copy_map.end());
+    }
+}
+
+void test_map_range_constructor(){
+    // Lower empty (begin - end)
+    {
+        ft::map<int, int> map;
+        ft::map<int, int> range_map(map.begin(), map.end());
+
+        LOG("size", range_map.size());
+        LOG_EACH("iterator", range_map.begin(), range_map.end());
+    }
+    // Greater empty (begin - end)
+    {
+        ft::map<int, int, Greater<int> > map;
+        ft::map<int, int, Greater<int> > range_map(map.begin(), map.end());
+
+        LOG("greater - size", range_map.size());
+        LOG_EACH("greater - iterator", range_map.begin(), range_map.end());
+    }
+    // Lower full
+    {
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+        ft::map<int, int>	map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        // Begin - end
+        {
+            ft::map<int, int>	range_map(map.begin(), map.end());
+
+            LOG("greater - size", range_map.size());
+            LOG_EACH("greater - iterator", range_map.begin(), range_map.end());
+        }
+        // Begin - find
+        {
+            ft::map<int, int>	range_map(map.begin(), map.find(13));
+
+            LOG("greater - size", range_map.size());
+            LOG_EACH("greater - iterator", range_map.begin(), range_map.end());
+        }
+        // Find - end
+        {
+            ft::map<int, int>	range_map(map.find(13), map.end());
+
+            LOG("greater - size", range_map.size());
+            LOG_EACH("greater - iterator", range_map.begin(), range_map.end());
+        }
+    }
+    // Greater full
+    {
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+        ft::map<int, int, Greater<int> >		map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        // Begin - end
+        {
+            ft::map<int, int, Greater<int> >		range_map(map.begin(), map.end());
+
+            LOG("greater - size", range_map.size());
+            LOG_EACH("greater - iterator", range_map.begin(), range_map.end());
+        }
+        // Begin - find
+        {
+            ft::map<int, int, Greater<int> >		range_map(map.begin(), map.find(13));
+
+            LOG("greater - size", range_map.size());
+            LOG_EACH("greater - iterator", range_map.begin(), range_map.end());
+        }
+        // Find - end
+        {
+            ft::map<int, int, Greater<int> >		range_map(map.find(13), map.end());
+
+            LOG("greater - size", range_map.size());
+            LOG_EACH("greater - iterator", range_map.begin(), range_map.end());
+        }
+    }
+}
+
+void test_map_assignment_operator(){
+    int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+    // Lower empty
+    {
+        ft::map<int, int> map;
+        ft::map<int, int> assign_map;
+
+        assign_map = map;
+        LOG("size", assign_map.size());
+        LOG_EACH("iterator", assign_map.begin(), assign_map.end());
+    }
+    // Greater empty
+    {
+        ft::map<int, int, Greater<int> > map;
+        ft::map<int, int, Greater<int> > assign_map;
+
+        assign_map = map;
+        LOG("size", assign_map.size());
+        LOG_EACH("iterator", assign_map.begin(), assign_map.end());
+    }
+    // Lower fill
+    {
+        ft::map<int, int> map;
+        ft::map<int, int> assign_map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        assign_map = map;
+        LOG("size", assign_map.size());
+        LOG_EACH("iterator", assign_map.begin(), assign_map.end());
+    }
+    // Greater fill
+    {
+        ft::map<int, int, Greater<int> > map;
+        ft::map<int, int, Greater<int> > assign_map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        assign_map = map;
+        LOG("size", assign_map.size());
+        LOG_EACH("iterator", assign_map.begin(), assign_map.end());
+    }
+}
+
+void test_map_empty(){
+    ft::map<char, int> map;
+
+    LOG("empty", map.empty());
+    map.insert(ft::make_pair(1, 1));
+    LOG("empty", map.empty());
+}
+
+void test_map_max_size(){
+    {
+        ft::map<int, int> map;
+
+        LOG("max size", map.max_size());
+    }
+    {
+        ft::map<bool, int> map;
+
+        LOG("max size", map.max_size());
+    }
+    {
+        ft::map<char, int> map;
+
+        LOG("max size", map.max_size());
+    }
+    {
+        ft::map<std::string, int> map;
+
+        LOG("max size", map.max_size());
+    }
+    {
+        ft::map<std::string, std::string> map;
+
+        LOG("max size", map.max_size());
+    }
+    {
+        ft::map<ft::pair<int, int>, ft::pair<int, int> > map;
+
+        LOG("max size", map.max_size());
+    }
+    {
+        ft::map<std::pair<int, int>, std::pair<int, int> > map;
+
+        LOG("max size", map.max_size());
+    }
+}
+
+void test_map(){
+    // Constructor
+    test_map_default_constructor();
+    test_map_copy_constructor();
+    test_map_range_constructor();
+    test_map_assignment_operator();
+
+    // Capacity
+    test_map_empty();
+    test_map_max_size();
+//
+//    test_map_iterator();
+//    test_map_reverse_iterator();
+//
+//    test_map_bracket_operator();
+//
+//    test_map_insert();
+//    test_map_insert_hint();
+//    test_map_insert_range();
+//    test_map_insert_randomized();
+//    test_map_erase_it();
+//    test_map_erase_key();
+//    test_map_erase_range();
+//    test_map_clear();
+//    test_map_swap();
+//
+//    test_map_find();
+//    test_map_count();
+//    test_map_lower_bound();
+//    test_map_upper_bound();
+//    test_map_equal_range();
+//
+//    test_map_key_comp();
+//    test_map_val_comp();
+}
+
 int     main(){
     test_vector();
     test_stack();
+    test_map();
 }
