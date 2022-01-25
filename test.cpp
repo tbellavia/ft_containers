@@ -1357,7 +1357,295 @@ void test_map_insert(){
 }
 
 void test_map_insert_hint(){
-    
+    	// Test on empty map to the begin
+	{
+		ft::map<int, int>	map;
+
+        LOG("value", map.insert(map.begin(), ft::make_pair(1, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+
+	// Test on empty map to the end
+	{
+		ft::map<int, int>	map;
+
+        LOG("value", map.insert(map.begin(), ft::make_pair(1, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	// Test with only one node at the begin
+	{
+		ft::map<int, int>	map;
+
+		map.insert(ft::make_pair(0, 0));
+
+        LOG("value", map.insert(map.begin(), ft::make_pair(1, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	// Test with only one node at the end
+	{
+		ft::map<int, int>	map;
+
+		map.insert(ft::make_pair(0, 0));
+
+        LOG("value", map.insert(map.end(), ft::make_pair(1, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	// Test with non empty map
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int>	map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test on begin
+        LOG("value", map.insert(map.begin(), ft::make_pair(16, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on begin min element
+        LOG("value", map.insert(map.begin(), ft::make_pair(-1, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on begin max element
+        LOG("value", map.insert(map.begin(), ft::make_pair(40, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on end
+        LOG("value", map.insert(map.end(), ft::make_pair(26, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on end min element
+        LOG("value", map.insert(map.end(), ft::make_pair(-2, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on end max element
+        LOG("value", map.insert(map.end(), ft::make_pair(41, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on root
+        LOG("value", map.insert(map.find(keys[0]), ft::make_pair(14, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on root min element
+        LOG("value", map.insert(map.find(keys[0]), ft::make_pair(-3, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test on root max element
+        LOG("value", map.insert(map.find(keys[0]), ft::make_pair(42, 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test with item that already exist
+        LOG("value", map.insert(map.find(keys[3]), ft::make_pair(keys[3], 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test with item that already exist and point to this node
+        LOG("value", map.insert(map.find(keys[0]), ft::make_pair(keys[0], 0))->first);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+}
+
+void test_map_insert_range(){
+    // Test empty range
+	{
+        ft::pair<char, int> pairs[1] = {ft::make_pair('a', 0)};
+		ft::map<char, int>	map;
+
+		map.insert(pairs, pairs);
+        LOG("size", map.size());
+        LOG_EACH("items", map.begin(), map.end());
+	}
+	// Test non empty range
+	{
+
+		ft::pair<char, int>	pairs[10] = {ft::make_pair('a', 0), ft::make_pair('b', 0), ft::make_pair('z', 0), ft::make_pair('t', 0), ft::make_pair('o', 0), ft::make_pair('n', 0), ft::make_pair('y', 0), ft::make_pair('m', 0), ft::make_pair('v', 0), ft::make_pair('-', 0)};
+		ft::map<char, int>	map;
+
+		map.insert(pairs, pairs + 10);
+		LOG("size", map.size());
+        LOG_EACH("items", map.begin(), map.end());
+	}
+	// Test range with repetitive keys
+	{
+		ft::pair<char, int>	pairs[10] = {ft::make_pair('a', 0), ft::make_pair('b', 0), ft::make_pair('z', 0), ft::make_pair('a', 0), ft::make_pair('o', 0), ft::make_pair('n', 0), ft::make_pair('b', 0), ft::make_pair('m', 0), ft::make_pair('v', 0), ft::make_pair('z', 0)};
+		ft::map<char, int>	map;
+
+		map.insert(pairs, pairs + 10);
+		LOG("size", map.size());
+        LOG_EACH("items", map.begin(), map.end());
+	}
+	// Test three case with same map
+	{
+		ft::pair<char, int>	pairs[10] = {ft::make_pair('a', 0), ft::make_pair('b', 0), ft::make_pair('z', 0), ft::make_pair('t', 0), ft::make_pair('o', 0), ft::make_pair('n', 0), ft::make_pair('y', 0), ft::make_pair('m', 0), ft::make_pair('v', 0), ft::make_pair('-', 0)};
+		ft::map<char, int>	map;
+
+		map.insert(pairs, pairs);
+		LOG("size", map.size());
+        LOG_EACH("items", map.begin(), map.end());
+
+		map.insert(pairs, pairs + 5);
+		LOG("size", map.size());
+        LOG_EACH("items", map.begin(), map.end());
+
+		map.insert(pairs + 5, pairs + 10);
+		LOG("size", map.size());
+        LOG_EACH("items", map.begin(), map.end());
+	}
+}
+
+void test_map_erase_it(){
+	int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	ft::map<int, int>::iterator		it;
+	ft::map<int, int>				map;
+
+	for ( int index = 0 ; index < 13 ; index++ ){
+		map.insert(ft::make_pair(keys[index], 0));
+	}
+
+	for ( int index = 0 ; index < 5 ; index++ ){
+		int key = (int[5]){4, 17, 15, 1, 12}[index];
+
+		it = map.find(key);
+		map.erase(it);
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+}
+
+void test_map_erase_key(){
+    	// Test without preserving the tree
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+        LOG("return", map.erase(10000));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test erase leaf - []
+        LOG("return", map.erase(4));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test erase node with one child - []
+        LOG("return", map.erase(17));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test erase node with two children - []
+        LOG("return", map.erase(15));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test erase node with sentinel node
+        LOG("return", map.erase(1));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+
+		// Test erase root node
+        LOG("return", map.erase(12));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	// Test preserving the tree
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+        LOG("return", map.erase(10000));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+        LOG("return", map.erase(4));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+        LOG("return", map.erase(17));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+        LOG("return", map.erase(15));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+        LOG("return", map.erase(1));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	{
+		int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+		ft::map<int, int> map;
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		// Test erase node that does not exist - []
+        LOG("return", map.erase(12));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
 }
 
 void test_map(){
@@ -1377,11 +1665,10 @@ void test_map(){
    test_map_bracket_operator();
 //
    test_map_insert();
-//    test_map_insert_hint();
-//    test_map_insert_range();
-//    test_map_insert_randomized();
-//    test_map_erase_it();
-//    test_map_erase_key();
+   test_map_insert_hint();
+   test_map_insert_range();
+   test_map_erase_it();
+   test_map_erase_key();
 //    test_map_erase_range();
 //    test_map_clear();
 //    test_map_swap();
