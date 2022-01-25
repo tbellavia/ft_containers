@@ -950,35 +950,6 @@ void test_stack_pop() {
     }
 }
 
-void test_vector(){
-    test_vector_default_constructor();
-    test_vector_fill_constructor();
-    test_vector_range_constructor();
-    test_vector_copy_constructor();
-    test_vector_assignment_operator();
-    test_vector_iterator();
-    test_vector_reverse_iterator();
-    test_vector_max_size();
-    test_vector_capacity();
-    test_vector_resize();
-    test_vector_access();
-    test_vector_at();
-    test_vector_assign();
-    test_vector_pop_back();
-    test_vector_insert();
-    test_vector_erase();
-    test_vector_swap();
-    test_vector_clear();
-}
-
-void test_stack(){
-    test_stack_push();
-	test_stack_empty();
-	test_stack_size();
-	test_stack_top();
-	test_stack_pop();
-}
-
 void test_map_default_constructor(){
     {
         ft::map<int, int> vec;
@@ -1648,43 +1619,457 @@ void test_map_erase_key(){
 	}
 }
 
+void test_map_erase_range(){
+    int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+    // Erase full range
+    {
+        ft::map<int, int> map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+        map.erase(map.begin(), map.end());
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+    }
+    {
+        ft::map<int, int> map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        map.erase(map.begin(), map.find(15));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+    }
+    // Test with reverse order
+    {
+        ft::map<int, int, Greater<int> > map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+        map.erase(map.begin(), map.end());
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+    }
+    {
+        ft::map<int, int, Greater<int> > map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        map.erase(map.begin(), map.find(15));
+        LOG("size", map.size());
+        LOG_EACH("iterator", map.begin(), map.end());
+    }
+}
+
+void test_map_clear(){
+    ft::map<int, int> map;
+
+    // Test with empty
+    map.clear();
+    LOG("size", map.size());
+    LOG("empty", map.empty());
+    LOG_EACH("iterator", map.begin(), map.end());
+
+    // Test with only one node
+    map.insert(ft::make_pair(0, 0));
+    map.clear();
+    LOG("size", map.size());
+    LOG("empty", map.empty());
+    LOG_EACH("iterator", map.begin(), map.end());
+
+    // Test with multiple nodes
+    for ( int i = 0 ; i < 10 ; i++ ){
+        map.insert(ft::make_pair(i, 0));
+    }
+
+    map.clear();
+    LOG("size", map.size());
+    LOG("empty", map.empty());
+    LOG_EACH("iterator", map.begin(), map.end());
+}
+
+void test_map_swap() {
+    int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+    // Empty / Empty
+    {
+        ft::map<int, int>	a;
+        ft::map<int, int>	b;
+
+        a.swap(b);
+        // Iterators
+        LOG("iterator", (a.begin() == a.end()));
+        LOG("iterator", (b.begin() == b.begin()));
+        LOG("reverse iterator", (a.rbegin() == a.rend()));
+        LOG("reverse iterator", (b.rbegin() == b.rend()));
+
+        // Size
+        LOG("size", a.size());
+        LOG("size", b.size());
+    }
+    // Empty / Full
+    {
+        ft::map<int, int>	a;
+        ft::map<int, int>	b;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            a.insert(ft::make_pair(keys[index], 0));
+        }
+        a.swap(b);
+
+        // Iterator
+        LOG("iterator", (a.begin() == a.end()));
+
+        // Size
+        LOG("size", a.size());
+        LOG("size", b.size());
+
+        // Content
+        LOG_EACH("iterator", a.begin(), a.end());
+        LOG_EACH("iterator", b.begin(), b.end());
+    }
+    // Full / Full
+    {
+        ft::map<int, int>	a;
+        ft::map<int, int>	b;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            a.insert(ft::make_pair(keys[index], 0));
+        }
+        a.swap(b);
+
+        // Size
+        LOG("size", a.size());
+        LOG("size", b.size());
+
+        // Content
+        LOG_EACH("iterator", a.begin(), a.end());
+        LOG_EACH("iterator", b.begin(), b.end());
+    }
+    // Full / Full greater
+    {
+        ft::map<int, int, Greater<int> >		a;
+        ft::map<int, int, Greater<int> >		b;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            a.insert(ft::make_pair(keys[index], 0));
+        }
+        a.swap(b);
+
+        // Size
+        LOG("size", a.size());
+        LOG("size", b.size());
+
+        // Content
+        LOG_EACH("iterator", a.begin(), a.end());
+        LOG_EACH("iterator", b.begin(), b.end());
+    }
+}
+
+void test_map_find(){
+    int keys[6] = {10, 5, 20, 1, 8, 15};
+    ft::map<int, int>::iterator		it;
+    ft::map<int, int>				map;
+
+    for ( int index = 0 ; index < 6 ; index++ ){
+        int k = keys[index];
+        int v = index;
+
+        map.insert(ft::make_pair(k, v));
+    }
+
+    // Test with existent keys
+    for ( int index = 0 ; index < 6 ; index++ ){
+        it = map.find(keys[index]);
+
+        LOG("first", it->first);
+        LOG("second", it->second);
+    }
+
+    // Test with non-existent key
+    it = map.find(1000);
+    LOG("non existent key", (it == map.end()));
+}
+
+void test_map_count(){
+    int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+    ft::map<int, int>	map;
+
+    LOG("result - unknown key", map.count(12));
+    for ( int index = 0 ; index < 13 ; index++ ){
+        map.insert(ft::make_pair(keys[index], 0));
+    }
+    for ( int index = 0 ; index < 13 ; index++ ){
+        LOG("result - existent key", map.count(keys[index]));
+    }
+    LOG("result - unknown key", map.count(1000));
+}
+
+void test_map_lower_bound(){
+    {
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+        ft::map<int, int>::iterator 	lower_bound;
+        ft::map<int, int>				map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            lower_bound = map.lower_bound(keys[index]);
+            // If iterator point to end, check that std::map also point to end
+            // Otherwise, check the value.
+            if ( lower_bound == map.end() ){
+                LOG("iterator", (lower_bound == map.end()));
+            } else {
+                LOG("iterator", lower_bound->first);
+            }
+        }
+        for ( int index = 0 ; index < 5 ; index++ ){
+            int key = (int[5]){-1, 8, 1000, 16, 20}[index];
+
+            lower_bound = map.lower_bound(key);
+            // If iterator point to end, check that std::map also point to end
+            // Otherwise, check the value.
+            if ( lower_bound == map.end() ){
+                LOG("iterator", (lower_bound == map.end()));
+            } else {
+                LOG("iterator", lower_bound->first);
+            }
+        }
+    }
+    {
+        ft::map<int, int> map;
+
+        LOG("empty map", (map.lower_bound(10) == map.end()));
+    }
+}
+
+void test_map_upper_bound(){
+    {
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+        ft::map<int, int>::iterator 	upper_bound;
+        ft::map<int, int>				map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            upper_bound = map.upper_bound(keys[index]);
+            // If iterator point to end, check that std::map also point to end
+            // Otherwise, check the value.
+            if ( upper_bound == map.end() ){
+                LOG("iterator", (upper_bound == map.end()));
+            } else {
+                LOG("iterator", upper_bound->first);
+            }
+        }
+        for ( int index = 0 ; index < 5 ; index++ ){
+            int key = (int[5]){-1, 8, 1000, 16, 20}[index];
+
+            upper_bound = map.upper_bound(key);
+            // If iterator point to end, check that std::map also point to end
+            // Otherwise, check the value.
+            if ( upper_bound == map.end() ){
+                LOG("iterator", (upper_bound == map.end()));
+            } else {
+                LOG("iterator", upper_bound->first);
+            }
+        }
+    }
+    {
+        ft::map<int, int> map;
+
+        LOG("empty map", (map.upper_bound(10) == map.end()));
+    }
+}
+
+void test_map_equal_range(){
+    {
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+        ft::pair<ft::map<int,int>::iterator, ft::map<int,int>::iterator>	equal_range;
+        ft::map<int, int>													map;
+
+        for ( int index = 0 ; index < 13 ; index++ ){
+            map.insert(ft::make_pair(keys[index], 0));
+        }
+
+        // Test with key that exists
+        for ( int index = 0 ; index < 13 ; index++ ){
+            equal_range = map.equal_range(keys[index]);
+
+            // If iterator point to end, check that std::map also point to end
+            // Otherwise, check the value.
+            if ( equal_range.first == map.end() ){
+                LOG("iterator", (equal_range.first == map.end()));
+            } else {
+                LOG("iterator", equal_range.first->first);
+            }
+            if ( equal_range.second == map.end() ){
+                LOG("iterator", (equal_range.second == map.end()));
+            } else {
+                LOG("iterator", equal_range.second->first);
+            }
+        }
+        // Test with key that does not exists
+        for ( int index = 0 ; index < 5 ; index++ ){
+            int key = (int[5]){-1, 8, 1000, 16, 20}[index];
+
+            equal_range = map.equal_range(key);
+
+            // If iterator point to end, check that std::map also point to end
+            // Otherwise, check the value.
+            if ( equal_range.first == map.end() ){
+                LOG("iterator", (equal_range.first == map.end()));
+            } else {
+                LOG("iterator", equal_range.first->first);
+            }
+            if ( equal_range.second == map.end() ){
+                LOG("iterator", (equal_range.second == map.end()));
+            } else {
+                LOG("iterator", equal_range.second->first);
+            }
+        }
+    }
+    {
+        ft::pair<ft::map<int,int>::iterator, ft::map<int,int>::iterator>	equal_range;
+        ft::map<int, int>													map;
+
+        equal_range = map.equal_range(10);
+        LOG("iterator", (equal_range.first == map.end() && equal_range.second == map.end()));
+    }
+}
+
+void test_map_key_comp(){
+    // Lower
+    {
+        ft::map<int, int> map;
+
+        LOG("lower - result", map.key_comp()(1, 2));
+        LOG("lower - result", map.key_comp()(2, 1));
+        LOG("lower - result", map.key_comp()(2, 2));
+    }
+    // Greater
+    {
+        ft::map<int, int, Greater<int> > map;
+
+        LOG("greater - result", map.key_comp()(1, 2));
+        LOG("greater - result", map.key_comp()(2, 1));
+        LOG("greater - result", map.key_comp()(2, 2));
+    }
+}
+
+void test_map_val_comp(){
+    // Lower
+    {
+        ft::map<int, int> map;
+
+        LOG("lower - result", map.value_comp()(ft::make_pair(1, 0), ft::make_pair(2, 0)));
+        LOG("lower - result", map.value_comp()(ft::make_pair(2, 0), ft::make_pair(1, 0)));
+        LOG("lower - result", map.value_comp()(ft::make_pair(2, 0), ft::make_pair(2, 0)));
+    }
+    // Greater
+    {
+        ft::map<int, int, Greater<int> > map;
+
+        LOG("greater - result", map.value_comp()(ft::make_pair(1, 0), ft::make_pair(2, 0)));
+        LOG("greater - result", map.value_comp()(ft::make_pair(2, 0), ft::make_pair(1, 0)));
+        LOG("greater - result", map.value_comp()(ft::make_pair(2, 0), ft::make_pair(2, 0)));
+    }
+}
+
+void test_vector_time(){
+    ft::vector<int> vec;
+
+    for ( int i = 0 ; i < 1000000 ; i++ ){
+        vec.push_back(i + 1);
+    }
+    vec.erase(vec.begin());
+    vec.erase(vec.begin() + (vec.size() / 2 - 1));
+    LOG("TIME OK", true);
+}
+
+void test_map_time(){
+    ft::map<int, int> map;
+
+    for ( int i = 0 ; i < 1000000 ; i++ ){
+        map.insert(ft::make_pair(i + 1, 0));
+    }
+    map.find(42000);
+    map.erase(42000);
+    LOG("TIME OK", true);
+}
+
+void test_vector(){
+    test_vector_default_constructor();
+    test_vector_fill_constructor();
+    test_vector_range_constructor();
+    test_vector_copy_constructor();
+    test_vector_assignment_operator();
+    test_vector_iterator();
+    test_vector_reverse_iterator();
+    test_vector_max_size();
+    test_vector_capacity();
+    test_vector_resize();
+    test_vector_access();
+    test_vector_at();
+    test_vector_assign();
+    test_vector_pop_back();
+    test_vector_insert();
+    test_vector_erase();
+    test_vector_swap();
+    test_vector_clear();
+}
+
+void test_stack(){
+    test_stack_push();
+    test_stack_empty();
+    test_stack_size();
+    test_stack_top();
+    test_stack_pop();
+}
+
 void test_map(){
-    // Constructor
     test_map_default_constructor();
     test_map_copy_constructor();
     test_map_range_constructor();
     test_map_assignment_operator();
-
-    // Capacity
     test_map_empty();
     test_map_max_size();
-//
-   test_map_iterator();
-   test_map_reverse_iterator();
-//
-   test_map_bracket_operator();
-//
-   test_map_insert();
-   test_map_insert_hint();
-   test_map_insert_range();
-   test_map_erase_it();
-   test_map_erase_key();
-//    test_map_erase_range();
-//    test_map_clear();
-//    test_map_swap();
-//
-//    test_map_find();
-//    test_map_count();
-//    test_map_lower_bound();
-//    test_map_upper_bound();
-//    test_map_equal_range();
-//
-//    test_map_key_comp();
-//    test_map_val_comp();
+    test_map_iterator();
+    test_map_reverse_iterator();
+    test_map_bracket_operator();
+    test_map_insert();
+    test_map_insert_hint();
+    test_map_insert_range();
+    test_map_erase_it();
+    test_map_erase_key();
+    test_map_erase_range();
+    test_map_clear();
+    test_map_swap();
+    test_map_find();
+    test_map_count();
+    test_map_lower_bound();
+    test_map_upper_bound();
+    test_map_equal_range();
+    test_map_key_comp();
+    test_map_val_comp();
+}
+
+void test_containers_time(){
+    test_vector_time();
+    test_map_time();
 }
 
 int     main(){
     test_vector();
     test_stack();
     test_map();
+    test_containers_time();
 }
