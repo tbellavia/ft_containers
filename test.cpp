@@ -1222,6 +1222,144 @@ void test_map_max_size(){
     }
 }
 
+void test_map_iterator(){
+    int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	// Lower
+	{
+		ft::map<int, int>::const_iterator 	cbegin;
+		ft::map<int, int>::const_iterator 	cend;
+		ft::map<int, int>					map;
+
+		cbegin = map.begin();
+		cend = map.end();
+
+        LOG("empty - equality", (cbegin == cend));
+        LOG("empty - equality", (map.begin() == map.end()));
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		cbegin = map.begin();
+		cend = map.end();
+
+        LOG_EACH("iterator", cbegin, cend);
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+	// Greater
+	{
+		ft::map<int, int, Greater<int> >::const_iterator 	cbegin;
+		ft::map<int, int, Greater<int> >::const_iterator 	cend;
+		ft::map<int, int, Greater<int> >					map;
+
+		cbegin = map.begin();
+		cend = map.end();
+		LOG("empty - equality", (cbegin == cend));
+        LOG("empty - equality", (map.begin() == map.end()));
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		cbegin = map.begin();
+		cend = map.end();
+		LOG_EACH("iterator", cbegin, cend);
+        LOG_EACH("iterator", map.begin(), map.end());
+	}
+}
+
+void test_map_reverse_iterator(){
+        int keys[13] = { 12, 5, 15, 3, 7, 13, 17, 1, 4, 30, 25, 18, 27 };
+	// Lower
+	{
+		ft::map<int, int>::const_reverse_iterator 	crbegin;
+		ft::map<int, int>::const_reverse_iterator 	crend;
+		ft::map<int, int>					        map;
+
+		crbegin = map.rbegin();
+		crend = map.rend();
+
+        LOG("empty - equality", (crbegin == crend));
+        LOG("empty - equality", (map.rbegin() == map.rend()));
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		crbegin = map.rbegin();
+		crend = map.rend();
+
+        LOG_EACH("iterator", crbegin, crend);
+        LOG_EACH("iterator", map.rbegin(), map.rend());
+	}
+	// Greater
+	{
+		ft::map<int, int, Greater<int> >::const_reverse_iterator 	crbegin;
+		ft::map<int, int, Greater<int> >::const_reverse_iterator 	crend;
+		ft::map<int, int, Greater<int> >					        map;
+
+		crbegin = map.rbegin();
+		crend = map.rend();
+		LOG("empty - equality", (crbegin == crend));
+        LOG("empty - equality", (map.rbegin() == map.rend()));
+
+		for ( int index = 0 ; index < 13 ; index++ ){
+			map.insert(ft::make_pair(keys[index], 0));
+		}
+
+		crbegin = map.rbegin();
+		crend = map.rend();
+		LOG_EACH("iterator", crbegin, crend);
+        LOG_EACH("iterator", map.rbegin(), map.rend());
+	}
+}
+
+void test_map_bracket_operator(){
+    ft::map<char, int> map;
+
+	for ( int index = 0 ; index < 5 ; index++ ){
+		char c = (char[5]){ 'z', 'a', 'c', 'd', 'e'}[index];
+		
+		map[c] = (int)c;
+        LOG("size", map.size());
+	}
+    LOG_EACH("iterator", map.begin(), map.end());
+}
+
+void test_map_insert(){
+	ft::map<char, int>                          map;
+	ft::pair<ft::map<char, int>::iterator, bool> ret;
+
+	// Test basic insertion
+	for ( int c = 'a' ; c < 'f' ; ++c ){
+		ret = map.insert( ft::make_pair(c, c ) );
+
+        LOG("first", (*ret.first).first);
+        LOG("second", (*ret.first).second);
+        LOG("bool", ret.second);
+        LOG("size", map.size());
+	}
+
+	// Test with existent node with same value
+	ret = map.insert( ft::make_pair( 'a', 'a' ) );
+	LOG("first", (*ret.first).first);
+    LOG("second", (*ret.first).second);
+    LOG("bool", ret.second);
+    LOG("size", map.size());
+
+	// Test with existent node with different value
+	ret = map.insert( ft::make_pair( 'a', 'b' ) );
+	LOG("first", (*ret.first).first);
+    LOG("second", (*ret.first).second);
+    LOG("bool", ret.second);
+    LOG("size", map.size());
+    LOG_EACH("iterator", map.begin(), map.end());
+}
+
+void test_map_insert_hint(){
+    
+}
+
 void test_map(){
     // Constructor
     test_map_default_constructor();
@@ -1233,12 +1371,12 @@ void test_map(){
     test_map_empty();
     test_map_max_size();
 //
-//    test_map_iterator();
-//    test_map_reverse_iterator();
+   test_map_iterator();
+   test_map_reverse_iterator();
 //
-//    test_map_bracket_operator();
+   test_map_bracket_operator();
 //
-//    test_map_insert();
+   test_map_insert();
 //    test_map_insert_hint();
 //    test_map_insert_range();
 //    test_map_insert_randomized();
