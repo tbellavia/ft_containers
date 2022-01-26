@@ -717,7 +717,7 @@ namespace ft {
 			}
 
 		private:
-			void throw_range_exception(size_type n) {
+			void throw_range_exception(size_type n) const {
 				std::stringstream s;
 				
 				s << "n (which is " << n << ") >= this->size() (which is " << m_size << ")";
