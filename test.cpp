@@ -832,6 +832,96 @@ void test_vector_clear(){
     }
 }
 
+// Relationnal operators
+
+void test_vector_operator_equal(){
+    // Empty
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        LOG("result", (x == y));
+    }
+    // Full equal
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push_back(i);
+            y.push_back(i);
+        }
+        LOG("result", (x == y));
+    }
+    // Equal but not same size
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push_back(i);
+            y.push_back(i);
+        }
+        y.push_back(10);
+        LOG("result", (x == y));
+    }
+    // Not equal
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push_back(i);
+            y.push_back(i + 1);
+        }
+        LOG("result", (x == y));
+    }
+}
+
+void test_vector_operator_less(){
+    // Empty
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        LOG("result", (x < y));
+    }
+    // Full equal
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push_back(i);
+            y.push_back(i);
+        }
+        LOG("result", (x < y));
+    }
+    // Equal but not same size
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push_back(i);
+            y.push_back(i);
+        }
+        y.push_back(10);
+        LOG("result", (x < y));
+    }
+    // Not equal
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push_back(i);
+            y.push_back(i + 1);
+        }
+        LOG("result", (x < y));
+    }
+}
+
 /* Test stack */
 
 void test_stack_push() {
@@ -1966,6 +2056,94 @@ void test_map_key_comp(){
     }
 }
 
+void test_map_operator_equal(){
+    // Empty
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        LOG("result", (x == y));
+    }
+    // Full equal
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.insert(ft::make_pair(i, 0));
+            y.insert(ft::make_pair(i, 0));
+        }
+        LOG("result", (x == y));
+    }
+    // Equal but not same size
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.insert(ft::make_pair(i, 0));
+            y.insert(ft::make_pair(i, 0));
+        }
+        y.insert(ft::make_pair(10, 0));
+        LOG("result", (x == y));
+    }
+    // Not equal
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.insert(ft::make_pair(i, 0));
+            y.insert(ft::make_pair(i + 1, 0));
+        }
+        LOG("result", (x == y));
+    }
+}
+
+void test_map_operator_less(){
+    // Empty
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        LOG("result", (x < y));
+    }
+    // Full equal
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.insert(ft::make_pair(i, 0));
+            y.insert(ft::make_pair(i, 0));
+        }
+        LOG("result", (x < y));
+    }
+    // Equal but not same size
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.insert(ft::make_pair(i, 0));
+            y.insert(ft::make_pair(i, 0));
+        }
+        y.insert(ft::make_pair(10, 0));
+        LOG("result", (x < y));
+    }
+    // Not equal
+    {
+        ft::map<int, int> x;
+        ft::map<int, int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.insert(ft::make_pair(i, 0));
+            y.insert(ft::make_pair(i + 1, 0));
+        }
+        LOG("result", (x < y));
+    }
+}
+
 void test_map_val_comp(){
     // Lower
     {
@@ -2026,6 +2204,8 @@ void test_vector(){
     test_vector_erase();
     test_vector_swap();
     test_vector_clear();
+    test_vector_operator_equal();
+    test_vector_operator_less();
 }
 
 void test_stack(){
@@ -2061,6 +2241,8 @@ void test_map(){
     test_map_equal_range();
     test_map_key_comp();
     test_map_val_comp();
+    test_map_operator_equal();
+    test_map_operator_less();
 }
 
 void test_containers_time(){

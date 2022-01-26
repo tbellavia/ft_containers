@@ -10,20 +10,18 @@ fi
 
 make
 
-./ft_containers > ft_out
-./stl_containers > stl_out
+time ./ft_containers > ft_out
+time ./stl_containers > stl_out
 
 output=$(diff ft_out stl_out)
-
-# shellcheck disable=SC1009
-
 
 if [ "$output" ]
 then
   echo "Error: see diff"
   echo "$output"
 else
-  make fclean
-  rm -f ft_out
-  rm -f stl_out
+  echo "All good! No errors."
+  make fclean &> /dev/null
+  rm -f ft_out &> /dev/null
+  rm -f stl_out &> /dev/null
 fi
