@@ -423,7 +423,8 @@ void test_vector_reverse_iterator(){
 
 void test_vector_max_size(){
     LOG("max size", ft::vector<int>().max_size());
-    LOG("max size", ft::vector<bool>().max_size());
+    // Bool cannot work here because stl has a specialization
+    // LOG("max size", ft::vector<bool>().max_size());
     LOG("max size", ft::vector<char>().max_size());
     LOG("max size", ft::vector<std::string>().max_size());
     LOG("max size", ft::vector<Dummy>().max_size());
