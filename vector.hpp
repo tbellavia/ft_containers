@@ -456,7 +456,7 @@ namespace ft {
 			 * 
 			 */
 			iterator erase(iterator position){
-				ptrdiff_t distance = get_distance(position);
+				difference_type distance = ft::distance(begin(), position);
 				
 				if ( m_size != 0 ){
 					size_type index = distance;
@@ -478,8 +478,8 @@ namespace ft {
 				 * REFACTOR: Refactor this function, because it is unreadable.
 				 * 
 				 */
-				size_type begin_index = get_distance(first);
-				size_type end_index = get_distance(last);
+				size_type begin_index = ft::distance(begin(), first);
+				size_type end_index = ft::distance(begin(), last);
 				size_type offset = (m_size < end_index) ? 0 : m_size - end_index;
 				size_type index;
 
@@ -553,7 +553,7 @@ namespace ft {
 				 * 
 				 */
 				iterator it = position;
-				ptrdiff_t distance = get_distance(position);
+				difference_type distance = ft::distance(begin(), position);
 				size_type alloc_size = get_alloc_size(n);
 
 				reserve( alloc_size );
@@ -567,7 +567,7 @@ namespace ft {
 
 			template<class InputIterator>
 			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL ){
-				difference_type distance = get_distance(position);
+				difference_type distance = ft::distance(begin(), position);
 				difference_type n = ft::distance(first, last);
 				iterator it;
 				size_type alloc_size = get_alloc_size(n);
@@ -723,16 +723,6 @@ namespace ft {
 				
 				s << "n (which is " << n << ") >= this->size() (which is " << m_size << ")";
 				throw std::out_of_range(s.str());
-			}
-
-			/**
-			 * Get distance
-			 * 
-			 * Get the distance begin() and position iterator.
-			 * 
-			 */
-			ptrdiff_t get_distance(iterator position){
-				return (m_capacity == 0) ? 0 : position - begin();
 			}
 
 			/**
