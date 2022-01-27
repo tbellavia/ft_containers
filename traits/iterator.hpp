@@ -78,59 +78,7 @@ namespace ft {
         return ft::distance(first, last, typename iterator_traits<Iterator>::iterator_category());
     }
 
-	/**
-	 * Random Access Iterator
-	 * 
-	 */
-
-	template<class T>
-	class normal_iterator : public ft::iterator<std::bidirectional_iterator_tag, T> {
-		private:
-			typedef ft::iterator_traits<T>						_traits_type;
-		public:
-			typedef typename _traits_type::iterator_category	iterator_category;
-			typedef typename _traits_type::value_type			value_type;
-			typedef typename _traits_type::difference_type		difference_type;
-			typedef typename _traits_type::reference			reference;
-			typedef typename _traits_type::pointer				pointer;
-
-			/* Constructors */
-			normal_iterator() : m_ptr( NULL ) { }
-			normal_iterator(pointer p) : m_ptr( p ) { }
-
-            template<class _T>
-			normal_iterator(normal_iterator<_T> const &it) : m_ptr( it.base() ) { }
-
-            template<class _T>
-			normal_iterator &operator=(normal_iterator<_T> const &it) {
-				m_ptr = it.base();
-				return *this;
-			}
-			~normal_iterator() {}
-
-			/* Accesses operators */
-			pointer base() const { return m_ptr; }
-			reference operator*() const { return *m_ptr; }
-			pointer operator->() { return m_ptr; }
-			pointer operator->() const { return m_ptr; }
-			reference operator[](difference_type offset) const { return m_ptr[offset]; }
-
-			/* Increment / Decrement */
-			normal_iterator &operator++() { m_ptr++; return *this; };
-			normal_iterator operator++(int) { normal_iterator tmp = *this; ++(*this); return tmp; }
-			normal_iterator &operator--() { m_ptr--; return *this; }
-			normal_iterator operator--(int) { normal_iterator tmp = *this; --(*this); return tmp; }
-
-			/* Arithmetic */
-			normal_iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
-			normal_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
-			
-			normal_iterator operator+(difference_type offset) { return normal_iterator( m_ptr + offset ); }
-			normal_iterator operator-(difference_type offset) { return normal_iterator( m_ptr - offset ); }
-		private:
-			pointer m_ptr;
-	};
-
+    /* Reverse iterator */
     template<class Iter>
     class reverse_iterator : public ft::iterator<
             typename ft::iterator_traits<Iter>::iterator_category,
@@ -283,6 +231,77 @@ namespace ft {
     inline bool operator>=(reverse_iterator<IterL> const &x, reverse_iterator<IterR> const &y)
     { return !(x < y); }
 
+    template<class Iterator>
+    inline typename reverse_iterator<Iterator>::difference_type
+    operator-(reverse_iterator<Iterator> const &x, reverse_iterator<Iterator> const &y){
+        return y.base() - x.base();
+    }
+
+    template<class IteratorL, class IteratorR>
+    inline typename reverse_iterator<IteratorL>::difference_type
+    operator-(reverse_iterator<IteratorL> const &x, reverse_iterator<IteratorR> const &y){
+        return y.base() - x.base();
+    }
+
+    template<class Iterator>
+    inline reverse_iterator<Iterator>
+    operator+(typename reverse_iterator<Iterator>::difference_type n, reverse_iterator<Iterator> const &i){
+        return reverse_iterator<Iterator>( i.base() - n );
+    }
+
+	/**
+	 * Random Access Iterator
+	 * 
+	 */
+
+	template<class T>
+	class normal_iterator : public ft::iterator<std::bidirectional_iterator_tag, T> {
+		private:
+			typedef ft::iterator_traits<T>						_traits_type;
+		public:
+			typedef typename _traits_type::iterator_category	iterator_category;
+			typedef typename _traits_type::value_type			value_type;
+			typedef typename _traits_type::difference_type		difference_type;
+			typedef typename _traits_type::reference			reference;
+			typedef typename _traits_type::pointer				pointer;
+
+			/* Constructors */
+			normal_iterator() : m_ptr( NULL ) { }
+			normal_iterator(pointer p) : m_ptr( p ) { }
+
+            template<class _T>
+			normal_iterator(normal_iterator<_T> const &it) : m_ptr( it.base() ) { }
+
+            template<class _T>
+			normal_iterator &operator=(normal_iterator<_T> const &it) {
+				m_ptr = it.base();
+				return *this;
+			}
+			~normal_iterator() {}
+
+			/* Accesses operators */
+			pointer base() const { return m_ptr; }
+			reference operator*() const { return *m_ptr; }
+			pointer operator->() { return m_ptr; }
+			pointer operator->() const { return m_ptr; }
+			reference operator[](difference_type offset) const { return m_ptr[offset]; }
+
+			/* Increment / Decrement */
+			normal_iterator &operator++() { m_ptr++; return *this; };
+			normal_iterator operator++(int) { normal_iterator tmp = *this; ++(*this); return tmp; }
+			normal_iterator &operator--() { m_ptr--; return *this; }
+			normal_iterator operator--(int) { normal_iterator tmp = *this; --(*this); return tmp; }
+
+			/* Arithmetic */
+			normal_iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
+			normal_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
+			
+			normal_iterator operator+(difference_type offset) { return normal_iterator( m_ptr + offset ); }
+			normal_iterator operator-(difference_type offset) { return normal_iterator( m_ptr - offset ); }
+		private:
+			pointer m_ptr;
+	};
+
     /* normal_iterator_comparison */
     template<class Iter>
     inline bool operator==(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
@@ -347,15 +366,9 @@ namespace ft {
     }
 
     template<class Iterator>
-    inline typename normal_iterator<Iterator>::difference_type
-    operator+(normal_iterator<Iterator> const &x, normal_iterator<Iterator> const &y){
-        return x.base() - y.base();
-    }
-
-    template<class IteratorL, class IteratorR>
-    inline typename normal_iterator<IteratorL>::difference_type
-    operator+(normal_iterator<IteratorL> const &x, normal_iterator<IteratorR> const &y){
-        return x.base() - y.base();
+    inline normal_iterator<Iterator>
+    operator+(typename normal_iterator<Iterator>::difference_type n, normal_iterator<Iterator> const &i){
+        return normal_iterator<Iterator>( i.base() + n );
     }
 }
 
