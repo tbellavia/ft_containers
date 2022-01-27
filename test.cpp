@@ -1041,6 +1041,96 @@ void test_stack_pop() {
     }
 }
 
+void test_stack_operator_equal(){
+    // Empty
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        LOG("result", (x == y));
+    }
+    // Full equal
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push(i);
+            y.push(i);
+        }
+        LOG("result", (x == y));
+    }
+    // Equal but not same size
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push(i);
+            y.push(i);
+        }
+        y.push(10);
+        LOG("result", (x == y));
+    }
+    // Not equal
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push(i);
+            y.push(i + 1);
+        }
+        LOG("result", (x == y));
+    }
+}
+
+void test_stack_operator_less(){
+    // Empty
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        LOG("result", (x < y));
+    }
+    // Full equal
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push(i);
+            y.push(i);
+        }
+        LOG("result", (x < y));
+    }
+    // Equal but not same size
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push(i);
+            y.push(i);
+        }
+        y.push(10);
+        LOG("result", (x < y));
+    }
+    // Not equal
+    {
+        ft::stack<int> x;
+        ft::stack<int> y;
+
+        for ( int i = 0 ; i < 10 ; i++ ){
+            x.push(i);
+            y.push(i + 1);
+        }
+        LOG("result", (x < y));
+    }
+}
+
+/* Map */
+
 void test_map_default_constructor(){
     {
         ft::map<int, int> vec;
@@ -2214,6 +2304,8 @@ void test_stack(){
     test_stack_size();
     test_stack_top();
     test_stack_pop();
+    test_stack_operator_equal();
+    test_stack_operator_less();
 }
 
 void test_map(){

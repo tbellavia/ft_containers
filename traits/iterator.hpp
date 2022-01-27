@@ -72,17 +72,17 @@ namespace ft {
 			/* Constructors */
 			normal_iterator() : m_ptr( NULL ) { }
 			normal_iterator(pointer p) : m_ptr( p ) { }
-			normal_iterator(normal_iterator const &it) : m_ptr( it.m_ptr ) { }
-			normal_iterator &operator=(normal_iterator const &it) {
-				if ( &it == this )
-					return *this;
-				m_ptr = it.m_ptr;
+			normal_iterator(normal_iterator const &it) : m_ptr( it.base() ) { }
+
+            template<class _T>
+			normal_iterator &operator=(normal_iterator<_T> const &it) {
+				m_ptr = it.base();
 				return *this;
 			}
 			~normal_iterator() {}
 
 			/* Accesses operators */
-			value_type base() const { return m_ptr; }
+			pointer base() const { return m_ptr; }
 			reference operator*() const { return *m_ptr; }
 			pointer operator->() { return m_ptr; }
 			pointer operator->() const { return m_ptr; }
@@ -104,15 +104,6 @@ namespace ft {
 			normal_iterator operator-(difference_type offset) { return normal_iterator( m_ptr - offset ); }
 			friend normal_iterator operator-(difference_type offset, const normal_iterator &it) { return random_access_normal_iterator( it.m_ptr - offset ); }
 			difference_type operator-(normal_iterator other) { return m_ptr - other.m_ptr; }
-
-
-			/* Comparison operators */
-			bool operator<(normal_iterator const &it) const { return m_ptr < it.m_ptr; }
-			bool operator>(normal_iterator const &it) const { return m_ptr > it.m_ptr; }
-			bool operator>=(normal_iterator const &it) const { return m_ptr >= it.m_ptr; }
-			bool operator<=(normal_iterator const &it) const { return m_ptr <= it.m_ptr; }
-			bool operator!=(normal_iterator const &it) const { return m_ptr != it.m_ptr; }
-			bool operator==(normal_iterator const &it) const { return m_ptr == it.m_ptr; }
 		private:
 			pointer m_ptr;
 	};
@@ -268,6 +259,58 @@ namespace ft {
     template<class IterL, class IterR>
     inline bool operator>=(reverse_iterator<IterL> const &x, reverse_iterator<IterR> const &y)
     { return !(x < y); }
+
+    /* normal_iterator_comparison */
+    template<class Iter>
+    inline bool operator==(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
+    { return x.base() == y.base(); }
+
+    template<class Iter>
+    inline bool operator<(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
+    { return y.base() < x.base(); }
+
+    template<class Iter>
+    inline bool operator<=(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
+    { return !(y < x); }
+
+    template<class Iter>
+    inline bool operator!=(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
+    { return !(x == y); }
+
+    template<class Iter>
+    inline bool operator>(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
+    { return y < x; }
+
+    template<class Iter>
+    inline bool operator>=(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
+    { return !(x < y); }
+
+    /* Overload to compare reverse_iterator with const reverse_iterator */
+
+    template<class IterL, class IterR>
+    inline bool operator==(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
+    { return x.base() == y.base(); }
+
+    template<class IterL, class IterR>
+    inline bool operator<(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
+    { return y.base() < x.base(); }
+
+    template<class IterL, class IterR>
+    inline bool operator<=(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
+    { return !(y < x); }
+
+    template<class IterL, class IterR>
+    inline bool operator!=(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
+    { return !(x == y); }
+
+    template<class IterL, class IterR>
+    inline bool operator>(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
+    { return y < x; }
+
+    template<class IterL, class IterR>
+    inline bool operator>=(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
+    { return !(x < y); }
+
 
     /**
     * Is iterator

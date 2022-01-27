@@ -100,7 +100,8 @@ namespace ft {
 			 * 
 			 */
 			template<class InputIterator>
-			vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<ft::is_iterator<InputIterator>::value, InputIterator>::type = NULL ) : 
+			vector( InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
+                    typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL ) :
 				m_alloc( alloc ),
 				m_items( NULL )
 			{
