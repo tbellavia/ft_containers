@@ -4,6 +4,7 @@
 # include <functional>
 # include <memory>
 # include "utility/pair.hpp"
+# include "traits/iterator.hpp"
 
 namespace ft
 {
@@ -275,8 +276,10 @@ namespace ft
 			typedef std::size_t																size_type;
 			typedef rb_iterator<value_type>									iterator;
 			typedef rb_const_iterator<value_type>							const_iterator;
-			typedef rb_reverse_iterator<value_type>							reverse_iterator;
-			typedef rb_const_reverse_iterator<value_type>					const_reverse_iterator;
+            typedef ft::reverse_iterator<iterator>                          reverse_iterator;
+            typedef ft::reverse_iterator<const_iterator>                    const_reverse_iterator;
+//			typedef rb_reverse_iterator<value_type>							reverse_iterator;
+//			typedef rb_const_reverse_iterator<value_type>					const_reverse_iterator;
 
 			class value_compare : std::binary_function<value_type, value_type, bool> {
 				friend class map;
@@ -761,7 +764,7 @@ namespace ft
 				if ( m_root == NULL ){
 					return rend();
 				}
-				return reverse_iterator( m_right_sentinel->parent );
+				return reverse_iterator( end() );
 			}
 
 			/**
@@ -777,7 +780,7 @@ namespace ft
 				if ( m_root == NULL ){
 					return rend();
 				}
-				return const_reverse_iterator( m_right_sentinel->parent );
+				return const_reverse_iterator( end() );
 			}
 
 			/**
@@ -824,7 +827,7 @@ namespace ft
 			 * The range between map::rbegin and map::rend contains all the elements of the container (in reverse order).
 			 */
 			reverse_iterator rend() {
-				return ( m_left_sentinel );
+				return ( reverse_iterator( begin() ) );
 			}
 
 			/**
@@ -835,7 +838,7 @@ namespace ft
 			 * The range between map::rbegin and map::rend contains all the elements of the container (in reverse order).
 			 */
 			const_reverse_iterator rend() const {
-				return ( m_left_sentinel );
+				return ( const_reverse_iterator( begin() ) );
 			}
 
 

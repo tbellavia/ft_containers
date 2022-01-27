@@ -30,10 +30,10 @@ namespace ft {
 			typedef typename allocator_type::const_reference		const_reference;
 			typedef typename allocator_type::pointer				pointer;
 			typedef typename allocator_type::const_pointer			const_pointer;
-			typedef ft::iterator<pointer>							iterator;
-			typedef ft::const_iterator<pointer>						const_iterator;
-			typedef ft::reverse_iterator<pointer>					reverse_iterator;
-			typedef ft::const_reverse_iterator<pointer>				const_reverse_iterator;
+			typedef ft::normal_iterator<pointer>					iterator;
+            typedef ft::normal_iterator<const_pointer>              const_iterator;
+            typedef ft::reverse_iterator<iterator>                  reverse_iterator;
+            typedef ft::reverse_iterator<const_iterator>            const_reverse_iterator;
 		private:
 			const static size_type	GROWTH_FACTOR = 2;
 			Allocator				m_alloc;
@@ -657,14 +657,14 @@ namespace ft {
 			 */
 			reverse_iterator rbegin() {
 				if ( m_items == NULL )
-					return reverse_iterator( NULL );
-				return reverse_iterator( this->end() - 1 );
+					return reverse_iterator();
+				return reverse_iterator( end() );
 			}
 
 			const_reverse_iterator rbegin() const {
 				if ( m_items == NULL )
 					return const_reverse_iterator( NULL );
-				return const_reverse_iterator( this->end() - 1 );
+				return const_reverse_iterator( end() );
 			}
 
 
@@ -697,13 +697,13 @@ namespace ft {
 			reverse_iterator rend() {
 				if ( m_items == NULL )
 					return rbegin();
-				return reverse_iterator( this->begin() - 1 );
+				return reverse_iterator( begin() );
 			}
 
 			const_reverse_iterator rend() const {
 				if ( m_items == NULL )
 					return rbegin();
-				return const_reverse_iterator( this->begin() - 1 );
+				return const_reverse_iterator( begin() );
 			}
 
 			/**

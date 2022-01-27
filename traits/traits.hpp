@@ -33,47 +33,6 @@ namespace ft {
      */
     struct false_type : ft::integral_constant<bool, false> {};
 
-    /**
-     * Iterator traits
-     *
-     * Define a traits for iterators.
-     *
-     */
-    template<typename Iterator>
-    struct iterator_traits {
-        typedef typename Iterator::iterator_category iterator_category;
-        typedef typename Iterator::value_type value_type;
-        typedef typename Iterator::difference_type difference_type;
-        typedef typename Iterator::pointer pointer;
-        typedef typename Iterator::reference reference;
-    };
-
-    template<typename T>
-    struct iterator_traits<T *> {
-        typedef std::random_access_iterator_tag iterator_category;
-        typedef T value_type;
-        typedef ptrdiff_t difference_type;
-        typedef T *pointer;
-        typedef T &reference;
-    };
-
-    template<typename T>
-    struct iterator_traits<const T *> {
-        typedef std::random_access_iterator_tag iterator_category;
-        typedef T value_type;
-        typedef ptrdiff_t difference_type;
-        typedef const T *pointer;
-        typedef const T &reference;
-    };
-
-    /**
-     * Is iterator
-     *
-     * Define a way to check if it is iterator
-     */
-    template<typename T>
-    struct is_iterator : public ft::false_type {};
-
     template<typename T>
     struct remove_cv
     { typedef T type; };
@@ -144,8 +103,6 @@ namespace ft {
 
     template<typename T>
     struct is_integral : public ft::_is_integral_helper<typename ft::remove_cv<T>::type>::type {};
-
-
 }
 
 #endif /* TRAITS_HPP */
