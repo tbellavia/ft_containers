@@ -8,15 +8,16 @@ HEADERS = vector.hpp stack.hpp map.hpp
 STL_NAME = stl_containers
 FT_NAME = ft_containers
 
-all: $(STL_NAME)
-#all: $(FT_NAME)
+# all: $(STL_NAME)
 
-$(STL_NAME) $(FT_NAME): $(SRCS) $(HEADERS)
-	$(CXX) $(CXXFLAGS) -o $(STL_NAME) $(SRCS)
+# $(STL_NAME) $(FT_NAME): $(SRCS) $(HEADERS)
+# 	$(CXX) $(CXXFLAGS) -o $(STL_NAME) $(SRCS)
+# 	$(CXX) $(CXXFLAGS) -o $(FT_NAME) -DFT $(SRCS)
+
+all: $(FT_NAME)
+
+$(FT_NAME): $(SRCS) $(HEADERS)
 	$(CXX) $(CXXFLAGS) -o $(FT_NAME) -DFT $(SRCS)
-
-#$(FT_NAME): $(SRCS) $(HEADERS)
-#	$(CXX) $(CXXFLAGS) -o $(FT_NAME) -DFT $(SRCS)
 
 re: fclean all
 

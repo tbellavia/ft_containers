@@ -105,7 +105,7 @@ namespace ft {
 				m_alloc( alloc ),
 				m_items( NULL )
 			{
-				difference_type size = last - first;
+				difference_type size = ft::distance(first, last);
 
 				if ( size != 0 ){
 					m_items = m_alloc.allocate( size );
@@ -435,7 +435,7 @@ namespace ft {
 			 * 
 			 */
 			template<class InputIterator>
-			void assign( InputIterator first, InputIterator last, typename ft::enable_if<ft::is_iterator<InputIterator>::value, InputIterator>::type = NULL){
+			void assign( InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL){
 				clear();
 				for ( InputIterator it = first ; it != last ; it++ ){
 					push_back( *it );
@@ -559,16 +559,16 @@ namespace ft {
 				reserve( alloc_size );
 				
 				it = begin() + distance;
- 
+	
 				for ( ; n != 0 ; n-- ){
 					it = this->insert( it, val );
 				}
 			}
 
 			template<class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<ft::is_iterator<InputIterator>::value, InputIterator>::type = NULL ){
-				ptrdiff_t distance = get_distance(position);
-				ptrdiff_t n = last - first;
+			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL ){
+				difference_type distance = get_distance(position);
+				difference_type n = ft::distance(first, last);
 				iterator it;
 				size_type alloc_size = get_alloc_size(n);
 

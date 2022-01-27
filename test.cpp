@@ -2342,9 +2342,12 @@ void test_containers_time(){
     test_map_time();
 }
 
+#include <list>
+#include <vector>
+
 int     main(){
-    test_vector();
-    test_stack();
-    test_map();
-    test_containers_time();
+    // test_vector();
+    // test_stack();
+    // test_map();
+    // test_containers_time();
 }
