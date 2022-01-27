@@ -97,7 +97,9 @@ namespace ft {
 			/* Constructors */
 			normal_iterator() : m_ptr( NULL ) { }
 			normal_iterator(pointer p) : m_ptr( p ) { }
-			normal_iterator(normal_iterator const &it) : m_ptr( it.base() ) { }
+
+            template<class _T>
+			normal_iterator(normal_iterator<_T> const &it) : m_ptr( it.base() ) { }
 
             template<class _T>
 			normal_iterator &operator=(normal_iterator<_T> const &it) {
@@ -124,11 +126,7 @@ namespace ft {
 			normal_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
 			
 			normal_iterator operator+(difference_type offset) { return normal_iterator( m_ptr + offset ); }
-			friend normal_iterator operator+(difference_type offset, const normal_iterator &it) { return random_access_normal_iterator( it.m_ptr + offset ); }
-
 			normal_iterator operator-(difference_type offset) { return normal_iterator( m_ptr - offset ); }
-			friend normal_iterator operator-(difference_type offset, const normal_iterator &it) { return random_access_normal_iterator( it.m_ptr - offset ); }
-			difference_type operator-(normal_iterator other) { return m_ptr - other.m_ptr; }
 		private:
 			pointer m_ptr;
 	};
@@ -336,32 +334,29 @@ namespace ft {
     inline bool operator>=(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
     { return !(x < y); }
 
+    template<class Iterator>
+    inline typename normal_iterator<Iterator>::difference_type
+    operator-(normal_iterator<Iterator> const &x, normal_iterator<Iterator> const &y){
+        return x.base() - y.base();
+    }
 
-    /**
-    * Is iterator
-    *
-    * Define a way to check if it is iterator
-    */
-    template<typename T>
-    struct is_iterator : public ft::false_type {};
+    template<class IteratorL, class IteratorR>
+    inline typename normal_iterator<IteratorL>::difference_type
+    operator-(normal_iterator<IteratorL> const &x, normal_iterator<IteratorR> const &y){
+        return x.base() - y.base();
+    }
 
-    template<typename T>
-    struct is_iterator<ft::normal_iterator<T> > : public ft::true_type {};
+    template<class Iterator>
+    inline typename normal_iterator<Iterator>::difference_type
+    operator+(normal_iterator<Iterator> const &x, normal_iterator<Iterator> const &y){
+        return x.base() - y.base();
+    }
 
-    template<typename T>
-    struct is_iterator<ft::reverse_iterator<T> > : public ft::true_type {};
-
-//    template<typename T>
-//    struct is_iterator<ft::rb_const_iterator<T> > : public ft::true_type {};
-//
-//    template<typename T>
-//    struct is_iterator<ft::rb_iterator<T> > : public ft::true_type {};
-
-    template<typename T>
-    struct is_iterator<T*> : public ft::true_type {};
-
-    template<typename T>
-    struct is_iterator<const T*> : public ft::true_type {};
+    template<class IteratorL, class IteratorR>
+    inline typename normal_iterator<IteratorL>::difference_type
+    operator+(normal_iterator<IteratorL> const &x, normal_iterator<IteratorR> const &y){
+        return x.base() - y.base();
+    }
 }
 
 #endif
