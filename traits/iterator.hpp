@@ -97,17 +97,18 @@ namespace ft {
         typedef typename _traits_type::reference		reference;
 
         reverse_iterator() : current() { }
-        reverse_iterator(iterator_type x) : current( x ) { }
+        explicit reverse_iterator(iterator_type x) : current( x ) { }
 
-        template<class _Iter>
-        reverse_iterator(reverse_iterator<_Iter> const &x) : current(x.base()) { }
+        template<class Iter_>
+        reverse_iterator(reverse_iterator<Iter_> const &x) : current(x.base()) { }
 
-        template<class _Iter>
-        reverse_iterator &operator=(reverse_iterator<_Iter> const &x){
+
+        template<class Iter_>
+        reverse_iterator &operator=(reverse_iterator<Iter_> const &x){
             current = x.base();
             return *this;
         }
-        ~reverse_iterator() { }
+//        ~reverse_iterator() { }
 
         iterator_type base() const
         { return current; }
@@ -254,11 +255,12 @@ namespace ft {
 	 * 
 	 */
 
-	template<class T>
-	class normal_iterator : public ft::iterator<std::bidirectional_iterator_tag, T> {
+	template<class Iterator>
+	class normal_iterator : public ft::iterator<std::bidirectional_iterator_tag, Iterator> {
 		private:
-			typedef ft::iterator_traits<T>						_traits_type;
+			typedef ft::iterator_traits<Iterator>				_traits_type;
 		public:
+            typedef Iterator                                    iterator_type;
 			typedef typename _traits_type::iterator_category	iterator_category;
 			typedef typename _traits_type::value_type			value_type;
 			typedef typename _traits_type::difference_type		difference_type;
@@ -266,40 +268,39 @@ namespace ft {
 			typedef typename _traits_type::pointer				pointer;
 
 			/* Constructors */
-			normal_iterator() : m_ptr( NULL ) { }
-			normal_iterator(pointer p) : m_ptr( p ) { }
+			normal_iterator() : m_current( iterator_type() ) { }
+			explicit normal_iterator(iterator_type const &p) : m_current( p ) { }
 
-            template<class _T>
-			normal_iterator(normal_iterator<_T> const &it) : m_ptr( it.base() ) { }
+            template<class Iter>
+			normal_iterator(normal_iterator<Iter> const &it) : m_current( it.base() ) { }
 
-            template<class _T>
-			normal_iterator &operator=(normal_iterator<_T> const &it) {
-				m_ptr = it.base();
-				return *this;
-			}
+//            template<class Iter>
+//			normal_iterator &operator=(normal_iterator<Iter> const &it) {
+//				m_current = it.base();
+//				return *this;
+//			}
 			~normal_iterator() {}
 
 			/* Accesses operators */
-			pointer base() const { return m_ptr; }
-			reference operator*() const { return *m_ptr; }
-			pointer operator->() { return m_ptr; }
-			pointer operator->() const { return m_ptr; }
-			reference operator[](difference_type offset) const { return m_ptr[offset]; }
+			const iterator_type &base() const { return m_current; }
+			reference operator*() const { return *m_current; }
+			pointer operator->() const { return m_current; }
+			reference operator[](difference_type offset) const { return m_current[offset]; }
 
 			/* Increment / Decrement */
-			normal_iterator &operator++() { m_ptr++; return *this; };
+			normal_iterator &operator++() { m_current++; return *this; };
 			normal_iterator operator++(int) { normal_iterator tmp = *this; ++(*this); return tmp; }
-			normal_iterator &operator--() { m_ptr--; return *this; }
+			normal_iterator &operator--() { m_current--; return *this; }
 			normal_iterator operator--(int) { normal_iterator tmp = *this; --(*this); return tmp; }
 
 			/* Arithmetic */
-			normal_iterator &operator+=(difference_type offset) { m_ptr += offset; return *this; }
-			normal_iterator &operator-=(difference_type offset) { m_ptr -= offset; return *this; }
+			normal_iterator &operator+=(difference_type offset) { m_current += offset; return *this; }
+			normal_iterator &operator-=(difference_type offset) { m_current -= offset; return *this; }
 			
-			normal_iterator operator+(difference_type offset) { return normal_iterator( m_ptr + offset ); }
-			normal_iterator operator-(difference_type offset) { return normal_iterator( m_ptr - offset ); }
+			normal_iterator operator+(difference_type offset) const { return normal_iterator( m_current + offset ); }
+			normal_iterator operator-(difference_type offset) const { return normal_iterator( m_current - offset ); }
 		private:
-			pointer m_ptr;
+			iterator_type m_current;
 	};
 
     /* normal_iterator_comparison */
