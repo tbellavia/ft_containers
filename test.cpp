@@ -2342,14 +2342,9 @@ void test_containers_time(){
     test_map_time();
 }
 
-#include <vector>
-
 int     main(){
-//    test_vector();
-//    test_stack();
-//    test_map();
-//    test_containers_time();
-    std::vector<int>::reverse_iterator it;
-
-    it = it + 5;
+    test_vector();
+    test_stack();
+    test_map();
+    test_containers_time();
 }
