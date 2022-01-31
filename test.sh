@@ -10,7 +10,9 @@ fi
 
 make
 
+echo "FT  TIME : "
 time ./ft_containers > ft_out
+echo "STD TIME : "
 time ./stl_containers > stl_out
 
 output=$(diff ft_out stl_out)
