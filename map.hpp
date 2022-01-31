@@ -204,6 +204,8 @@ namespace ft
 
 			node->color = RB_COLOR_NULL;
 			node->parent = parent;
+            node->left = NULL;
+            node->right = NULL;
 			return node;
 		}
 
@@ -602,12 +604,13 @@ namespace ft
 					}
 					else {
 						// Case 1, target has no children
+                        m_null->parent = target->parent;
+                        successor = m_null;
 						if ( target->is_left() ){
 							target->parent->left = NULL;
 						} else {
 							target->parent->right = NULL;
 						}
-						successor = NULL;
 					}
 					node_type::destroy_node( target );
 					m_size--;
@@ -1151,7 +1154,6 @@ namespace ft
 				while ( x != m_root && (x->color == RB_COLOR_BLACK || x->color == RB_COLOR_SENTINEL) ){
 					if ( x->is_left() ){
 						s = x->parent->right;
-						
 						if (s->color == RB_COLOR_RED){
 							// Case 3.1
 							s->color = RB_COLOR_BLACK;
@@ -1641,7 +1643,7 @@ namespace ft
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator==( const map<Key,T,Compare,Alloc>& x, const map<Key,T,Compare,Alloc>& y ){
-		return x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin(), y.end());
+		return x.size() == y.size() && equal(x.begin(), x.end(), y.begin(), y.end());
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
@@ -1651,7 +1653,7 @@ namespace ft
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator< ( const map<Key,T,Compare,Alloc>& x, const map<Key,T,Compare,Alloc>& y ){
-		return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
+		return lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
