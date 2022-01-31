@@ -131,7 +131,7 @@ namespace ft {
             return *this;
         }
 
-        reverse_iterator &operator++(int){
+        reverse_iterator operator++(int){
             reverse_iterator tmp = *this;
             --current;
             return tmp;
@@ -142,7 +142,7 @@ namespace ft {
             return *this;
         }
 
-        reverse_iterator &operator--(int){
+        reverse_iterator operator--(int){
             reverse_iterator tmp = *this;
             ++current;
             return tmp;
@@ -172,12 +172,12 @@ namespace ft {
 
     private:
         template<class T>
-        pointer to_pointer(T p){
+        static pointer to_pointer(T p){
             return p.operator->();
         }
 
         template<class T>
-        pointer to_pointer(T* p){
+        static T* to_pointer(T* p){
             return p;
         }
     };
@@ -188,23 +188,23 @@ namespace ft {
 
     template<class Iter>
     inline bool operator<(reverse_iterator<Iter> const &x, reverse_iterator<Iter> const &y)
-    { return y.base() < x.base(); }
+    { return x.base() > y.base(); }
 
     template<class Iter>
     inline bool operator<=(reverse_iterator<Iter> const &x, reverse_iterator<Iter> const &y)
-    { return !(y < x); }
+    { return x.base() >= y.base(); }
 
     template<class Iter>
     inline bool operator!=(reverse_iterator<Iter> const &x, reverse_iterator<Iter> const &y)
-    { return !(x == y); }
+    { return x.base() != y.base(); }
 
     template<class Iter>
     inline bool operator>(reverse_iterator<Iter> const &x, reverse_iterator<Iter> const &y)
-    { return y < x; }
+    { return x.base() < y.base(); }
 
     template<class Iter>
     inline bool operator>=(reverse_iterator<Iter> const &x, reverse_iterator<Iter> const &y)
-    { return !(x < y); }
+    { return x.base() <= y.base(); }
 
     /* Overload to compare reverse_iterator with const reverse_iterator */
 
@@ -214,23 +214,23 @@ namespace ft {
 
     template<class IterL, class IterR>
     inline bool operator<(reverse_iterator<IterL> const &x, reverse_iterator<IterR> const &y)
-    { return y.base() < x.base(); }
+    { return x.base() > y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator<=(reverse_iterator<IterL> const &x, reverse_iterator<IterR> const &y)
-    { return !(y < x); }
+    { return x.base() >= y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator!=(reverse_iterator<IterL> const &x, reverse_iterator<IterR> const &y)
-    { return !(x == y); }
+    { return x.base() != y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator>(reverse_iterator<IterL> const &x, reverse_iterator<IterR> const &y)
-    { return y < x; }
+    { return x.base() < y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator>=(reverse_iterator<IterL> const &x, reverse_iterator<IterR> const &y)
-    { return !(x < y); }
+    { return x.base() <= y.base(); }
 
     template<class Iterator>
     inline typename reverse_iterator<Iterator>::difference_type
@@ -310,23 +310,23 @@ namespace ft {
 
     template<class Iter>
     inline bool operator<(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
-    { return y.base() < x.base(); }
+    { return x.base() < y.base(); }
 
     template<class Iter>
     inline bool operator<=(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
-    { return !(y < x); }
+    { return x.base() <= y.base(); }
 
     template<class Iter>
     inline bool operator!=(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
-    { return !(x == y); }
+    { return x.base() != y.base(); }
 
     template<class Iter>
     inline bool operator>(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
-    { return y < x; }
+    { return x.base() > y.base(); }
 
     template<class Iter>
     inline bool operator>=(normal_iterator<Iter> const &x, normal_iterator<Iter> const &y)
-    { return !(x < y); }
+    { return x.base() >= y.base(); }
 
     /* Overload to compare reverse_iterator with const reverse_iterator */
 
@@ -336,23 +336,23 @@ namespace ft {
 
     template<class IterL, class IterR>
     inline bool operator<(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
-    { return y.base() < x.base(); }
+    { return x.base() < y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator<=(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
-    { return !(y < x); }
+    { return x.base() <= y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator!=(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
-    { return !(x == y); }
+    { return x.base() != y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator>(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
-    { return y < x; }
+    { return x.base() > y.base(); }
 
     template<class IterL, class IterR>
     inline bool operator>=(normal_iterator<IterL> const &x, normal_iterator<IterR> const &y)
-    { return !(x < y); }
+    { return x.base() >= y.base(); }
 
     template<class Iterator>
     inline typename normal_iterator<Iterator>::difference_type
