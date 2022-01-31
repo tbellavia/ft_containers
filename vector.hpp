@@ -466,7 +466,7 @@ namespace ft {
 					m_alloc.destroy( &m_items[index] );
 					m_size--;
 				}
-				return ( &m_items[distance] );
+				return ( iterator( &m_items[distance] ) );
 			}
 
 			/**
