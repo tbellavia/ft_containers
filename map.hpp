@@ -5,6 +5,7 @@
 # include <memory>
 # include "utility/pair.hpp"
 # include "traits/iterator.hpp"
+# include "algorithm/algorithm.hpp"
 
 namespace ft
 {
