@@ -41,8 +41,6 @@ namespace ft
 		typedef typename node_allocator_type::const_reference	const_reference;
 		typedef typename node_allocator_type::pointer			pointer;
 		typedef typename node_allocator_type::const_pointer		const_pointer;
-
-		// typedef Alloc											allocator_type;
 		typedef typename std::size_t							size_type;
 
 		value_type	data;
@@ -1012,34 +1010,11 @@ namespace ft
 				return m_comp;
 			}
 
-			/**
-			 * Print the binary tree structure.
-			 * 
-			 * Debug purpose only.
-			 * 
-			 * TODO: Remove before push
-			 * 
-			 */
-			void debug_print_btree_structure(){
-				debug_print_btree_structure_(m_root, 0);
-			}
-
 		/**
 		 * Private implementations.
 		 * 
 		 */
 		private:
-			void debug_print_btree_structure_(node_pointer current, int space){
-				if ( current != NULL ){
-					space += 10;
-					debug_print_btree_structure_(current->right, space);
-					std::cout << std::endl;
-					for ( int _ = 0 ; _ < space ; _++ ){ std::cout << " "; }
-					std::cout << "( " << current->data.first << " : " << current->data.second  << ", " << (std::string[3]){ "B", "R", "S" }[current->color - 1] << " )" << std::endl;
-					debug_print_btree_structure_(current->left, space);
-				}
-			}
-
 			/**
 			 * 
 			 * Insert recursive
