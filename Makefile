@@ -1,7 +1,7 @@
 CXX = c++
 CXXFLAGS = -Wall -Werror -Wextra -std=c++98
 
-SRCS = test.cpp
+SRCS = main.cpp
 HEADERS =	vector.hpp \
 			stack.hpp \
 			map.hpp \

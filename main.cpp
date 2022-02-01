@@ -28,27 +28,16 @@ struct Greater : public std::binary_function<T, T, bool>
 struct Dummy {
     int m_x;
 
-    Dummy() : m_x(42) {
-//        std::cout << "Dummy()" << std::endl;
-    }
+    Dummy() : m_x(42) {}
 
-    Dummy(int x) : m_x(x) {
-//        std::cout << "Dummy(int)" << std::endl;
-    }
+    Dummy(int x) : m_x(x) {}
 
-    Dummy(const Dummy &x) {
-        m_x = x.m_x;
-//        std::cout << "Dummy(const Dummy&)" << std::endl;
-    }
+    Dummy(const Dummy &x) { m_x = x.m_x; }
     Dummy &operator=(const Dummy &x) {
-//        std::cout << "Dummy=(const Dummy&)" << std::endl;
         m_x = x.m_x;
         return *this;
     }
-
-    ~Dummy() {
-//        std::cout << "~Dummy()" << std::endl;
-    }
+    ~Dummy() { }
 };
 
 std::ostream &operator<<(std::ostream &os, const Dummy &x){
