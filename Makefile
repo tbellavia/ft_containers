@@ -10,6 +10,7 @@ HEADERS =	vector.hpp \
 			./traits/traits.hpp \
 			./algorithm/algorithm.hpp
 
+.PHONY: re clean fclean
 
 STL_NAME = stl_containers
 FT_NAME = ft_containers

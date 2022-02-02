@@ -4,25 +4,27 @@ if [ "$1" == "clean" ]
 then
   rm -f ft_out
   rm -f stl_out
-  make fclean
+  make fclean > /dev/null
+  make -C tests fclean > /dev/null
   exit 0
 fi
 
-make
+make > /dev/null
 
-echo "FT  TIME : "
-time ./ft_containers > ft_out
-echo "STD TIME : "
-time ./stl_containers > stl_out
+./ft_containers > ft_out
+./stl_containers > stl_out
 
 output=$(diff ft_out stl_out)
 
 if [ "$output" ]
 then
-  echo "Error: see diff"
+  echo "Result: FAILURE"
   echo "$output"
 else
-  echo "All good! No errors."
+  make -C tests > /dev/null
+  ./tests/time_it stl_containers ft_containers
+  make -C tests fclean > /dev/null
+  echo "Result: OK"
   make fclean &> /dev/null
   rm -f ft_out &> /dev/null
   rm -f stl_out &> /dev/null
