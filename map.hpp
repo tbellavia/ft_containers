@@ -6,6 +6,8 @@
 # include "utility/pair.hpp"
 # include "traits/iterator.hpp"
 # include "algorithm/algorithm.hpp"
+// TODO: Remove before push
+# include <iostream>
 
 namespace ft
 {
@@ -170,6 +172,25 @@ namespace ft
 			return node_allocator_type().max_size();
 		}
 
+		class Compare {
+			private:
+				pointer m_node;
+			public:
+			Compare(pointer node) : m_node(node) { }
+			Compare(const Compare &comp) : m_node( comp.m_node ) { }
+			Compare &operator=(const Compare &comp) {
+				m_node = comp.m_node;
+				return *this;
+			}
+			bool operator()(pointer node) const {
+				return m_node == node;
+			}
+		};
+
+		static Compare create_compare( pointer node ){
+			return Compare(node);
+		}
+
 		static pointer create_node( node_allocator_type alloc = node_allocator_type() ){
 			pointer node = alloc.allocate( 1 );
 
@@ -201,17 +222,17 @@ namespace ft
 		static pointer create_null_node(pointer parent, node_allocator_type alloc = node_allocator_type()){
 			pointer node = rb_node::create_node( alloc );
 
-			node->color = RB_COLOR_NULL;
+			node->color = RB_COLOR_BLACK;
 			node->parent = parent;
-            node->left = NULL;
-            node->right = NULL;
+			node->left = NULL;
+			node->right = NULL;
 			return node;
 		}
 
 		static pointer create_null_node( node_allocator_type alloc = node_allocator_type() ){
 			pointer node = rb_node::create_node( alloc );
 
-			node->color = RB_COLOR_NULL;
+			node->color = RB_COLOR_BLACK;
 			return node;
 		}
 
@@ -275,12 +296,10 @@ namespace ft
 			typedef typename allocator_type::const_pointer									const_pointer;
 			typedef std::ptrdiff_t															difference_type;
 			typedef std::size_t																size_type;
-			typedef rb_iterator<value_type>									iterator;
-			typedef rb_const_iterator<value_type>							const_iterator;
-            typedef ft::reverse_iterator<iterator>                          reverse_iterator;
-            typedef ft::reverse_iterator<const_iterator>                    const_reverse_iterator;
-//			typedef rb_reverse_iterator<value_type>							reverse_iterator;
-//			typedef rb_const_reverse_iterator<value_type>					const_reverse_iterator;
+			typedef rb_iterator<value_type>													iterator;
+			typedef rb_const_iterator<value_type>											const_iterator;
+			typedef ft::reverse_iterator<iterator>											reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 
 			class value_compare : std::binary_function<value_type, value_type, bool> {
 				friend class map;
@@ -311,6 +330,7 @@ namespace ft
 			node_pointer						m_right_sentinel;
 			node_pointer						m_left_sentinel;
 			node_pointer						m_null;
+			typename node_type::Compare					m_is_null_node;
 
 		/**
 		 * Public member functions.
@@ -326,12 +346,13 @@ namespace ft
 			 */
 			explicit map( const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type() )
 				:   m_root( NULL ),
-                    m_size( 0 ),
-                    m_comp( comp ),
-                    m_alloc( alloc ),
-                    m_right_sentinel( node_type::create_sentinel_node() ),
-                    m_left_sentinel( node_type::create_sentinel_node() ),
-                    m_null( node_type::create_null_node() )
+					m_size( 0 ),
+					m_comp( comp ),
+					m_alloc( alloc ),
+					m_right_sentinel( node_type::create_sentinel_node() ),
+					m_left_sentinel( node_type::create_sentinel_node() ),
+					m_null( node_type::create_null_node() ),
+					m_is_null_node( node_type::create_compare( m_null ) )
 			{
 				
 			}
@@ -347,12 +368,13 @@ namespace ft
 			template<class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 				:   m_root( NULL ),
-                    m_size( 0 ),
-                    m_comp( comp ),
-                    m_alloc( alloc ),
-                    m_right_sentinel( node_type::create_sentinel_node() ),
-                    m_left_sentinel( node_type::create_sentinel_node() ),
-                    m_null( node_type::create_null_node() )
+					m_size( 0 ),
+					m_comp( comp ),
+					m_alloc( alloc ),
+					m_right_sentinel( node_type::create_sentinel_node() ),
+					m_left_sentinel( node_type::create_sentinel_node() ),
+					m_null( node_type::create_null_node() ),
+					m_is_null_node( node_type::create_compare( m_null ) )
 			{
 				for ( ; first != last ; ++first ){
 					insert(*first);
@@ -366,17 +388,19 @@ namespace ft
 			 * 
 			 * Constructs a container with a copy of each of the elements in x.
 			 */
-			map(const map &x) {
+			map(const map &x) :
+				m_root(NULL),
+				m_size(0),
+				m_comp(x.m_comp),
+				m_alloc(x.m_alloc),
+				m_right_sentinel(node_type::create_sentinel_node()),
+				m_left_sentinel(node_type::create_sentinel_node()),
+				m_null(node_type::create_null_node()),
+				m_is_null_node(node_type::create_compare(m_null))
+			{
 				// Copy with breath first search, to get rid of rebalancing ?
 				// When x is copied, the traversal will be in order, that will cause
 				// rebalancing.
-				m_root = NULL;
-				m_size = 0;
-				m_comp = x.m_comp;
-				m_alloc = x.m_alloc;
-				m_right_sentinel = node_type::create_sentinel_node();
-				m_left_sentinel = node_type::create_sentinel_node();
-                m_null = node_type::create_null_node();
 				this->insert(x.begin(), x.end());
 			}
 
@@ -406,7 +430,7 @@ namespace ft
 				clear();
 				node_type::destroy_node(m_right_sentinel);
 				node_type::destroy_node(m_left_sentinel);
-                node_type::destroy_node(m_null);
+				node_type::destroy_node(m_null);
 			}
 
 			/**
@@ -575,6 +599,7 @@ namespace ft
 					node_pointer successor;
 					int         prev_color = target->color;
 					bool        is_root = target == m_root;
+                    std::cout << "Delete node: " << position->first << std::endl;
 					
 					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
@@ -586,7 +611,7 @@ namespace ft
 							ft::pair<node_pointer, int> ret = detach_node_(target);
 
 							prev_color = ret.second;
-                            successor = (!is_root) ? ret.first : m_root;
+							successor = (!is_root) ? ret.first : m_root;
 						}
 					}
 					else if ( target->left != NULL || target->right != NULL){
@@ -603,20 +628,35 @@ namespace ft
 					}
 					else {
 						// Case 1, target has no children
-                        m_null->parent = target->parent;
-                        successor = m_null;
+						m_null->parent = target->parent;
+						successor = m_null;
 						if ( target->is_left() ){
-							target->parent->left = NULL;
+							target->parent->left = m_null;
 						} else {
-							target->parent->right = NULL;
+							target->parent->right = m_null;
 						}
 					}
 					node_type::destroy_node( target );
 					m_size--;
 					if ( m_root != NULL && !m_root->left->is_sentinel() && !m_root->right->is_sentinel() &&
-                        prev_color == RB_COLOR_BLACK ){
-                            this->rb_erase_fix_(successor);
+						prev_color == RB_COLOR_BLACK ){
+							this->rb_erase_fix_(successor);
 					}
+				}
+			}
+
+			void print(){
+				print_(m_root, 0);
+			}
+
+			void print_(node_pointer current, int space){
+				if ( current != NULL ){
+					space += 10;
+					print_(current->right, space);
+					std::cout << std::endl;
+					for ( int _ = 0 ; _ < space ; _++ ){ std::cout << " "; }
+					std::cout << "( " << current->data.first << " : " << current->data.second  << ", " << (std::string[4]){ "B", "R", "S", "N" }[current->color - 1] << " )" << std::endl;
+					print_(current->left, space);
 				}
 			}
 
@@ -664,12 +704,13 @@ namespace ft
 			 * 
 			 */
 			void swap(map &x){
-				node_pointer	tmp_root = x.m_root;
-				size_type		tmp_size = x.m_size;
-				key_compare		tmp_comp = x.m_comp;
-				allocator_type	tmp_alloc = x.m_alloc;
-				node_pointer	tmp_right_sentinel = x.m_right_sentinel;
-				node_pointer	tmp_left_sentinel = x.m_left_sentinel;
+				node_pointer				tmp_root = x.m_root;
+				size_type					tmp_size = x.m_size;
+				key_compare					tmp_comp = x.m_comp;
+				allocator_type				tmp_alloc = x.m_alloc;
+				node_pointer				tmp_right_sentinel = x.m_right_sentinel;
+				node_pointer				tmp_left_sentinel = x.m_left_sentinel;
+				typename node_type::Compare tmp_is_null_node = x.m_is_null_node;
 
 				x.m_root = this->m_root;
 				x.m_size = this->m_size;
@@ -677,6 +718,7 @@ namespace ft
 				x.m_alloc = this->m_alloc;
 				x.m_right_sentinel = this->m_right_sentinel;
 				x.m_left_sentinel = this->m_left_sentinel;
+				x.m_is_null_node = this->m_is_null_node;
 				
 				this->m_root = tmp_root;
 				this->m_size = tmp_size;
@@ -684,6 +726,7 @@ namespace ft
 				this->m_alloc = tmp_alloc;
 				this->m_right_sentinel = tmp_right_sentinel;
 				this->m_left_sentinel = tmp_left_sentinel;
+				this->m_is_null_node = tmp_is_null_node;
 			}
 
 			/**
@@ -1056,7 +1099,7 @@ namespace ft
 			}
 
 			void clear_recursive_(node_pointer current){
-				if ( current != NULL && !current->is_sentinel() && !current->is_null_node() ){
+				if ( current != NULL && !current->is_sentinel() && m_is_null_node(current) ){
 					clear_recursive_(current->left);
 					clear_recursive_(current->right);
 					node_type::destroy_node(current);
@@ -1088,6 +1131,7 @@ namespace ft
 					while ( successor->left != NULL && !successor->left->is_sentinel() ){
 						successor = successor->left;
 					}
+					// HERE ?
 					ret.first = successor->right;
 					ret.second = successor->color;
 					if ( successor->parent == target ){
@@ -1102,8 +1146,10 @@ namespace ft
 							successor->parent->set_left(successor->right);
 						} else {
 							// Successor is a leaf
-							successor->parent->left = NULL;
-                            m_null->parent = successor->parent;
+							// Set to m_null ?
+							// successor->parent->left = NULL;
+							successor->parent->left = m_null;
+							m_null->parent = successor->parent;
 							ret.first = m_null;
 						}
 						successor->assign( target );
@@ -1137,7 +1183,9 @@ namespace ft
 							rb_rotate_left_(x->parent);
 							s = x->parent->right;
 						}
-						if ( ( s->left == NULL || s->left->color == RB_COLOR_BLACK ) && ( s->right == NULL || s->right->color == RB_COLOR_BLACK) ){
+						if (
+                                ( s->left == NULL || s->left->color == RB_COLOR_BLACK || s->is_sentinel() ) &&
+                                ( s->right == NULL || s->right->color == RB_COLOR_BLACK || s->is_sentinel() ) ){
 							// Case 3.2
 							s->color = RB_COLOR_RED;
 							x = x->parent;
@@ -1169,7 +1217,9 @@ namespace ft
 							s = x->parent->left;
 						}
 
-						if ( ( s->left == NULL || s->left->color == RB_COLOR_BLACK ) && ( s->right == NULL || s->right->color == RB_COLOR_BLACK) ){
+						if ( 
+							( s->left == NULL || s->left->color == RB_COLOR_BLACK || s->left->is_sentinel() ) &&
+							( s->right == NULL || s->right->color == RB_COLOR_BLACK || s->right->is_sentinel() ) ){
 							// Case 3.2
 							s->color = RB_COLOR_RED;
 							x = x->parent;
