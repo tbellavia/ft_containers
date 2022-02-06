@@ -2256,29 +2256,16 @@ void test_vector_time(){
 void test_map_time(){
 	ft::map<int, int> map;
 
-//    for ( int i = 0 ; i < 1000000 ; i++ ){
-//        map.insert(ft::make_pair(i + 1, 0));
-//    }
-//    map.erase(
-//        map.find(5000),
-//        map.find(7000)
-//    );
-//    map.find(42000);
-//    map.erase(42000);
-
-	for ( int i = 0 ; i < 20 ; i++ ){
-		map.insert(ft::make_pair(i + 1, 0));
-	}
-#ifdef FT
-	map.print();
-#endif
-	map.erase(
-			map.find(3),
-			map.find(19)
-	);
-//    map.find(42000);
-//    map.erase(42000);
-
+    for ( int i = 0 ; i < 1000000 ; i++ ){
+        map.insert(ft::make_pair(i + 1, 0));
+    }
+    map.erase(
+        map.find(5000),
+        map.find(90000)
+    );
+    map.find(42000);
+    map.erase(42000);
+    LOG_EACH("iterator", map.begin(), map.end());
 	LOG("TIME OK", true);
 }
 
@@ -2345,13 +2332,13 @@ void test_map(){
 }
 
 void test_containers_time(){
-//    test_vector_time();
+    test_vector_time();
 	test_map_time();
 }
 
 int     main(){
-//    test_vector();
-//    test_stack();
-//    test_map();
+    test_vector();
+    test_stack();
+    test_map();
 	test_containers_time();
 }

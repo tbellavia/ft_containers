@@ -6,8 +6,6 @@
 # include "utility/pair.hpp"
 # include "traits/iterator.hpp"
 # include "algorithm/algorithm.hpp"
-// TODO: Remove before push
-# include <iostream>
 
 namespace ft
 {
@@ -158,6 +156,17 @@ namespace ft
 			this->right = node;
 			node->parent = this;
 		}
+
+        void detach() {
+            if ( this->parent ){
+                if ( this->is_left() ){
+                    this->parent->left = NULL;
+                } else {
+                    this->parent->right = NULL;
+                }
+                this->parent = NULL;
+            }
+        }
 
 		void assign( pointer node ){
 			if ( node ){
@@ -330,7 +339,7 @@ namespace ft
 			node_pointer						m_right_sentinel;
 			node_pointer						m_left_sentinel;
 			node_pointer						m_null;
-			typename node_type::Compare					m_is_null_node;
+			typename node_type::Compare         m_is_null_node;
 
 		/**
 		 * Public member functions.
@@ -599,8 +608,7 @@ namespace ft
 					node_pointer successor;
 					int         prev_color = target->color;
 					bool        is_root = target == m_root;
-                    std::cout << "Delete node: " << position->first << std::endl;
-					
+
 					if ( target->left != NULL && target->right != NULL ){
 						// Case 3, node has children
 						// Go to the right subtree, then find the min (go to leftmost)
@@ -642,21 +650,7 @@ namespace ft
 						prev_color == RB_COLOR_BLACK ){
 							this->rb_erase_fix_(successor);
 					}
-				}
-			}
-
-			void print(){
-				print_(m_root, 0);
-			}
-
-			void print_(node_pointer current, int space){
-				if ( current != NULL ){
-					space += 10;
-					print_(current->right, space);
-					std::cout << std::endl;
-					for ( int _ = 0 ; _ < space ; _++ ){ std::cout << " "; }
-					std::cout << "( " << current->data.first << " : " << current->data.second  << ", " << (std::string[4]){ "B", "R", "S", "N" }[current->color - 1] << " )" << std::endl;
-					print_(current->left, space);
+                    m_null->detach();
 				}
 			}
 
