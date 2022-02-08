@@ -74,7 +74,7 @@ void    print_stats(const TimeStat &x, const TimeStat &y){
            padding, "",
            padding, x.duration + y.duration,
            padding, y.duration - x.duration,
-           padding, (float)x.duration / (float)y.duration);
+           padding, (float)y.duration / (float)x.duration);
 }
 
 int     main(int argc, char *argv[]){
