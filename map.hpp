@@ -1093,7 +1093,7 @@ namespace ft
 			}
 
 			void clear_recursive_(node_pointer current){
-				if ( current != NULL && !current->is_sentinel() && m_is_null_node(current) ){
+				if ( current != NULL && !current->is_sentinel() && !m_is_null_node(current) ){
 					clear_recursive_(current->left);
 					clear_recursive_(current->right);
 					node_type::destroy_node(current);
